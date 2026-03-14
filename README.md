@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# vehicle-repair-service
-Vehicle Repair 
-=======
-# vehicle_repair_service
-Vehicle Repair Service
->>>>>>> 22241c9 (Initial commit)
-=======
+
 # 🚗 Vehicle Repair Service – Full Stack Application
 
 ![Flutter](https://img.shields.io/badge/Flutter-Mobile%20App-blue?logo=flutter)

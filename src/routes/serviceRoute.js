@@ -1,0 +1,11 @@
+import express from "express";
+import upload from "../middleware/upload.js";
+import { addServiceController, deleteVehicleController, getAllVehicleServiceController, searchServiceController, updateServiceController } from "../controller/servicesController.js";
+import { verifyToken } from "../middleware/verifyToken.js";
+const router=express.Router();
+router.post("/addService",upload.single('photo'),addServiceController);
+router.put("/updateService",upload.single('photo'),updateServiceController);
+router.post("/deleteService",upload.none(),deleteVehicleController);
+router.post("/getAllService",verifyToken,upload.none(),getAllVehicleServiceController);
+router.post("/searchService",verifyToken,upload.none(),searchServiceController);
+export default router;

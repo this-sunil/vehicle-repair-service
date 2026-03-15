@@ -193,7 +193,7 @@ export const updateBookingController = async (req, res) => {
       uid,
       vehicle_name,
       registration_no,
-      vehicle_photo,
+      photo,
       vehicle_type,
       slot_date,
       slot_time,

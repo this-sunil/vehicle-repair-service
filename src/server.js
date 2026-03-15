@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
 import cors from "cors";
 import path from "path";
 import {Server} from "socket.io";
@@ -9,11 +8,12 @@ import categoryRoute from "./routes/categoryRoute.js";
 import vehicleRoute from "./routes/serviceRoute.js";
 import settingRoute from "./routes/settingRoute.js";
 import bookingRoute from "./routes/bookRoute.js";
-import notificationRoute from "./routes/notificationRoute.js";
-import serviceCenterRoute from "./routes/shopRoute.js";
-import subscriptionRoute from "./routes/subscriptionRoute.js";
+//import notificationRoute from "./routes/notificationRoute.js";
+//import serviceCenterRoute from "./routes/shopRoute.js";
+//import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
+dotenv.config({debug:true,encoding:true,override:true});
 
 const app=express();
 app.use(express.urlencoded({extended:true}));
@@ -60,9 +60,9 @@ app.use("/api",categoryRoute);
 app.use("/api",vehicleRoute);
 app.use("/api",settingRoute);
 app.use("/api",bookingRoute);
-app.use("/api",notificationRoute);
-app.use("/api",serviceCenterRoute);
-app.use("/api",subscriptionRoute);
+//app.use("/api",notificationRoute);
+//app.use("/api",serviceCenterRoute);
+//app.use("/api",subscriptionRoute);
 
 
 

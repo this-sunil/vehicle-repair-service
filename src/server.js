@@ -43,13 +43,13 @@ app.use("/bootstrap-icons",express.static(path.join(process.cwd(),'node_modules/
 app.set("view engine","ejs");
 app.set('views',path.join(process.cwd(),'src/views'));
 
-app.get('/dashboard' , (req , res)=>{
+app.post('/dashboard' , (req , res)=>{
   return res.render("dashboard");
 });
-app.get("/privacy",(req,res)=>{
+app.post("/privacy",(req,res)=>{
   return res.render("privacy");
 });
-app.get("/terms-condition",(req,res)=>{
+app.post("/terms-condition",(req,res)=>{
   return res.render("terms");
 });
 

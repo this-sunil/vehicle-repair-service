@@ -1,7 +1,7 @@
 import pool from "../database/db.js";
 
 const createBookTable = () => {
-  const query = `CREATE TABLE IF NOT EXISTS booking(book_id SERIAL PRIMARY KEY,uid INT NOT NULL,vehicle_name VARCHAR(255) NOT NULL,registration_no VARCHAR(255) NOT NULL,vehicle_photo VARCHAR(255) NOT NULL,vehicle_type VARCHAR(255) NOT NULL,slot_date VARCHAR(255) NOT NULL,slot_time VARCHAR(255) NOT NULL,service_name VARCHAR(255) NOT NULL,FOREIGN KEY (uid) REFERENCES users(uid),created_at TIMESTAMP Default CURRENT_TIMESTAMP)`;
+  const query = `CREATE TABLE IF NOT EXISTS booking(book_id SERIAL PRIMARY KEY,uid INT NOT NULL,vehicle_name VARCHAR(255) NOT NULL,registration_no VARCHAR(255) NOT NULL,vehicle_photo VARCHAR(255) NOT NULL,vehicle_type VARCHAR(255) NOT NULL,slot_date VARCHAR(255) NOT NULL,slot_time VARCHAR(255) NOT NULL,service_name VARCHAR(255) NOT NULL,FOREIGN KEY (uid) REFERENCES users(id),created_at TIMESTAMP Default CURRENT_TIMESTAMP)`;
   pool.query(query, (err) => {
     if (err) {
       throw err.message;

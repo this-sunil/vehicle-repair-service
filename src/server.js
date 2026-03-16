@@ -67,96 +67,12 @@ app.use("/api",bookingRoute);
 
 
 
-app.post('/api/initiate-payment', async (req, res) => {
-    const { amount, orderId, customerId } = req.body;
-
-    // 1. Prepare Request Body
-    const paytmParams = {
-        body: {
-            requestType: "Payment",
-            mid: dotenv.env.PAYTM_MID,
-            websiteName: dotenv.env.PAYTM_WEBSITE,
-            orderId: orderId,
-            callbackUrl: `http://localhost:4000/api/callback`,
-            txnAmount: {
-                value: amount,
-                currency: "INR",
-            },
-            userInfo: {
-                custId: customerId,
-            },
-        },
-    };
-
-    try {
-        // 2. Generate Checksum (Signature)
-        const checksum = await PaytmChecksum.generateSignature(
-            JSON.stringify(paytmParams.body), 
-            PAYTM_MERCHANT_KEY
-        );
-
-        paytmParams.head = {
-            signature: checksum
-        };
-
-        // 3. Call Paytm Initiate Transaction API
-        const url = ENV === 'stage' 
-            ? `https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=${PAYTM_MID}&orderId=${orderId}`
-            : `https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=${PAYTM_MID}&orderId=${orderId}`;
-
-        const response = await axios.post(url, paytmParams, {
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        // 4. Send the Transaction Token to Frontend
-        res.json({
-            token: response.data.body.txnToken,
-            orderId: orderId,
-            mid: PAYTM_MID
-        });
-    } catch (error) {
-        res.status(500).send("Error initiating transaction");
-    }
-});
-
-app.post('/api/callback', (req, res) => {
-    let callbackData = req.body; // Use body-parser for urlencoded data
-    let paytmChecksum = callbackData.CHECKSUMHASH;
-    delete callbackData.CHECKSUMHASH;
-
-    let isVerifySignature = PaytmChecksum.verifySignature(callbackData, PAYTM_MERCHANT_KEY, paytmChecksum);
-    
-    if (isVerifySignature) {
-        if (callbackData.STATUS === 'TXN_SUCCESS') {
-            res.send("Payment Successful!");
-        } else {
-            res.send("Payment Failed.");
-        }
-    } else {
-        res.status(400).send("Checksum Mismatch - Possible Tampering");
-    }
-});
 
 
 
 
-app.post('/api/callback', (req, res) => {
-    let callbackData = req.body; // Use body-parser for urlencoded data
-    let paytmChecksum = callbackData.CHECKSUMHASH;
-    delete callbackData.CHECKSUMHASH;
 
-    let isVerifySignature = PaytmChecksum.verifySignature(callbackData, PAYTM_MERCHANT_KEY, paytmChecksum);
-    
-    if (isVerifySignature) {
-        if (callbackData.STATUS === 'TXN_SUCCESS') {
-            res.send("Payment Successful!");
-        } else {
-            res.send("Payment Failed.");
-        }
-    } else {
-        res.status(400).send("Checksum Mismatch - Possible Tampering");
-    }
-});
+
 
 const server=app.listen(PORT,()=>{
     console.log(`Server Started at http://localhost:${PORT}`);

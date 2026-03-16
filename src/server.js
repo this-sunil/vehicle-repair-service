@@ -13,7 +13,7 @@ import bookingRoute from "./routes/bookRoute.js";
 //import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
-dotenv.config({debug:true,encoding:true,override:true});
+dotenv.config({debug:true,encoding:'utf-8',override:true,});
 
 const app=express();
 app.use(express.urlencoded({extended:true}));
@@ -40,15 +40,16 @@ const limiter=rateLimit({
     });
  }
 });
-
+app.use(limiter);
 
 app.use("/upload",express.static(path.join(process.cwd(),'src/upload')));
 app.use("/public",express.static(path.join(process.cwd(),"src/public")));
 app.use("/bootstrap-icons",express.static(path.join(process.cwd(),'node_modules/bootstrap-icons')))
 app.set("view engine","ejs");
-app.set('views',path.join(process.cwd(),'src/views'));
+app.set('views',path.join(process.cwd(),'/src/views'));
 
-app.post('/dashboard' , (req , res)=>{
+
+app.post('/' , (req , res)=>{
   return res.render("dashboard");
 });
 app.post("/privacy",(req,res)=>{
@@ -57,7 +58,7 @@ app.post("/privacy",(req,res)=>{
 app.post("/terms-condition",(req,res)=>{
   return res.render("terms");
 });
-app.use(limiter);
+
 const PORT=process.env.PORT || 4000;
 
 app.use("/api",authRoute);

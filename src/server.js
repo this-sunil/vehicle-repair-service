@@ -28,12 +28,17 @@ app.use(cors({
 }));
 
 const limiter=rateLimit({
- windowMs:15*60*1000,
- limit:100,
+ windowMs:1*60*1000,
+ limit:5,
  standardHeaders: 'draft-8',
  legacyHeaders:false,
  ipv6Subnet: 56,
- message:"Too many request,Please try again later."
+ handler:(req,res,next,options)=>{
+    return res.status(429).json({
+        status:false,
+        msg:"Too may request please try again later"
+    });
+ }
 });
 
 

@@ -36,7 +36,7 @@ const limiter=rateLimit({
  message:"Too many request,Please try again later."
 });
 
-app.use(limiter);
+
 app.use("/upload",express.static(path.join(process.cwd(),'src/upload')));
 app.use("/public",express.static(path.join(process.cwd(),"src/public")));
 app.use("/bootstrap-icons",express.static(path.join(process.cwd(),'node_modules/bootstrap-icons')))
@@ -52,7 +52,7 @@ app.post("/privacy",(req,res)=>{
 app.post("/terms-condition",(req,res)=>{
   return res.render("terms");
 });
-
+app.use(limiter);
 const PORT=process.env.PORT || 4000;
 
 app.use("/api",authRoute);

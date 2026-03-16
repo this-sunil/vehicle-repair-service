@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 console.log("PORT =", process.env.PORT);
 app.use(cors({
-    origin: "*",
+    origin: `${process.env.BASE_URL}`,
     optionsSuccessStatus: 200,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,

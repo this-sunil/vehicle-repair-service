@@ -14,7 +14,9 @@ const createAdmin = async () => {
 
 const createUserTable = async () => {
   try {
-    const query = `CREATE TABLE IF NOT EXISTS users(
+    const query = `
+    
+    CREATE TABLE IF NOT EXISTS users(
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     phone BIGINT NOT NULL,

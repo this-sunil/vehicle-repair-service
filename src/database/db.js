@@ -7,7 +7,7 @@ const pool=new Pool({
     // database:`${process.env.DB_NAME}`,
     // port:process.env.DB_PORT,
     // password:""
-    connectionString:`${process.env.POSTGRES_URL}`,
+    connectionString:`${process.env.vehicle_repair_service_POSTGRES_URL}`,
     ssl:{
         rejectUnauthorized:false
     }

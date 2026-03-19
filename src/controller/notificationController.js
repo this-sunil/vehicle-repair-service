@@ -108,10 +108,9 @@ export const fetchNotificationController = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "No Data Found !!!",
+        msg: "No Data Found !!!"
       });
     }
-
     const offset = (page - 1) * limit;
     const totalItem = result.rows[0].count;
     console.log(`Total Items=>${totalItem}`);

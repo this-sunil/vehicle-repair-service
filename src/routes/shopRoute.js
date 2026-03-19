@@ -1,0 +1,10 @@
+import express from "express";
+import upload from "../middleware/upload.js";
+import { addShopController, deleteShopController, fetchShopController, updateShopController } from "../controller/shopController.js";
+import { verifyToken } from "../middleware/verifyToken.js";
+const router=express.Router();
+router.post("/addShop",upload.single('photo'),addShopController);
+router.post("/deleteShop",upload.none(),deleteShopController);
+router.patch("/updateShop",upload.single('photo'),updateShopController);
+router.post("/fetchShop",verifyToken,upload.none(),fetchShopController);
+export default router;

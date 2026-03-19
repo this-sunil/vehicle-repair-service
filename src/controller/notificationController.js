@@ -54,8 +54,9 @@ export const updateNotificationController = async (req, res) => {
       fields.push(`photo=$${currentIndex++}`);
       values.push(photo);
     }
+    values.push(id);
     const query = `UPDATE SET ${fields.join(", ")} notification WHERE id=$${currentIndex}`;
-    const { rows } = await pool.query(query, [id, title, description]);
+    const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,

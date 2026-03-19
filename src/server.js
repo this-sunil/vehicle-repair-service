@@ -8,8 +8,8 @@ import categoryRoute from "./routes/categoryRoute.js";
 import vehicleRoute from "./routes/serviceRoute.js";
 import settingRoute from "./routes/settingRoute.js";
 import bookingRoute from "./routes/bookRoute.js";
-//import notificationRoute from "./routes/notificationRoute.js";
-//import serviceCenterRoute from "./routes/shopRoute.js";
+import notificationRoute from "./routes/notificationRoute.js";
+import shopRoute from "./routes/shopRoute.js";
 //import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
@@ -60,6 +60,8 @@ app.use("/api", categoryRoute);
 app.use("/api", vehicleRoute);
 app.use("/api", settingRoute);
 app.use("/api", bookingRoute);
+app.use("/api",shopRoute);
+app.use("/api",notificationRoute);
 
 app.get("/", (req, res) => {
   return res.render("dashboard");

@@ -1,7 +1,7 @@
 import pool from "../database/db.js";
 
 const createNotificationTable = () => {
-  const query = `CREATE TABLE IF NOT EXISTS notification(id SERIAL PRIMARY KEY,title VARCHAR(255) NOT NULL,description TEXT NOT NULL,photo VARCHAR(255) NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
+  const query = `CREATE TABLE IF NOT EXISTS notification(id SERIAL PRIMARY KEY,title VARCHAR(255) NOT NULL,description TEXT NOT NULL,photo VARCHAR(255) NOT NULL,uid INT NOT NULL,FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
   pool.query(query, (err) => {
     if (err) {
       throw err;
@@ -9,6 +9,7 @@ const createNotificationTable = () => {
     console.log("Notification Table Created Successfully");
   });
 };
+
 createNotificationTable();
 
 export const addNotificationController = async (req, res) => {
@@ -20,18 +21,18 @@ export const addNotificationController = async (req, res) => {
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "Notification Insertion Failure",
+        msg: "Notification Insertion Failure"
       });
     }
     return res.status(200).json({
       status: true,
       msg: "Notification Inserted Successfully !!!",
-      result: rows,
+      result: rows
     });
   } catch (error) {
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error",
+      msg: "Internal Server Error"
     });
   }
 };
@@ -69,7 +70,7 @@ export const updateNotificationController = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error",
+      msg: "Internal Server Error"
     });
   }
 };
@@ -114,6 +115,7 @@ export const fetchNotificationController = async (req, res) => {
     const offset = (page - 1) * limit;
     const totalItem = result.rows[0].count;
     console.log(`Total Items=>${totalItem}`);
+
     const totalPage = Math.ceil(totalItem / limit);
     const query = `SELECT * FROM notification ORDER BY id LIMIT $1 OFFSET $2`;
     const rows = await pool.query(query, [limit, offset]);
@@ -125,13 +127,13 @@ export const fetchNotificationController = async (req, res) => {
         totalPage,
         result: rows,
         prevPage: page > 1,
-        nextPage: page < totalPage,
+        nextPage: page < totalPage
       });
     }
   } catch (error) {
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error",
+      msg: "Internal Server Error"
     });
   }
 };

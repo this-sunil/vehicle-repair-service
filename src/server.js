@@ -10,7 +10,7 @@ import settingRoute from "./routes/settingRoute.js";
 import bookingRoute from "./routes/bookRoute.js";
 import notificationRoute from "./routes/notificationRoute.js";
 import shopRoute from "./routes/shopRoute.js";
-//import subscriptionRoute from "./routes/subscriptionRoute.js";
+import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
 dotenv.config({debug:true,encoding:'utf-8',override:true,});
@@ -62,6 +62,7 @@ app.use("/api", settingRoute);
 app.use("/api", bookingRoute);
 app.use("/api",shopRoute);
 app.use("/api",notificationRoute);
+app.use("/api",subscriptionRoute);
 
 app.get("/", (req, res) => {
   return res.render("dashboard");

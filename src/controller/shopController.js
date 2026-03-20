@@ -142,42 +142,42 @@ export const fetchShopController = async (req, res) => {
 export const searchByCityController = async (req, res) => {
   const page = Number(req.body.page) || 1;
   const limit = Number(req.body.limit) || 10;
-  const city=req.body.city;
-  
-  
+  const city = req.body.city;
+
   try {
-    if(!city){
-        return res.status(400).json({
-            status:false,
-            msg:"Missing param city"
-        });
-    }
-    const countQuery = `SELECT count(*) FROM shop WHERE city=$1`;
-    const result = await pool.query(countQuery,[city]);
-    if (result.rows.length === 0) {
+    if (!city) {
       return res.status(400).json({
+        status: false,
+        msg: "Missing param city"
+      });
+    }
+
+    const countQuery = `SELECT count(*) FROM shop WHERE city=$1`;
+    const result = await pool.query(countQuery, [city]);
+
+    const totalItem = Number(result.rows[0].count);
+    const totalPage = Math.ceil(totalItem / limit);
+    const offset = (page - 1) * limit;
+
+    const query = `SELECT * FROM shop WHERE city=$1 ORDER BY sid LIMIT $2 OFFSET $3`;
+    const rows = await pool.query(query, [city, limit, offset]);
+
+    if (rows.rows.length === 0) {
+      return res.status(404).json({
         status: false,
         msg: "No Data Found !!!"
       });
     }
-    const offset = (page - 1) * limit;
-    const totalItem = result.rows[0].count;
-    console.log(`Total Items=>${totalItem}`);
 
-    const totalPage = Math.ceil(totalItem / limit);
-    const query = `SELECT * FROM shop WHERE city=$1 ORDER BY sid LIMIT $1 OFFSET $2`;
-    const rows = await pool.query(query, [city,limit, offset]);
-    if (rows.length > 0) {
-      return res.status(200).json({
-        status: true,
-        msg: "Fetch Shop Successfully !!!",
-        currentPage: page,
-        totalPage,
-        result: rows,
-        prevPage: page > 1,
-        nextPage: page < totalPage
-      });
-    }
+    return res.status(200).json({
+      status: true,
+      msg: "Fetch Shop Successfully !!!",
+      currentPage: page,
+      totalPage,
+      result: rows.rows,
+      prevPage: page > 1,
+      nextPage: page < totalPage
+    });
   } catch (error) {
     return res.status(500).json({
       status: false,

@@ -143,6 +143,8 @@ export const searchByCityController = async (req, res) => {
   const page = req.body.page || 1;
   const limit = req.body.limit || 10;
   const city=req.body.city;
+  console.log("City=>"+city);
+  
   try {
     if(!city){
         return res.status(400).json({
@@ -151,7 +153,7 @@ export const searchByCityController = async (req, res) => {
         });
     }
     const countQuery = `SELECT count(*) FROM shop WHERE city=$1`;
-    const result = await pool.query(countQuery);
+    const result = await pool.query(countQuery,[city]);
     if (result.rows.length === 0) {
       return res.status(400).json({
         status: false,

@@ -165,7 +165,7 @@ export const searchByCityController = async (req, res) => {
     console.log(`Total Items=>${totalItem}`);
 
     const totalPage = Math.ceil(totalItem / limit);
-    const query = `SELECT * FROM shop WHERE city=$1 ORDER BY id LIMIT $1 OFFSET $2`;
+    const query = `SELECT * FROM shop WHERE city=$1 ORDER BY sid LIMIT $1 OFFSET $2`;
     const rows = await pool.query(query, [city,limit, offset]);
     if (rows.length > 0) {
       return res.status(200).json({

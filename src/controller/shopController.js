@@ -102,8 +102,8 @@ export const deleteShopController=async(req,res)=>{
 };
 
 export const fetchShopController = async (req, res) => {
-  const page = req.body.page || 1;
-  const limit = req.body.limit || 10;
+  const page = Number(req.body.page) || 1;
+  const limit = Number(req.body.limit) || 10;
   try {
     const countQuery = `SELECT count(*) FROM shop`;
     const result = await pool.query(countQuery);
@@ -140,10 +140,10 @@ export const fetchShopController = async (req, res) => {
 };
 
 export const searchByCityController = async (req, res) => {
-  const page = req.body.page || 1;
-  const limit = req.body.limit || 10;
+  const page = Number(req.body.page) || 1;
+  const limit = Number(req.body.limit) || 10;
   const city=req.body.city;
-  console.log("City=>"+city);
+  
   
   try {
     if(!city){

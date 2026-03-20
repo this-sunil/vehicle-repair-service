@@ -101,8 +101,8 @@ export const deleteNotificationController = async (req, res) => {
 };
 
 export const fetchNotificationController = async (req, res) => {
-  const page = req.body.page || 1;
-  const limit = req.body.limit || 10;
+  const page = Number(req.body.page) || 1;
+  const limit = Number(req.body.limit) || 10;
   try {
     const countQuery = `SELECT count(*) FROM notification`;
     const result = await pool.query(countQuery);

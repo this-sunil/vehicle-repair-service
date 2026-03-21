@@ -1,31 +1,22 @@
 import multer from "multer";
-import fs from "fs";
-import path from "path";
-const uploadDir = path.join(process.cwd(), "src/upload");
+import cloudinary from "cloudinary";
+import CloudinaryStorage from "multer-storage-cloudinary";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const timestamp = `${Date.now()}`;
-    const filename = file.originalname;
-    const ext = path.extname(filename);
-    cb(null, `${timestamp}${ext}`);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "uploads",
+    allowedFormats: ["jpg", "jpeg", "png"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }],
   },
 });
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    const allowType = /jpeg|png|gif|jpg/;
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (!allowType.test(ext)) {
-      cb(new Error(`Only Images Allows`), false);
-    }
-    cb(null,true);
-  },
-});
+
+const upload = multer({ storage });
+
 export default upload;

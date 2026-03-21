@@ -11,9 +11,11 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "uploads",
-    format: async (req, file) => "png", // safer
-    public_id: (req, file) => Date.now() + "-" + file.originalname,
+    format: async () => "png", // force png
+    public_id: (req, file) => {
+      const nameWithoutExt = file.originalname.split(".")[0];
+      return `${Date.now()}-${nameWithoutExt}`;
+    },
   },
 });
 

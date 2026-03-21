@@ -99,7 +99,7 @@ export const deletePlanController=async(req,res)=>{
 export const fetchPlanController=async(req,res)=>{
     try {
         const query=`SELECT * FROM plan`;
-        const {rows}=await pool.query(query,[pid]);
+        const {rows}=await pool.query(query);
         if(rows.length===0){
             return res.status(400).json({
                 status:false,

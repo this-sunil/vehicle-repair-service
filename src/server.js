@@ -13,7 +13,8 @@ import shopRoute from "./routes/shopRoute.js";
 import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
-dotenv.config({debug:true,encoding:'utf-8',override:true,});
+
+dotenv.config({debug:true,encoding:'utf-8',override:true});
 
 const app = express();
 

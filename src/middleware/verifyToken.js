@@ -28,7 +28,7 @@ export const verifyToken=async(req,res,next)=>{
     } catch (error) {
         return res.status(500).json({
             status:false,
-            msg:`Internal Server Error`
+            msg:`Internal Server Error ${error.message}`
         });
     }
 };

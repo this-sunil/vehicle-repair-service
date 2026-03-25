@@ -4,7 +4,7 @@ import { addSettingController, deleteSettingController, fetchSettingController, 
 import { verifyToken } from "../middleware/verifyToken.js";
 const router=express.Router();
 router.post("/addSetting",upload.single('photo'),addSettingController);
-router.post("/updateSetting",upload.single('photo'),updateSettingController);
+router.patch("/updateSetting",upload.single('photo'),updateSettingController);
 router.delete("/deleteSetting",upload.none(),deleteSettingController);
 router.post("/fetchSetting",verifyToken,upload.none(),fetchSettingController);
 export default router;

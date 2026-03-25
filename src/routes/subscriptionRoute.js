@@ -1,9 +1,10 @@
 import express from "express";
 import upload from "../middleware/upload.js";
 import { addPlanController, deletePlanController, fetchPlanController, updatePlanController } from "../controller/subscriptionController.js";
+import { verifyToken } from "../middleware/verifyToken.js";
 const router=express.Router();
 router.post("/addPlan",upload.none(),addPlanController);
 router.patch("/updatePlan",upload.none(),updatePlanController);
 router.post("/deletePlan",upload.none(),deletePlanController);
-router.post("/fetchPlan",upload.none(),fetchPlanController);
+router.post("/fetchPlan",verifyToken,upload.none(),fetchPlanController);
 export default router;

@@ -9,6 +9,6 @@ router.post("/getProfile",verifyToken,upload.none(),fetchProfileController);
 router.delete("/deleteUserById",verifyToken,upload.none(),deleteUserController);
 router.post("/updateProfile",verifyToken,upload.single('photo'),updateProfileController);
 router.post("/forgotPass",upload.none(),forgotPassController);
-router.post("/getAllUser",verifyToken,upload.none(),getAllUserController);
+router.post("/getAllUser",upload.none(),getAllUserController);
 router.post("/changePass",verifyToken,upload.none(),changePassController);
 export default router;

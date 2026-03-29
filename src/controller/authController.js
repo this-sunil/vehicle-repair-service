@@ -302,9 +302,9 @@ export const changePassController=async(req,res)=>{
 
 export const getAllUserController=async(req,res)=>{
   try {
-    let currentIndex=1;
-    const query=`SELECT * FROM users WHERE id!=$${currentIndex}`;
-    const {rows}=await pool.query(query);
+    let id=1;
+    const query=`SELECT * FROM users WHERE id!=$${id}`;
+    const {rows}=await pool.query(query,[id]);
     if(rows.length===0){
       return res.status(404).json({
         status:false,

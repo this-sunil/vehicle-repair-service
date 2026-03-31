@@ -2,7 +2,6 @@ import pool from "../database/db.js";
 
 const createVehicleService = async () => {
   const query = `
-  DROP TABLE vehicle_service;
   CREATE TABLE IF NOT EXISTS vehicle_service(id SERIAL PRIMARY KEY,title TEXT NOT NULL,description TEXT NOT NULL,photo TEXT NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
   pool.query(query, (err) => {
     if (err) {

@@ -2,7 +2,13 @@ import pool from "../database/db.js";
 
 const createVehicleService = async () => {
   const query = `
-  CREATE TABLE IF NOT EXISTS vehicle_service(id SERIAL PRIMARY KEY,title TEXT UNIQUE NOT NULL,description TEXT UNIQUE NOT NULL,photo TEXT NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
+  CREATE TABLE IF NOT EXISTS vehicle_service(
+    id SERIAL PRIMARY KEY,
+    title TEXT UNIQUE NOT NULL,
+    description TEXT NOT NULL,
+    photo TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`;
   pool.query(query, (err) => {
     if (err) {
       console.log(`Error in Vehicle Service Table=>${err.message}`);

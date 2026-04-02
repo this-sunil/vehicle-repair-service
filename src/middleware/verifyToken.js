@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
-const privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, "\n");
-const publicKey = process.env.PUBLIC_KEY.replace(/\\n/g, "\n");
+
 export const generateToken = async (user) => {
   const payload = {
-    role: user.role
+    role: user.role,
   };
-  const decode = jwt.sign(payload, privateKey, {
-    algorithm: "RS256",
+  const decode = jwt.sign(payload, process.env.SECRET_TOKEN, {
+    algorithm: "HS256",
     expiresIn:"20m"
   });
   return decode;
@@ -23,13 +22,13 @@ export const verifyToken=async(req,res,next)=>{
             });
         }
         const token=authorization.split(" ")[1];
-        const decode=jwt.verify(token,publicKey,{algorithms:"RS256",expiresIn:"20m"});
+        const decode=jwt.verify(token,process.env.SECRET_TOKEN,{algorithms:"HS256",expiresIn:"20m"});
         req.user=decode;
         next();
     } catch (error) {
         return res.status(500).json({
             status:false,
-            msg:`expire token !!!`
+            msg:`token expired Plz re-login`
         });
     }
 };

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const generateToken = async (user) => {
   const payload = {
-    role: user.role,
+    role: user.role
   };
   const decode = jwt.sign(payload, process.env.SECRET_TOKEN, {
     algorithm: "HS256",

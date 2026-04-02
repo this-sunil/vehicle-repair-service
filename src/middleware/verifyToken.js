@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
-
+const privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, "\n");
+const publicKey = process.env.PUBLIC_KEY.replace(/\\n/g, "\n");
 export const generateToken = async (user) => {
   const payload = {
     role: user.role
   };
-  const decode = jwt.sign(payload, process.env.SECRET_TOKEN, {
+  const decode = jwt.sign(payload, process.env.privateKey, {
     algorithm: "RS256",
     expiresIn:"20m"
   });
@@ -22,7 +23,7 @@ export const verifyToken=async(req,res,next)=>{
             });
         }
         const token=authorization.split(" ")[1];
-        const decode=jwt.verify(token,process.env.SECRET_TOKEN,{algorithms:"RS256",expiresIn:"20m"});
+        const decode=jwt.verify(token,process.env.publicKey,{algorithms:"RS256",expiresIn:"20m"});
         req.user=decode;
         next();
     } catch (error) {

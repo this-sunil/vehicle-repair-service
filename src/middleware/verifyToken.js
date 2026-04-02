@@ -28,7 +28,7 @@ export const verifyToken=async(req,res,next)=>{
     } catch (error) {
         return res.status(500).json({
             status:false,
-            msg:`Invalid or Expired Token`
+            msg:`expire token !!!`
         });
     }
 };

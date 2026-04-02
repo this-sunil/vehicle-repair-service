@@ -5,7 +5,7 @@ export const generateToken = async (user) => {
   const payload = {
     role: user.role
   };
-  const decode = jwt.sign(payload, process.env.privateKey, {
+  const decode = jwt.sign(payload, privateKey, {
     algorithm: "RS256",
     expiresIn:"20m"
   });
@@ -23,7 +23,7 @@ export const verifyToken=async(req,res,next)=>{
             });
         }
         const token=authorization.split(" ")[1];
-        const decode=jwt.verify(token,process.env.publicKey,{algorithms:"RS256",expiresIn:"20m"});
+        const decode=jwt.verify(token,publicKey,{algorithms:"RS256",expiresIn:"20m"});
         req.user=decode;
         next();
     } catch (error) {

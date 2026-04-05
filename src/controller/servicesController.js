@@ -22,7 +22,7 @@ createVehicleService();
 export const addServiceController = async (req, res) => {
   const { title, description } = req.body;
   try {
-    const query = `INSERT INTO vehicle_service(title,description,photo) VALUES ($1,$2,$3) RETURNING *`;
+    const query = `DISTINCT INSERT INTO vehicle_service(title,description,photo) VALUES ($1,$2,$3)  ON CONFLICT (title) DO NOTHING RETURNING *`;
     const photo = req.file ? req.file.filename : "";
     const { rows } = await pool.query(query, [title, description, photo]);
     if (rows.length === 0) {

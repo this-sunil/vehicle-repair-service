@@ -86,6 +86,12 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/charts",(req,res)=>res.render("pages/charts/chartjs"));
+app.get("/users",(req,res)=>res.render("pages/users"));
+
+app.get("/basic-table",(req,res)=>res.render("pages/tables/basic-table"));
+
+app.get("/basic-elements",(req,res)=>res.render("pages/forms/basic_elements"));
+
 const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, () => {

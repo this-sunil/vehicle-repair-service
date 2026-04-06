@@ -52,7 +52,7 @@ app.use("/api", limiter);
 app.use("/upload", express.static(path.join(process.cwd(), "src/upload")));
 app.use("/public", express.static(path.join(process.cwd(), "src/public")));
 app.use("/bootstrap-icons", express.static(path.join(process.cwd(), "node_modules/bootstrap-icons")));
-
+app.use(express.static(path.join(process.cwd(), "src/public/dist/")));
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "src/views"));
 
@@ -77,6 +77,15 @@ app.get("/terms-condition", (req, res) => {
   return res.render("terms");
 });
 
+app.get("/login", (req, res) => {
+  res.render("pages/samples/login"); // .ejs extension mat do
+});
+
+app.get("/register", (req, res) => {
+  res.render("pages/samples/register");
+});
+
+app.get("/charts",(req,res)=>res.render("pages/charts/chartjs"));
 const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, () => {

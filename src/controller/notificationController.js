@@ -122,8 +122,7 @@ export const fetchNotificationController = async (req, res) => {
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "No Data Found !!!",
-        
+        msg: "No Data Found !!!"
       });
     }
     return res.status(200).json({

@@ -102,7 +102,6 @@ export const deleteNotificationController = async (req, res) => {
 
 export const fetchNotificationController = async (req, res) => {
   const page = Number(req.body.page) || 1;
-  const limit = Number(req.body.limit) || 10;
   try {
     const countQuery = `SELECT count(*) FROM notification`;
     const result = await pool.query(countQuery);
@@ -112,6 +111,7 @@ export const fetchNotificationController = async (req, res) => {
         msg: "No Data Found !!!"
       });
     }
+    const limit = 10;
     const offset = (page - 1) * limit;
     const totalItem = result.rows[0].count;
     console.log(`Total Items=>${totalItem}`);
@@ -119,8 +119,14 @@ export const fetchNotificationController = async (req, res) => {
     const totalPage = Math.ceil(totalItem / limit);
     const query = `SELECT * FROM notification ORDER BY id LIMIT $1 OFFSET $2`;
     const rows = await pool.query(query, [limit, offset]);
-    if (rows.length > 0) {
-      return res.status(200).json({
+    if (rows.length === 0) {
+      return res.status(400).json({
+        status: false,
+        msg: "No Data Found !!!",
+        
+      });
+    }
+    return res.status(200).json({
         status: true,
         msg: "Fetch Notification Successfully !!!",
         currentPage: page,
@@ -129,11 +135,11 @@ export const fetchNotificationController = async (req, res) => {
         prevPage: page > 1,
         nextPage: page < totalPage
       });
-    }
   } catch (error) {
+
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error"
+      msg: `Internal Server Error ${error.message}`
     });
   }
 };

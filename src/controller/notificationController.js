@@ -105,27 +105,27 @@ export const fetchNotificationController = async (req, res) => {
   try {
     const countQuery = `SELECT count(*) FROM notification`;
     const result = await pool.query(countQuery);
-    if (result.rows[0].count === 0) {
-      return res.status(400).json({
-        status: false,
-        msg: "No Data Found !!!"
-      });
-    }
+   
     const limit = 10;
     const offset = (page - 1) * limit;
-    const totalItem = result.rows[0].count;
+    const totalItem = Number(result.rows[0].count);
     console.log(`Total Items=>${totalItem}`);
 
     const totalPage = Math.ceil(totalItem / limit);
     const query = `SELECT * FROM notification ORDER BY id LIMIT $1 OFFSET $2`;
     const rows = await pool.query(query, [limit, offset]);
-    
+    if (totalItem===0) {
+      return res.status(400).json({
+        status: false,
+        msg: "No Data Found !!!",
+      });
+    }
     return res.status(200).json({
         status: true,
         msg: "Fetch Notification Successfully !!!",
         currentPage: page,
         totalPage,
-        result: rows[0],
+        result: rows,
         prevPage: page > 1,
         nextPage: page < totalPage
       });

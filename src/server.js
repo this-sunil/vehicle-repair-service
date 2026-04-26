@@ -34,15 +34,16 @@ app.use(
 );
 
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  limit: 10,
+  windowMs: 20 * 60 * 1000,
+  limit: 50,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   ipv6Subnet: 56,
   handler: (req, res) => {
-    return res.status(429).json({
+    res.status(429).json({
       status: false,
-      msg: "Too many requests, please try again later"
+      error: "RATE_LIMIT_EXCEEDED",
+      message: "Too many requests, please try again later"
     });
   }
 });

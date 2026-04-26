@@ -105,7 +105,7 @@ export const fetchNotificationController = async (req, res) => {
   try {
     const countQuery = `SELECT count(*) FROM notification`;
     const result = await pool.query(countQuery);
-    if (result.rows.length === 0) {
+    if (result.rows[0].count === 0) {
       return res.status(400).json({
         status: false,
         msg: "No Data Found !!!"
@@ -125,7 +125,7 @@ export const fetchNotificationController = async (req, res) => {
         msg: "Fetch Notification Successfully !!!",
         currentPage: page,
         totalPage,
-        result: rows,
+        result: rows[0],
         prevPage: page > 1,
         nextPage: page < totalPage
       });

@@ -43,7 +43,7 @@ const limiter = rateLimit({
     res.status(429).json({
       status: false,
       error: "RATE_LIMIT_EXCEEDED",
-      message: "Too many requests, please try again later"
+      msg: "Too many requests, please try again later"
     });
   }
 });

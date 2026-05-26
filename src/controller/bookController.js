@@ -72,7 +72,7 @@ export const addBookingController = async (req, res) => {
   } catch (e) {
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error",
+      msg: "Internal Server Error"
     });
   }
 };
@@ -104,7 +104,7 @@ export const getAllBookingController = async (req, res) => {
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "No Data Found !!!",
+        msg: "No Data Found !!!"
       });
     }
     return res.status(200).json({
@@ -114,7 +114,7 @@ export const getAllBookingController = async (req, res) => {
       totalPage,
       result: rows,
       prevPage,
-      nextPage,
+      nextPage
     });
   } catch (error) {
     return res.status(500).json({

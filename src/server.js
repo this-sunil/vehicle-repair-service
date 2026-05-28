@@ -79,7 +79,7 @@ app.get("/terms-condition", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("pages/samples/login"); // .ejs extension mat do
+  res.render("pages/samples/login");
 });
 
 app.get("/register", (req, res) => {

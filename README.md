@@ -184,4 +184,4 @@ PostgreSQL Database
 ---
 
 ## 📄 Preview
-<iframe src="https://youtu.be/fXcrOBtX2Ac" width="300" height="300" />
+[![Watch the demo](https://img.youtube.com/vi/fXcrOBtX2Ac/maxresdefault.jpg)](https://youtu.be/fXcrOBtX2Ac)

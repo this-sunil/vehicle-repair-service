@@ -48,7 +48,7 @@ const limiter = rateLimit({
   }
 });
 
-app.use("/api", limiter);
+// app.use("/api", limiter);
 
 app.use("/upload", express.static(path.join(process.cwd(), "src/upload")));
 app.use("/public", express.static(path.join(process.cwd(), "src/public")));

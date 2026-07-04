@@ -6,6 +6,6 @@ const router=express.Router();
 router.post("/addCategory",verifyToken,upload.single('photo'),addCategoryController);
 router.post("/updateCategory",verifyToken,upload.single('photo'),updateCategoryController);
 router.delete("/deleteCatById",verifyToken,upload.none(),deleteCategoryController);
-router.post("/getAllCategory",verifyToken,upload.none(),getAllCategoryController);
+router.get("/getAllCategory",verifyToken,upload.none(),getAllCategoryController);
 //router.post("/getAllVehicleType",verifyToken,upload.none(),getAllVehicleType);
 export default router;

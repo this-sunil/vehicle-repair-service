@@ -111,12 +111,7 @@ export const getAllCategoryController = async (req, res) => {
     const offset=(page-1)*limit;
     const query = `SELECT * FROM category ORDER BY cid LIMIT $1 OFFSET $2`;
     const { rows } = await pool.query(query, [limit, offset]);
-    if (rows.length === 0) {
-      return res.status(404).json({
-        status: false,
-        msg: "No Data Found !!!",
-      });
-    }
+    
     const countQuery = `SELECT COUNT(*) FROM category`;
     const countResult = await pool.query(countQuery);
     const totalItem = Number(countResult.rows[0].count);

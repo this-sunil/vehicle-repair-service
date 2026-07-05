@@ -131,7 +131,6 @@ export const getAllCategoryController = async (req, res) => {
             status: true,
             msg: "Fetch Category Successfully!",
             page,
-            limit,
             totalItem,
             totalPage,
             prevPage: page > 1,

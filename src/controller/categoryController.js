@@ -126,7 +126,9 @@ export const getAllCategoryController = async (req, res) => {
 
         const totalItem = Number(countResult.rows[0].count);
         const totalPage = Math.ceil(totalItem / limit);
-
+        if(rows.length===0){
+          return res.status(404).json({status:false,msg:"No Data Found"});
+        }
         return res.status(200).json({
             status: true,
             msg: "Fetch Category Successfully!",

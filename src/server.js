@@ -66,7 +66,7 @@ app.use("/api", bookingRoute);
 app.use("/api",shopRoute);
 app.use("/api",notificationRoute);
 app.use("/api",subscriptionRoute);
-app.use("/api",tokenRoute);
+app.use("/auth",tokenRoute);
 
 app.get("/", (req, res) => {
   return res.render("dashboard");

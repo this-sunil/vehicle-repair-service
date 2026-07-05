@@ -105,35 +105,48 @@ export const deleteCategoryController = async (req, res) => {
 };
 
 export const getAllCategoryController = async (req, res) => {
-  const limit = Number(req.body.limit) || 10;
-  const page = Number(req.body.page) || 1;
-  try {
-    const offset=(page-1)*limit;
-    const query = `SELECT * FROM category ORDER BY cid LIMIT $1 OFFSET $2`;
-    const { rows } = await pool.query(query, [limit, offset]);
-    
-    const countQuery = `SELECT COUNT(*) FROM category`;
-    const countResult = await pool.query(countQuery);
-    const totalItem = Number(countResult.rows[0].count);
-    const totalPage = Math.ceil(totalItem / limit);
-    const prevPage=page>1;
-    const nextPage=page<totalPage;
-    return res.status(200).json({
-      status: true,
-      msg: "Fetch Category Successfully!!!",
-      page,
-      totalPage,
-      prevPage,
-      nextPage,
-      result: rows,
-    });
-  } catch (error) {
-    console.log(`Error in Category=>${error.msg}`);
-    return res.status(500).json({
-      status: false,
-      msg: "Internal Server Error",
-    });
-  }
+    const limit = Math.max(1, Number(req.query.limit) || 10);
+    const page = Math.max(1, Number(req.query.page) || 1);
+
+    try {
+        const offset = (page - 1) * limit;
+
+        const query = `
+            SELECT *
+            FROM category
+            ORDER BY cid
+            LIMIT $1 OFFSET $2
+        `;
+
+        const { rows } = await pool.query(query, [limit, offset]);
+
+        const countResult = await pool.query(
+            "SELECT COUNT(*) FROM category"
+        );
+
+        const totalItem = Number(countResult.rows[0].count);
+        const totalPage = Math.ceil(totalItem / limit);
+
+        return res.status(200).json({
+            status: true,
+            msg: "Fetch Category Successfully!",
+            page,
+            limit,
+            totalItem,
+            totalPage,
+            prevPage: page > 1,
+            nextPage: page < totalPage,
+            result: rows,
+        });
+
+    } catch (error) {
+        console.error("Error in getAllCategoryController:", error);
+
+        return res.status(500).json({
+            status: false,
+            msg: "Internal Server Error",
+        });
+    }
 };
 
 // export const getAllVehicleType=async (req,res) => {

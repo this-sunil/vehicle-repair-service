@@ -105,8 +105,8 @@ export const deleteCategoryController = async (req, res) => {
 };
 
 export const getAllCategoryController = async (req, res) => {
-    const limit = Math.max(1, Number(req.query.limit) || 10);
-    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Number(req.query.limit) || 10;
+    const page = Number(req.query.page) || 1;
 
     try {
         const offset = (page - 1) * limit;
@@ -127,7 +127,7 @@ export const getAllCategoryController = async (req, res) => {
         const totalItem = Number(countResult.rows[0].count);
         const totalPage = Math.ceil(totalItem / limit);
         if(rows.length===0){
-          return res.status(404).json({status:false,msg:"No Data Found"});
+          return res.status(400).json({status:false,msg:"No Data Found"});
         }
         return res.status(200).json({
             status: true,

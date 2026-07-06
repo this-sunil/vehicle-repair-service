@@ -111,8 +111,7 @@ export const getAllCategoryController = async (req, res) => {
     try {
         const offset = (page - 1) * limit;
 
-        const query = `
-            SELECT *
+        const query = `SELECT *
             FROM category
             ORDER BY cid
             LIMIT $1 OFFSET $2

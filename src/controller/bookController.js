@@ -48,7 +48,7 @@ export const addBookingController = async (req, res) => {
     }
     const vehicle_photo=req.file?req.file.filename:'';
 
-    const query = `INSERT INTO bookings(uid,vehicle_name,registration_no,vehicle_photo,vehicle_type,slot_date,slot_time,service_name) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
+    const query = `INSERT INTO booking(uid,vehicle_name,registration_no,vehicle_photo,vehicle_type,slot_date,slot_time,service_name) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
     const { rows } = await pool.query(query, [
       id,
       vehicle_name,

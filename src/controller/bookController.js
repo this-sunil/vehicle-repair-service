@@ -12,19 +12,25 @@ const createBookTable = () => {
 };
 createBookTable();
 
+
 export const addBookingController = async (req, res) => {
-  const {
-    id,
-    vehicle_name,
-    registration_no,
-    vehicle_type,
-    slot_date,
-    slot_time,
-    service_name,
-  } = req.body;
   try {
+    const {
+      id,
+      vehicle_name,
+      registration_no,
+      vehicle_type,
+      vehicle_photo,
+      slot_date,
+      slot_time,
+      service_name,
+    } = req.body;
+
+    // =========================
+    // Validate required fields
+    // =========================
     if (
-      ! id ||
+      !id ||
       !vehicle_name ||
       !registration_no ||
       !vehicle_type ||
@@ -32,24 +38,60 @@ export const addBookingController = async (req, res) => {
       !slot_time ||
       !service_name
     ) {
-      return res.json(400).json({
+      return res.status(400).json({
         status: false,
         msg: "Missing params",
       });
     }
-    
-    const existUser = `SELECT * FROM users WHERE id=$1`;
-    const result = await pool.query(existUser, [id]);
-    if (result.rows.length === 0) {
-      return res.status(400).json({
+
+    // =========================
+    // Check user exists
+    // =========================
+    const userQuery = `
+      SELECT id
+      FROM users
+      WHERE id = $1
+    `;
+
+    const userResult = await pool.query(userQuery, [id]);
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
         status: false,
-        msg: "Users not found !!!",
+        msg: "User not found",
       });
     }
-    const photo=req.file?req.file.filename:'';
 
-    const query = `INSERT INTO booking(uid,vehicle_name,registration_no,vehicle_photo,vehicle_type,slot_date,slot_time,service_name) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
-    const { rows } = await pool.query(query, [
+    // =========================
+    // Vehicle photo
+    // =========================
+    let photo = "";
+
+    // If image uploaded using Multer
+    if (req.file) {
+      photo = req.file.filename;
+    }
+    
+
+    // =========================
+    // Insert booking
+    // =========================
+    const bookingQuery = `
+      INSERT INTO booking (
+        uid,
+        vehicle_name,
+        registration_no,
+        vehicle_photo,
+        vehicle_type,
+        slot_date,
+        slot_time,
+        service_name
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *
+    `;
+
+    const bookingResult = await pool.query(bookingQuery, [
       id,
       vehicle_name,
       registration_no,
@@ -59,25 +101,33 @@ export const addBookingController = async (req, res) => {
       slot_time,
       service_name,
     ]);
-    if (rows.length === 0) {
+
+    if (bookingResult.rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "Insertion Failure ",
+        msg: "Insertion failure",
       });
     }
-    return res.status(200).json({
+
+    // =========================
+    // Success
+    // =========================
+    return res.status(201).json({
       status: true,
-      msg: "Inserted Successfully !!!",
-      result: rows[0],
+      msg: "Inserted successfully",
+      result: bookingResult.rows[0],
     });
-  } catch (e) {
-    console.log(`Error in Booking=>${e}`);
+  } catch (error) {
+    console.error("Error in Booking =>", error);
+
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error"
+      msg: "Internal Server Error",
+      error: error.message,
     });
   }
 };
+
 
 export const getAllBookingController = async (req, res) => {
   const uid = req.body.uid;
@@ -106,7 +156,7 @@ export const getAllBookingController = async (req, res) => {
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,
-        msg: "No Data Found !!!"
+        msg: "No Data Found !!!",
       });
     }
     return res.status(200).json({
@@ -116,7 +166,7 @@ export const getAllBookingController = async (req, res) => {
       totalPage,
       result: rows,
       prevPage,
-      nextPage
+      nextPage,
     });
   } catch (error) {
     return res.status(500).json({
@@ -201,16 +251,16 @@ export const updateBookingController = async (req, res) => {
       slot_time,
       service_name,
     ]);
-    if(rows.length===0){
-        return res.status(400).json({
-            status:false,
-            msg:"Failed to update"
-        });
+    if (rows.length === 0) {
+      return res.status(400).json({
+        status: false,
+        msg: "Failed to update",
+      });
     }
     return res.status(200).json({
-        status:true,
-        msg:"Update Booking Slot Successfully",
-        result:rows[0]
+      status: true,
+      msg: "Update Booking Slot Successfully",
+      result: rows[0],
     });
   } catch (error) {
     return res.status(500).json({

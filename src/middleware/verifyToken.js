@@ -16,7 +16,7 @@ export const verifyToken=async(req,res,next)=>{
         const authorization=req.headers.authorization;
         
         if(!authorization || !authorization.startsWith("Bearer ")){
-            return res.status(404).json({
+            return res.status(401).json({
                 status:false,
                 msg:"No Token Provided"
             });
@@ -26,7 +26,7 @@ export const verifyToken=async(req,res,next)=>{
         req.user=decode;
         next();
     } catch (error) {
-        return res.status(500).json({
+        return res.status(401).json({
             status:false,
             msg:`Please Re-Login token expired !!!`
         });

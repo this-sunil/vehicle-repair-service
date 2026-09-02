@@ -112,7 +112,7 @@ export const addBookingController = async (req, res) => {
     // =========================
     // Success
     // =========================
-    return res.status(201).json({
+    return res.status(200).json({
       status: true,
       msg: "Inserted successfully",
       result: bookingResult.rows[0],

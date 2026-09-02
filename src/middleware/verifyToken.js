@@ -6,7 +6,7 @@ export const generateToken = async (user) => {
   };
   const decode = jwt.sign(payload, process.env.SECRET_TOKEN, {
     algorithm: "HS256",
-    expiresIn:"20m"
+    expiresIn:"30m"
   });
   return decode;
 };
@@ -22,7 +22,7 @@ export const verifyToken=async(req,res,next)=>{
             });
         }
         const token=authorization.split(" ")[1];
-        const decode=jwt.verify(token,process.env.SECRET_TOKEN,{algorithms:"HS256",expiresIn:"20m"});
+        const decode=jwt.verify(token,process.env.SECRET_TOKEN,{algorithms:"HS256",expiresIn:"30m"});
         req.user=decode;
         next();
     } catch (error) {

@@ -1,7 +1,8 @@
 import pool from "../database/db.js";
 
 const createBookTable = () => {
-  const query = `CREATE TABLE IF NOT EXISTS booking(book_id SERIAL PRIMARY KEY,uid INT NOT NULL,vehicle_name VARCHAR(255) NOT NULL,registration_no VARCHAR(255) NOT NULL,vehicle_photo VARCHAR(255) NOT NULL,vehicle_type VARCHAR(255) NOT NULL,slot_date VARCHAR(255) NOT NULL,slot_time VARCHAR(255) NOT NULL,service_name VARCHAR(255) NOT NULL,FOREIGN KEY (uid) REFERENCES users(id),created_at TIMESTAMP Default CURRENT_TIMESTAMP)`;
+  const query = `
+  CREATE TABLE IF NOT EXISTS booking(book_id SERIAL PRIMARY KEY,uid INT NOT NULL,vehicle_name VARCHAR(255) NOT NULL,registration_no VARCHAR(255) NOT NULL,vehicle_photo VARCHAR(255) NOT NULL,vehicle_type VARCHAR(255) NOT NULL,slot_date VARCHAR(255) NOT NULL,slot_time VARCHAR(255) NOT NULL,service_name VARCHAR(255) NOT NULL,FOREIGN KEY (uid) REFERENCES users(id),created_at TIMESTAMP Default CURRENT_TIMESTAMP)`;
   pool.query(query, (err) => {
     if (err) {
       throw err.message;
@@ -13,7 +14,7 @@ createBookTable();
 
 export const addBookingController = async (req, res) => {
   const {
-    uid,
+    id,
     vehicle_name,
     registration_no,
     vehicle_type,
@@ -23,7 +24,7 @@ export const addBookingController = async (req, res) => {
   } = req.body;
   try {
     if (
-      !uid ||
+      ! id ||
       !vehicle_name ||
       !registration_no ||
       !vehicle_type ||
@@ -36,8 +37,9 @@ export const addBookingController = async (req, res) => {
         msg: "Missing params",
       });
     }
-    const existUser = `SELECT * FROM users WHERE uid=$1`;
-    const result = await pool.query(existUser, [uid]);
+    
+    const existUser = `SELECT * FROM users WHERE id=$1`;
+    const result = await pool.query(existUser, [id]);
     if (result.rows.length === 0) {
       return res.status(400).json({
         status: false,
@@ -69,9 +71,10 @@ export const addBookingController = async (req, res) => {
       result: rows[0],
     });
   } catch (e) {
+    console.log(`Error in Booking=>${e}`);
     return res.status(500).json({
       status: false,
-      msg: "Internal Server Error=>$e"
+      msg: "Internal Server Error"
     });
   }
 };

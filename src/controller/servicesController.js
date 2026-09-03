@@ -26,7 +26,7 @@ export const addServiceController = async (req, res) => {
     const photo = req.file ? req.file.filename : "";
     const { rows } = await pool.query(query, [title, description, photo]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "rows doesn't Inserted !!!",
       });
@@ -71,7 +71,7 @@ export const updateServiceController = async (req, res) => {
     const query = `UPDATE vehicle_service SET ${fields.join(", ")} WHERE id=$${currentIndex} RETURNING *`;
     const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "No Updates !!!",
       });
@@ -96,7 +96,7 @@ export const deleteVehicleController = async (req, res) => {
     const query = `DELETE FROM vehicle_service WHERE id=$1 RETURNING *`;
     const { rows } = await pool.query(query, [id]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "No Vehicle Found !!!",
       });
@@ -124,7 +124,7 @@ export const getAllVehicleServiceController = async (req, res) => {
 
     const { rows } = await pool.query(query, [limit, offset]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "No Data Found !!!",
       });

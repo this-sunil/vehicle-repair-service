@@ -56,7 +56,7 @@ export const addBookingController = async (req, res) => {
     const userResult = await pool.query(userQuery, [id]);
 
     if (userResult.rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "User not found",
       });

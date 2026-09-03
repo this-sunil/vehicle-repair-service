@@ -50,7 +50,7 @@ export const loginController = async (req, res) => {
     const query = `SELECT * FROM users WHERE phone=$1`;
     const { rows } = await pool.query(query, [phone]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "User doesn't exists !!!",
       });
@@ -58,7 +58,7 @@ export const loginController = async (req, res) => {
     const isMatch = bcrypt.compare(pass, rows[0].pass);
 
     if (!isMatch) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "Password doesn't Match",
       });
@@ -88,7 +88,7 @@ export const registerController = async (req, res) => {
     const checkQuery = `SELECT * FROM users WHERE phone=$1`;
     const result = await pool.query(checkQuery, [phone]);
     if (result.rows.length > 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "User Already Exist !!!",
       });
@@ -132,7 +132,7 @@ export const fetchProfileController = async (req, res) => {
     const query = `SELECT * FROM users WHERE id=$1`;
     const { rows } = await pool.query(query, [id]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "User doesn't exist",
       });
@@ -161,7 +161,7 @@ export const deleteUserController = async (req, res) => {
     const checkQuery = `SELECT * FROM users WHERE id=$1`;
     const result = await pool.query(checkQuery);
     if (result.rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "User doesn't exists",
       });
@@ -189,7 +189,7 @@ export const updateProfileController = async (req, res) => {
     const checkQuery=`SELECT * FROM users WHERE id=$1`;
     const result=await pool.query(checkQuery,[id]);
     if(result.rows.length===0){
-      return res.status(404).json({
+      return res.status(400).json({
         status:false,
         msg:"User doesn't exist"
       });
@@ -242,14 +242,14 @@ export const forgotPassController=async(req,res)=>{
     const existUser=`SELECT * FROM users WHERE phone=$1`;
     const result=await pool.query(existUser,[phone]);
     if(result.rows.length===0){
-      return res.status(404).json({
+      return res.status(400).json({
         status:false,
         msg:"User doesn't exist"
       });
     }
     const isMatch=await bcrypt.compare(old_pass,result.rows[0].pass);
     if(!isMatch){
-      return res.status(404).json({
+      return res.status(400).json({
         status:false,
         msg:"Wrong Password !!!"
       });
@@ -278,7 +278,7 @@ export const changePassController=async(req,res)=>{
     const checkQuery=`SELECT * FROM users WHERE phone=$1`;
     const result=await pool.query(checkQuery,[phone]);
     if(result.rows.length===0){
-      return res.status(404).json({
+      return res.status(400).json({
         status:false,
         msg:"User doesn't exist"
       });
@@ -306,7 +306,7 @@ export const getAllUserController=async(req,res)=>{
     const query=`SELECT * FROM users WHERE id!=$${id}`;
     const {rows}=await pool.query(query,[id]);
     if(rows.length===0){
-      return res.status(404).json({
+      return res.status(400).json({
         status:false,
         msg:"No Data Found !!!"
       });

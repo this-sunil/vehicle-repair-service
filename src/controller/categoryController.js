@@ -19,7 +19,7 @@ export const addCategoryController = async (req, res) => {
     const query = `INSERT INTO category(title,photo,vehicle_type) VALUES($1,$2,$3) RETURNING *`;
     const { rows } = await pool.query(query, [title, photo, type]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "Failed to insert category !!!",
       });
@@ -61,7 +61,7 @@ export const updateCategoryController = async (req, res) => {
     const query = `UPDATE category SET ${fields.join(", ")} WHERE cid=$${index} RETURNING *`;
     const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "Failed to Update Category !!!",
       });
@@ -86,7 +86,7 @@ export const deleteCategoryController = async (req, res) => {
     const query = `DELETE FROM category WHERE cid=$1 RETURNING *`;
     const { rows } = await pool.query(query, [cid]);
     if (rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "Failed to Delete Category",
       });
@@ -158,7 +158,7 @@ export const getAllCategoryController = async (req, res) => {
 //     const { rows }=await pool.query(query,[limit,offset]);
 
 //     if(rows.length===0){
-//       return res.status(404).json({
+//       return res.status(400).json({
 //         status:false,
 //         msg:"No data found !!!"
 //       });

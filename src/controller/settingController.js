@@ -19,7 +19,7 @@ export const addSettingController=async(req,res)=>{
         const query=`INSERT INTO settings(contact_url,privacy_policy_url,terms_condition_url,photo) VALUES($1,$2,$3,$4) RETURNING *`;
         const {rows}=await pool.query(query,[contact_url,privacy_policy_url,terms_condition_url,photo]);
         if(rows.length===0){
-            return res.status(404).json({
+            return res.status(400).json({
                 status:false,
                 msg:"Something Went Wrong !!!"
             });
@@ -44,7 +44,7 @@ export const deleteSettingController=async(req,res)=>{
      const query=`DELETE FROM settings WHERE id=$1 RETURNING *`;
      const {rows}=await pool.query(query,[id]);
      if(rows.length===0){
-        return res.status(404).json({
+        return res.status(400).json({
             status:false,
             msg:"No Data Found !!!"
         });
@@ -84,7 +84,7 @@ export const updateSettingController=async(req,res)=>{
         const query=`UPDATE settings SET ${fields.join(", ")} WHERE sid=$${index} RETURNING *`;
         const {rows}=await pool.query(query,values);
         if(rows.length===0){
-            return res.status(404).json({
+            return res.status(400).json({
                 status:false,
                 msg:"Something Went Wrong !!!"
             });
@@ -109,7 +109,7 @@ export const getSettingController=async(req,res)=>{
         const checkQuery=`SELECT 1 FROM users WHERE id=$1`;
         const {existUser}=await pool.query(checkQuery,[uid]);
         if(!existUser){
-            return res.status(404).json({status:false,msg:"User doesn't exist"});
+            return res.status(400).json({status:false,msg:"User doesn't exist"});
         }
         const query=`SELECT * FROM settings`;
         const {rows}=await pool.query(query);
@@ -143,7 +143,7 @@ export const fetchSettingController=async(req,res)=>{
         const query=`SELECT * FROM settings`;
         const {rows}=await pool.query(query);
         if(rows.length===0){
-            return res.status(404).json({
+            return res.status(400).json({
                 status:false,
                 msg:"Data Not Found !!!"
             });

@@ -163,7 +163,7 @@ export const searchByCityController = async (req, res) => {
     const rows = await pool.query(query, [city, limit, offset]);
 
     if (rows.rows.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         status: false,
         msg: "No Data Found !!!"
       });

@@ -4,7 +4,7 @@ import { addBookingController,deleteBookingController,getAllBookingController } 
 import { verifyToken } from "../middleware/verifyToken.js";
 
 const router=express.Router();
-router.post("/bookAppointment",upload.single('photo'),verifyToken,addBookingController);
+router.post("/bookAppointment",upload.single('vehicle_photo'),verifyToken,addBookingController);
 router.post("/bookingHistory",upload.none(),verifyToken,getAllBookingController);
 router.patch("/updateBookHistory",upload.single('photo'),verifyToken,getAllBookingController);
 router.delete("/deleteBookHistory",upload.none(),deleteBookingController);

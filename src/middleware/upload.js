@@ -2,6 +2,7 @@ import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 cloudinary.config({
@@ -13,14 +14,23 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    format: async () => "png", // force png
+    folder: "upload",
+    resource_type: "image",
     public_id: (req, file) => {
-      const nameWithoutExt = file.originalname.split(".")[0];
+      const nameWithoutExt = file.originalname
+        .split(".")[0]
+        .replace(/[^a-zA-Z0-9-_]/g, "-");
+
       return `${Date.now()}-${nameWithoutExt}`;
     },
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB
+  },
+});
 
 export default upload;

@@ -20,7 +20,6 @@ export const addBookingController = async (req, res) => {
       vehicle_name,
       registration_no,
       vehicle_type,
-      vehicle_photo,
       slot_date,
       slot_time,
       service_name,
@@ -65,13 +64,10 @@ export const addBookingController = async (req, res) => {
     // =========================
     // Vehicle photo
     // =========================
-    let photo = "";
+    const photo = req.file ? req.file.path : "";
 
-    // If image uploaded using Multer
-    if (req.file) {
-      photo = req.file.filename;
-    }
-    
+    console.log("Uploaded file:", req.file);
+    console.log("Cloudinary URL:", photo);
 
     // =========================
     // Insert booking
@@ -118,7 +114,7 @@ export const addBookingController = async (req, res) => {
       result: bookingResult.rows[0],
     });
   } catch (error) {
-    console.error("Error in Booking =>", error);
+    console.error("Error in Booking =>", error.message);
 
     return res.status(500).json({
       status: false,

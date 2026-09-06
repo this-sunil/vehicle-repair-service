@@ -14,7 +14,8 @@ import tokenRoute from './routes/tokenRoute.js'
 import subscriptionRoute from "./routes/subscriptionRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
-
+import { initializeApp, cert } from "firebase-admin/app";
+import serviceAccount from "./firebase.json" with { type: "json" };
 dotenv.config({debug:true,encoding:'utf-8',override:true});
 
 const app = express();
@@ -109,6 +110,14 @@ const io = new Server(server, {
     allowedHeaders:true
   }
 });
+const credential = cert(serviceAccount);
+
+initializeApp({
+  credential
+});
+const token = await credential.getAccessToken();
+
+console.log(token.access_token);
 
 const clients = new Set();
 

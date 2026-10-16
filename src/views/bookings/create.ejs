@@ -1,0 +1,98 @@
+<%- include('../partials/head', { pageTitle: 'New Appointment', activeMenu: 'bookings' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings', url: '/bookings' }, { label: 'New Appointment' } ] }) %>
+          <h1 class="page-title">Book Service Appointment</h1>
+          <p class="page-subtitle">Schedule an auto repair, inspection, or service slot for a customer</p>
+        </div>
+        <a href="/bookings" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Bookings
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Appointment Specification</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreateBookingForm" enctype="multipart/form-data">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Customer Account <span class="text-danger">*</span></label>
+                    <select name="id" id="standaloneBookingUidSelect" class="form-select" required>
+                      <option value="" disabled selected>Loading customer accounts...</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Requested Service <span class="text-danger">*</span></label>
+                    <select name="service_name" id="standaloneBookingServiceSelect" class="form-select" required>
+                      <option value="" disabled selected>Loading catalog services...</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Vehicle Make & Model <span class="text-danger">*</span></label>
+                    <input type="text" name="vehicle_name" class="form-control" placeholder="e.g. Honda City i-VTEC" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Vehicle Registration Number <span class="text-danger">*</span></label>
+                    <input type="text" name="registration_no" class="form-control" placeholder="e.g. MH 12 AB 9999" required>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+                    <select name="vehicle_type" class="form-select" required>
+                      <option value="Car" selected>Car (4-Wheeler)</option>
+                      <option value="Bike">Bike (2-Wheeler)</option>
+                      <option value="Truck">Commercial Vehicle</option>
+                      <option value="EV">Electric Vehicle (EV)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Scheduled Date <span class="text-danger">*</span></label>
+                    <input type="date" name="slot_date" class="form-control" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Preferred Time Slot <span class="text-danger">*</span></label>
+                    <input type="time" name="slot_time" class="form-control" required>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label">Vehicle Photo (Optional)</label>
+                    <input type="file" name="vehicle_photo" class="form-control" accept="image/*">
+                    <div class="form-text">Attach an inspection or condition picture of the vehicle.</div>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Confirm Reservation
+                  </button>
+                  <a href="/bookings" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/bookings.js"></script>

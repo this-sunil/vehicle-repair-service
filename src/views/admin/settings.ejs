@@ -1,0 +1,85 @@
+<%- include('../partials/head', { pageTitle: 'System Settings', activeMenu: 'settings' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'settings' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Settings' } ] }) %>
+          <h1 class="page-title">Application Settings</h1>
+          <p class="page-subtitle">Configure system URLs, terms & privacy pages, and brand hero imagery</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">General Platform Settings</h5>
+            </div>
+            <div class="card-body">
+              <form id="settingsForm" enctype="multipart/form-data">
+                <input type="hidden" name="sid" id="settingsSidInput" value="1">
+
+                <div class="mb-4 p-3 bg-light rounded">
+                  <div class="fw-semibold mb-2">Platform Hero Banner / Brand Media</div>
+                  <div class="d-flex align-items-center gap-3">
+                    <img src="/public/images/placeholder.svg" id="settingsBannerPreview" class="table-thumb" style="width: 100px; height: 70px; object-fit: cover; border-radius: 8px;">
+                    <div>
+                      <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                      <div class="form-text small mt-1">Appears on mobile app header and web public pages.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Support / Contact URL <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-headset"></i></span>
+                    <input type="text" name="contact_url" id="settingsContactUrlInput" class="form-control" placeholder="/contact" required>
+                  </div>
+                  <div class="form-text">Directs customers to help center or customer support channel.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Terms & Conditions URL <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-file-text"></i></span>
+                    <input type="text" name="terms_condition_url" id="settingsTermsUrlInput" class="form-control" placeholder="/terms-condition" required>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Privacy Policy URL <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-shield-check"></i></span>
+                    <input type="text" name="privacy_policy_url" id="settingsPrivacyUrlInput" class="form-control" placeholder="/privacy" required>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Settings
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="loadSettings()">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/settings.js"></script>

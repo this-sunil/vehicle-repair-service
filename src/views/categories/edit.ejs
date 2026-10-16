@@ -1,0 +1,105 @@
+<%- include('../partials/head', { pageTitle: 'Edit Category', activeMenu: 'categories' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'categories' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Categories', url: '/categories' }, { label: 'Category #' + (typeof categoryId !== 'undefined' ? categoryId : ''), url: '/categories/' + (typeof categoryId !== 'undefined' ? categoryId : '') }, { label: 'Edit' } ] }) %>
+          <h1 class="page-title">Edit Vehicle Category</h1>
+          <p class="page-subtitle">Update vehicle category title, classification, and icon</p>
+        </div>
+        <a href="/categories" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Categories
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Modify Category #<%= typeof categoryId !== 'undefined' ? categoryId : '' %></h5>
+            </div>
+            <div class="card-body">
+              <div id="categoryEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading category details...
+              </div>
+
+              <form id="standaloneEditCategoryForm" class="d-none" enctype="multipart/form-data">
+                <input type="hidden" name="cid" id="editCategoryIdInput" value="<%= typeof categoryId !== 'undefined' ? categoryId : '' %>">
+
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                  <img src="/public/images/placeholder.svg" id="editCategoryAvatarPreview" class="table-thumb" style="width: 64px; height: 64px;">
+                  <div>
+                    <label class="form-label mb-1">Update Category Image</label>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Category Title <span class="text-danger">*</span></label>
+                  <input type="text" name="title" id="editCategoryTitleInput" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Vehicle Classification <span class="text-danger">*</span></label>
+                  <select name="type" id="editCategoryTypeInput" class="form-select" required>
+                    <option value="two-wheeler">Two-Wheeler (Bike / Scooter)</option>
+                    <option value="four-wheeler">Four-Wheeler (Hatchback / Sedan / SUV)</option>
+                    <option value="heavy-vehicle">Commercial / Heavy Vehicle</option>
+                    <option value="electric">Electric Vehicle (EV)</option>
+                  </select>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/categories" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/categories.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const cid = Number('<%= typeof categoryId !== 'undefined' ? categoryId : '' %>');
+    if (!cid) return;
+
+    try {
+      const res = await apiRequest('/api/getAllCategory?limit=100&page=1');
+      if (res.ok && res.data.result) {
+        const cat = res.data.result.find(c => c.cid === cid);
+        if (cat) {
+          document.getElementById('editCategoryTitleInput').value = cat.title || '';
+          document.getElementById('editCategoryTypeInput').value = cat.vehicle_type || 'two-wheeler';
+          if (cat.photo) {
+            document.getElementById('editCategoryAvatarPreview').src = getMediaUrl(cat.photo);
+          }
+          document.getElementById('categoryEditLoading').classList.add('d-none');
+          document.getElementById('standaloneEditCategoryForm').classList.remove('d-none');
+        } else {
+          document.getElementById('categoryEditLoading').innerHTML = '<div class="text-danger">Category not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('categoryEditLoading').innerHTML = '<div class="text-danger">Failed to load category.</div>';
+    }
+  });
+</script>

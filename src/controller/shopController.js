@@ -43,24 +43,26 @@ export const addShopController=async(req,res)=>{
 };
 
 export const updateShopController=async(req,res)=>{
-    const {shopName,shopTime,phone,lat,long,status,city}=req.body;
+    const {sid,shopName,shopTime,phone,lat,long,status,city}=req.body;
     try {
         const fields=[];
         const values=[];
         let currentIndex=1;
         const data={shopName,shopTime,phone,lat,long,status,city};
         for(const [key,value] of Object.entries(data)){
-            fields.push(`${key}=$${currentIndex}`);
-            values.push(value);
-            currentIndex++;
+            if (value !== undefined && value !== null && value !== "") {
+                fields.push(`${key}=$${currentIndex}`);
+                values.push(value);
+                currentIndex++;
+            }
         }
         const shopPhoto=req.file?req.file.filename:"";
         if(shopPhoto){
-            fields.push(`photo=$${currentIndex++}`);
+            fields.push(`shopphoto=$${currentIndex++}`);
             values.push(shopPhoto);
         }
         values.push(sid);
-        const query=`UPDATE SET ${fields.join(", ")} shop WHERE sid=$${currentIndex}`;
+        const query=`UPDATE shop SET ${fields.join(", ")} WHERE sid=$${currentIndex} RETURNING *`;
         const {rows}=await pool.query(query,values);
         if(rows.length>0){
             return res.status(200).json({
@@ -118,8 +120,8 @@ export const fetchShopController = async (req, res) => {
     console.log(`Total Items=>${totalItem}`);
 
     const totalPage = Math.ceil(totalItem / limit);
-    const query = `SELECT * FROM shop ORDER BY id LIMIT $1 OFFSET $2`;
-    const rows = await pool.query(query, [limit, offset]);
+    const query = `SELECT * FROM shop ORDER BY sid LIMIT $1 OFFSET $2`;
+    const { rows } = await pool.query(query, [limit, offset]);
     if (rows.length > 0) {
       return res.status(200).json({
         status: true,

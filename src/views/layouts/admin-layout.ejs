@@ -1,0 +1,23 @@
+<%- include('../partials/head', { pageTitle: typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' }) %>
+
+<div class="admin-wrapper">
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar', { activeMenu: typeof activeMenu !== 'undefined' ? activeMenu : 'dashboard' }) %>
+
+  <!-- Main Section -->
+  <div class="admin-main">
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- Page Content Container -->
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+      
+      <!-- Slot for page content -->
+      <%- typeof body !== 'undefined' ? body : '' %>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<%- include('../partials/head', { pageTitle: 'Send Notification', activeMenu: 'notifications' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Notifications', url: '/notifications' }, { label: 'Send Announcement' } ] }) %>
+          <h1 class="page-title">Broadcast Notification</h1>
+          <p class="page-subtitle">Publish a push notification or service advisory to customers</p>
+        </div>
+        <a href="/notifications" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Notifications
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Notification Content</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreateNotificationForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label class="form-label">Notification Title <span class="text-danger">*</span></label>
+                  <input type="text" name="title" class="form-control" placeholder="e.g. Free 20-Point Safety Check this Weekend" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Message Details / Subtitle <span class="text-danger">*</span></label>
+                  <textarea name="description" class="form-control" rows="4" placeholder="Enter full notification body text..." required></textarea>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Banner Image (Optional)</label>
+                  <input type="file" name="photo" class="form-control" accept="image/*">
+                  <div class="form-text">Attach an announcement banner image.</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Broadcast Now
+                  </button>
+                  <a href="/notifications" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/notifications.js"></script>

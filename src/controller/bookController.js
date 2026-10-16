@@ -127,39 +127,39 @@ export const addBookingController = async (req, res) => {
 
 export const getAllBookingController = async (req, res) => {
   const uid = req.body.uid;
-  const page = Number(req.body.page) || 10;
+  const page = Number(req.body.page) || 1;
+  const limit = Number(req.body.limit) || 10;
 
   try {
-    if (!uid) {
-      return res.status(400).json({
-        status: false,
-        msg: "Missing userid",
-      });
-    }
+    const isSpecificUser = uid && uid !== 'all' && uid !== 'admin';
+    const countQuery = isSpecificUser
+      ? `SELECT count(*) FROM booking WHERE uid=$1`
+      : `SELECT count(*) FROM booking`;
+    const countResult = isSpecificUser
+      ? await pool.query(countQuery, [uid])
+      : await pool.query(countQuery);
 
-    const limit = 10;
-    const countQuery = `SELECT count(*) FROM booking WHERE uid=$1`;
-    const result = await pool.query(countQuery, [uid]);
-    const totalItem = Number(result.rows[0].count);
-    const totalPage = Math.ceil(totalItem / limit);
+    const totalItem = Number(countResult.rows[0].count);
+    const totalPage = Math.ceil(totalItem / limit) || 1;
     const offset = (page - 1) * limit;
 
     const prevPage = page > 1;
     const nextPage = page < totalPage;
 
-    const query = `SELECT * FROM booking WHERE uid=$1 ORDER BY book_id LIMIT $2 OFFSET $3`;
-    const { rows } = await pool.query(query, [uid, limit, offset]);
-    if (rows.length === 0) {
-      return res.status(400).json({
-        status: false,
-        msg: "No Data Found !!!",
-      });
-    }
+    const query = isSpecificUser
+      ? `SELECT b.*, u.name as user_name, u.phone as user_phone FROM booking b LEFT JOIN users u ON b.uid = u.id WHERE b.uid=$1 ORDER BY b.book_id DESC LIMIT $2 OFFSET $3`
+      : `SELECT b.*, u.name as user_name, u.phone as user_phone FROM booking b LEFT JOIN users u ON b.uid = u.id ORDER BY b.book_id DESC LIMIT $1 OFFSET $2`;
+
+    const { rows } = isSpecificUser
+      ? await pool.query(query, [uid, limit, offset])
+      : await pool.query(query, [limit, offset]);
+
     return res.status(200).json({
       status: true,
       msg: "Fetch Slot History Successfully !!!",
       currentPage: page,
       totalPage,
+      totalItem,
       result: rows,
       prevPage,
       nextPage,
@@ -175,11 +175,11 @@ export const getAllBookingController = async (req, res) => {
 export const deleteBookingController = async (req, res) => {
   const book_id = req.body.book_id;
   try {
-    const query = `DELETE FROM booking WHERE book_id=$1`;
+    const query = `DELETE FROM booking WHERE book_id=$1 RETURNING *`;
     const { rows } = await pool.query(query, [book_id]);
     if (rows.length === 0) {
       return res.status(400).json({
-        status: true,
+        status: false,
         msg: "Failed to delete",
       });
     }
@@ -198,6 +198,7 @@ export const deleteBookingController = async (req, res) => {
 
 export const updateBookingController = async (req, res) => {
   const {
+    book_id,
     uid,
     vehicle_name,
     registration_no,
@@ -206,18 +207,18 @@ export const updateBookingController = async (req, res) => {
     slot_time,
     service_name,
   } = req.body;
+  const targetId = book_id || req.body.id;
   try {
-    if (!uid) {
+    if (!targetId && !uid) {
       return res.status(400).json({
         status: false,
-        msg: "Missing userid",
+        msg: "Missing booking identifier",
       });
     }
-    const field = [];
+    const fields = [];
     const values = [];
     let currentIndex = 1;
     const data = {
-      uid,
       vehicle_name,
       registration_no,
       vehicle_type,
@@ -226,27 +227,22 @@ export const updateBookingController = async (req, res) => {
       service_name,
     };
     for (const [key, value] of Object.entries(data)) {
-      field.push(`${key}=$${currentIndex}`);
-      values.push(value);
-      currentIndex++;
+      if (value !== undefined && value !== null && value !== "") {
+        fields.push(`${key}=$${currentIndex}`);
+        values.push(value);
+        currentIndex++;
+      }
     }
     const photo = req.file ? req.file.filename : "";
     if (photo) {
-      field.push(`photo=$${currentIndex++}`);
+      fields.push(`vehicle_photo=$${currentIndex++}`);
       values.push(photo);
     }
-    values.push(uid);
-    const query = `UPDATE SET ${field.join(", ")} booking WHERE uid=$${currentIndex}`;
-    const { rows } = await pool.query(query, [
-      uid,
-      vehicle_name,
-      registration_no,
-      photo,
-      vehicle_type,
-      slot_date,
-      slot_time,
-      service_name,
-    ]);
+    const idToUse = targetId || uid;
+    const idCol = targetId ? "book_id" : "uid";
+    values.push(idToUse);
+    const query = `UPDATE booking SET ${fields.join(", ")} WHERE ${idCol}=$${currentIndex} RETURNING *`;
+    const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,

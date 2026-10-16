@@ -1,0 +1,150 @@
+<%- include('../partials/head', { pageTitle: 'Edit Appointment', activeMenu: 'bookings' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings', url: '/bookings' }, { label: 'Appointment #' + (typeof bookingId !== 'undefined' ? bookingId : ''), url: '/bookings/' + (typeof bookingId !== 'undefined' ? bookingId : '') }, { label: 'Reschedule' } ] }) %>
+          <h1 class="page-title">Reschedule / Edit Appointment</h1>
+          <p class="page-subtitle">Update reservation vehicle details, requested service, or time slot</p>
+        </div>
+        <a href="/bookings" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Bookings
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Modify Appointment #<%= typeof bookingId !== 'undefined' ? bookingId : '' %></h5>
+            </div>
+            <div class="card-body">
+              <div id="bookingEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading appointment details...
+              </div>
+
+              <form id="standaloneEditBookingForm" class="d-none" enctype="multipart/form-data">
+                <input type="hidden" name="book_id" id="editBookingIdInput" value="<%= typeof bookingId !== 'undefined' ? bookingId : '' %>">
+
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                  <img src="/public/images/placeholder.svg" id="editBookingAvatarPreview" class="table-thumb" style="width: 72px; height: 72px; object-fit: cover; border-radius: 10px;">
+                  <div>
+                    <label class="form-label mb-1">Update Vehicle Photo</label>
+                    <input type="file" name="vehicle_photo" class="form-control form-control-sm" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Vehicle Make & Model <span class="text-danger">*</span></label>
+                    <input type="text" name="vehicle_name" id="editBookingVehName" class="form-control" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Registration Number <span class="text-danger">*</span></label>
+                    <input type="text" name="registration_no" id="editBookingRegNo" class="form-control" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Requested Service <span class="text-danger">*</span></label>
+                    <select name="service_name" id="standaloneEditServiceSelect" class="form-select" required>
+                      <!-- Populated dynamically -->
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+                    <select name="vehicle_type" id="editBookingType" class="form-select" required>
+                      <option value="Car">Car</option>
+                      <option value="Bike">Bike</option>
+                      <option value="Truck">Commercial / Truck</option>
+                      <option value="EV">Electric Vehicle (EV)</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Scheduled Date <span class="text-danger">*</span></label>
+                    <input type="text" name="slot_date" id="editBookingDate" class="form-control" placeholder="DD/MM/YYYY" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Slot Time <span class="text-danger">*</span></label>
+                    <input type="text" name="slot_time" id="editBookingTime" class="form-control" placeholder="e.g. 10:30 AM" required>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/bookings" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/bookings.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const bookId = Number('<%= typeof bookingId !== 'undefined' ? bookingId : '' %>');
+    if (!bookId) return;
+
+    try {
+      const res = await apiRequest('/api/bookingHistory', {
+        method: 'POST',
+        body: { uid: 'all', page: 1, limit: 100 }
+      });
+
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(b => b.book_id === bookId);
+        if (item) {
+          document.getElementById('editBookingVehName').value = item.vehicle_name || '';
+          document.getElementById('editBookingRegNo').value = item.registration_no || '';
+          document.getElementById('editBookingType').value = item.vehicle_type || 'Car';
+          document.getElementById('editBookingDate').value = item.slot_date || '';
+          document.getElementById('editBookingTime').value = item.slot_time || '';
+
+          // Wait a tick for services dropdown to fill
+          setTimeout(() => {
+            const svcSelect = document.getElementById('standaloneEditServiceSelect');
+            if (svcSelect) {
+              svcSelect.value = item.service_name;
+              // If not found in options, append it
+              if (!svcSelect.value) {
+                const opt = new Option(item.service_name, item.service_name, true, true);
+                svcSelect.add(opt);
+              }
+            }
+          }, 300);
+
+          if (item.vehicle_photo) {
+            document.getElementById('editBookingAvatarPreview').src = getMediaUrl(item.vehicle_photo);
+          }
+
+          document.getElementById('bookingEditLoading').classList.add('d-none');
+          document.getElementById('standaloneEditBookingForm').classList.remove('d-none');
+        } else {
+          document.getElementById('bookingEditLoading').innerHTML = '<div class="text-danger">Appointment not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('bookingEditLoading').innerHTML = '<div class="text-danger">Failed to load appointment details.</div>';
+    }
+  });
+</script>

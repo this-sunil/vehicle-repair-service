@@ -1,0 +1,153 @@
+<%- include('../partials/head', { pageTitle: 'Booking Details', activeMenu: 'bookings' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings', url: '/bookings' }, { label: 'Appointment Details' } ] }) %>
+          <h1 class="page-title">Appointment Specification</h1>
+          <p class="page-subtitle">Inspect customer vehicle inspection and service reservation</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/bookings" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Bookings
+          </a>
+          <a href="/bookings/<%= typeof bookingId !== 'undefined' ? bookingId : '' %>/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Reschedule
+          </a>
+        </div>
+      </div>
+
+      <div id="showBookingLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div> Loading appointment details...
+      </div>
+
+      <div id="showBookingContent" class="d-none">
+        <div class="row g-4">
+          <!-- Main Details -->
+          <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="card-title"><i class="bi bi-calendar-check text-primary me-2"></i>Appointment #<span id="showBookingId"><%= typeof bookingId !== 'undefined' ? bookingId : '' %></span></h5>
+                <span class="badge bg-success-subtle text-success px-3 py-1">Confirmed</span>
+              </div>
+              <div class="card-body p-4">
+                <div class="row g-4">
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Vehicle Model</div>
+                    <div class="fs-5 fw-bold text-dark mt-1" id="showVehName">—</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Registration Number</div>
+                    <div class="fs-5 fw-bold font-monospace text-primary mt-1" id="showRegNo">—</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Service Package</div>
+                    <div class="fs-6 fw-semibold text-dark mt-1" id="showService">—</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Vehicle Category</div>
+                    <div class="mt-1"><span class="badge bg-light text-dark border" id="showType">—</span></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Scheduled Date</div>
+                    <div class="fs-6 fw-semibold text-dark mt-1"><i class="bi bi-calendar3 me-1 text-primary"></i><span id="showDate">—</span></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small">Slot Time</div>
+                    <div class="fs-6 fw-semibold text-dark mt-1"><i class="bi bi-clock me-1 text-primary"></i><span id="showTime">—</span></div>
+                  </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="mb-2">
+                  <h6 class="fw-bold mb-2">Vehicle Photo</h6>
+                  <img src="/public/images/placeholder.svg" id="showVehPhoto" alt="Vehicle Photo" class="rounded-3 shadow-sm border" style="max-width: 320px; max-height: 200px; object-fit: cover;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Card -->
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title"><i class="bi bi-person text-primary me-2"></i>Customer Account</h5>
+              </div>
+              <div class="card-body p-4 text-center">
+                <div class="avatar-initials mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.5rem;" id="showCustInitials">U</div>
+                <h5 class="fw-bold mb-1" id="showCustName">—</h5>
+                <p class="text-muted small font-monospace mb-3" id="showCustPhone">—</p>
+                <div class="p-2 bg-light rounded text-start mb-3">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Account ID:</span>
+                    <strong id="showCustId" class="text-dark">—</strong>
+                  </div>
+                </div>
+                <a href="#" id="showCustProfileLink" class="btn btn-outline-primary btn-sm w-100">
+                  <i class="bi bi-person-lines-fill me-1"></i> View Full Customer Profile
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/bookings.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const bookId = Number('<%= typeof bookingId !== 'undefined' ? bookingId : '' %>');
+    if (!bookId) return;
+
+    try {
+      const res = await apiRequest('/api/bookingHistory', {
+        method: 'POST',
+        body: { uid: 'all', page: 1, limit: 100 }
+      });
+
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(b => b.book_id === bookId);
+        if (item) {
+          document.getElementById('showVehName').textContent = item.vehicle_name || '—';
+          document.getElementById('showRegNo').textContent = item.registration_no || '—';
+          document.getElementById('showService').textContent = item.service_name || '—';
+          document.getElementById('showType').textContent = item.vehicle_type || '—';
+          document.getElementById('showDate').textContent = item.slot_date || '—';
+          document.getElementById('showTime').textContent = item.slot_time || '—';
+
+          const custName = item.user_name || `User #${item.uid}`;
+          document.getElementById('showCustName').textContent = custName;
+          document.getElementById('showCustPhone').textContent = item.user_phone ? String(item.user_phone) : '—';
+          document.getElementById('showCustId').textContent = `#${item.uid}`;
+          document.getElementById('showCustInitials').textContent = custName.charAt(0).toUpperCase();
+          document.getElementById('showCustProfileLink').href = `/users/${item.uid}`;
+
+          if (item.vehicle_photo) {
+            document.getElementById('showVehPhoto').src = getMediaUrl(item.vehicle_photo);
+          }
+
+          document.getElementById('showBookingLoading').classList.add('d-none');
+          document.getElementById('showBookingContent').classList.remove('d-none');
+        } else {
+          document.getElementById('showBookingLoading').innerHTML = '<div class="text-danger">Appointment not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('showBookingLoading').innerHTML = '<div class="text-danger">Failed to load appointment details.</div>';
+    }
+  });
+</script>

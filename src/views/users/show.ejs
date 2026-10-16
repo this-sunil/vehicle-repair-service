@@ -1,0 +1,161 @@
+<%- include('../partials/head', { pageTitle: 'User Details', activeMenu: 'users' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Users', url: '/users' }, { label: 'User Details' } ] }) %>
+          <h1 class="page-title">User Account Details</h1>
+          <p class="page-subtitle">Inspect user metadata, role permissions, and service appointments</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/users" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Users
+          </a>
+          <a href="/users/<%= typeof userId !== 'undefined' ? userId : '' %>/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Profile
+          </a>
+        </div>
+      </div>
+
+      <div id="showUserLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div> Loading user profile...
+      </div>
+
+      <div id="showUserContent" class="d-none">
+        <div class="row g-4">
+          <!-- User Profile Card -->
+          <div class="col-lg-4">
+            <div class="card text-center p-4">
+              <img src="/public/images/placeholder.svg" id="showUserAvatar" alt="Avatar" class="rounded-circle mx-auto mb-3 shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e2e8f0;">
+              <h4 class="fw-bold mb-1" id="showUserName">—</h4>
+              <p class="text-muted small mb-2 font-monospace" id="showUserPhone">—</p>
+              <div class="mb-3" id="showUserRoleBadge">
+                <span class="badge bg-success-subtle text-success">Customer</span>
+              </div>
+              <hr>
+              <div class="text-start">
+                <div class="mb-2 d-flex justify-content-between">
+                  <span class="text-muted small">Account ID:</span>
+                  <span class="fw-semibold small" id="showUserId">#<%= typeof userId !== 'undefined' ? userId : '' %></span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                  <span class="text-muted small">Member Since:</span>
+                  <span class="fw-semibold small" id="showUserCreated">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Bookings History -->
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="card-title"><i class="bi bi-calendar2-check text-primary me-2"></i>Service Appointments for this User</h5>
+                <a href="/bookings/create" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus me-1"></i>New Booking</a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Booking ID</th>
+                      <th>Vehicle</th>
+                      <th>Service</th>
+                      <th>Date / Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userBookingsTbody">
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm me-1"></div> Checking user booking history...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/users.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const userId = '<%= typeof userId !== 'undefined' ? userId : '' %>';
+    if (!userId) return;
+
+    try {
+      // 1. Fetch user profile
+      const userRes = await apiRequest('/api/getProfile', {
+        method: 'POST',
+        body: { id: userId }
+      });
+
+      if (userRes.ok && userRes.data.result) {
+        const u = userRes.data.result;
+        document.getElementById('showUserName').textContent = u.name || 'Unnamed';
+        document.getElementById('showUserPhone').textContent = u.phone ? String(u.phone) : '—';
+        document.getElementById('showUserId').textContent = `#${u.id}`;
+        document.getElementById('showUserCreated').textContent = formatDate(u.created_at);
+        if (u.photo) {
+          document.getElementById('showUserAvatar').src = getMediaUrl(u.photo);
+        }
+        const role = (u.role || 'user').toLowerCase();
+        document.getElementById('showUserRoleBadge').innerHTML = role === 'admin'
+          ? '<span class="badge bg-danger-subtle text-danger px-3 py-1">Administrator</span>'
+          : '<span class="badge bg-success-subtle text-success px-3 py-1">Registered Customer</span>';
+
+        document.getElementById('showUserLoading').classList.add('d-none');
+        document.getElementById('showUserContent').classList.remove('d-none');
+
+        // 2. Fetch bookings for this user
+        loadUserBookings(u.id);
+      } else {
+        document.getElementById('showUserLoading').innerHTML = `<div class="text-danger">${userRes.data.msg || 'User account not found.'}</div>`;
+      }
+    } catch (e) {
+      document.getElementById('showUserLoading').innerHTML = '<div class="text-danger">Failed to load user profile.</div>';
+    }
+  });
+
+  async function loadUserBookings(uid) {
+    const tbody = document.getElementById('userBookingsTbody');
+    try {
+      const res = await apiRequest('/api/bookingHistory', {
+        method: 'POST',
+        body: { uid, page: 1 }
+      });
+
+      if (res.ok && res.data.result && res.data.result.length > 0) {
+        tbody.innerHTML = res.data.result.map(b => `
+          <tr>
+            <td class="fw-semibold">#${b.book_id}</td>
+            <td>
+              <div class="fw-semibold">${escapeHtml(b.vehicle_name)}</div>
+              <div class="small text-muted font-monospace">${escapeHtml(b.registration_no || '')}</div>
+            </td>
+            <td><span class="badge bg-light text-primary border">${escapeHtml(b.service_name)}</span></td>
+            <td class="small text-muted"><i class="bi bi-clock me-1"></i>${escapeHtml(b.slot_date)} ${escapeHtml(b.slot_time)}</td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No appointments found for this user.</td></tr>`;
+      }
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No appointment history available.</td></tr>`;
+    }
+  }
+</script>

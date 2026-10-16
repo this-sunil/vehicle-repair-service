@@ -1,0 +1,94 @@
+<%- include('../partials/head', { pageTitle: 'Notification Details', activeMenu: 'notifications' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Notifications', url: '/notifications' }, { label: 'Notification Details' } ] }) %>
+          <h1 class="page-title">Notification Details</h1>
+          <p class="page-subtitle">Inspect broadcast announcement payload and broadcast date</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/notifications" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Notifications
+          </a>
+          <a href="/notifications/<%= typeof notificationId !== 'undefined' ? notificationId : '' %>/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Notification
+          </a>
+        </div>
+      </div>
+
+      <div id="showNoteLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div> Loading notification...
+      </div>
+
+      <div id="showNoteContent" class="d-none">
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-body p-4">
+                <div class="d-flex flex-column flex-sm-row gap-4 mb-4">
+                  <img src="/public/images/placeholder.svg" id="showNotePhoto" alt="Banner" class="rounded-3 shadow-sm border" style="width: 140px; height: 140px; object-fit: cover;">
+                  <div class="flex-grow-1">
+                    <span class="badge bg-info-subtle text-info border border-info-subtle mb-2">Customer Broadcast</span>
+                    <h3 class="fw-bold mb-2 text-dark" id="showNoteTitle">—</h3>
+                    <p class="text-muted small mb-0">Record ID: <strong id="showNoteId">#<%= typeof notificationId !== 'undefined' ? notificationId : '' %></strong> &bull; Sent: <span id="showNoteCreated">—</span></p>
+                  </div>
+                </div>
+
+                <h5 class="fw-bold mb-2">Message Body</h5>
+                <div class="p-3 bg-light rounded text-secondary" id="showNoteBody" style="white-space: pre-line; line-height: 1.7;">
+                  —
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/notifications.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const noteId = Number('<%= typeof notificationId !== 'undefined' ? notificationId : '' %>');
+    if (!noteId) return;
+
+    try {
+      const res = await apiRequest('/api/fetchNotification', {
+        method: 'POST',
+        body: { page: 1 }
+      });
+
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(n => n.id === noteId);
+        if (item) {
+          document.getElementById('showNoteTitle').textContent = item.title || 'Broadcast';
+          document.getElementById('showNoteBody').textContent = item.subtitle || item.description || 'No content provided.';
+          document.getElementById('showNoteId').textContent = `#${item.id}`;
+          document.getElementById('showNoteCreated').textContent = formatDate(item.created_at);
+          if (item.photo) {
+            document.getElementById('showNotePhoto').src = getMediaUrl(item.photo);
+          }
+          document.getElementById('showNoteLoading').classList.add('d-none');
+          document.getElementById('showNoteContent').classList.remove('d-none');
+        } else {
+          document.getElementById('showNoteLoading').innerHTML = '<div class="text-danger">Notification not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('showNoteLoading').innerHTML = '<div class="text-danger">Failed to load notification details.</div>';
+    }
+  });
+</script>

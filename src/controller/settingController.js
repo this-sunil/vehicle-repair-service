@@ -39,9 +39,9 @@ export const addSettingController=async(req,res)=>{
 };
 
 export const deleteSettingController=async(req,res)=>{
-    const id=req.body.id;
+    const id = req.body.sid || req.body.id;
     try {
-     const query=`DELETE FROM settings WHERE id=$1 RETURNING *`;
+     const query=`DELETE FROM settings WHERE sid=$1 RETURNING *`;
      const {rows}=await pool.query(query,[id]);
      if(rows.length===0){
         return res.status(400).json({

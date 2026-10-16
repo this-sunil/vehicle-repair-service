@@ -1,0 +1,73 @@
+<%- include('../partials/head', { pageTitle: 'Create User', activeMenu: 'users' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Users', url: '/users' }, { label: 'Create User' } ] }) %>
+          <h1 class="page-title">Register New User</h1>
+          <p class="page-subtitle">Add a customer account to the database</p>
+        </div>
+        <a href="/users" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Users
+        </a>
+      </div>
+
+      <!-- Create Form Card -->
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">User Account Information</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreateUserForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                  <input type="text" name="name" class="form-control" placeholder="e.g. Rahul Sharma" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" name="phone" class="form-control" placeholder="10-digit mobile number" required>
+                  <div class="form-text">Used by customer to log in to the mobile platform.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" name="pass" class="form-control" placeholder="Set a secure password" required>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Profile Photo (Optional)</label>
+                  <input type="file" name="photo" class="form-control" accept="image/*">
+                  <div class="form-text">Images are uploaded to media storage.</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Create Account
+                  </button>
+                  <a href="/users" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/users.js"></script>

@@ -1,0 +1,20 @@
+<%- include('../partials/head', { pageTitle: '500 Server Error' }) %>
+
+<div class="auth-page-wrapper">
+  <div class="auth-card text-center" style="max-width: 480px;">
+    <div class="stat-icon danger mx-auto mb-3" style="width: 72px; height: 72px; font-size: 2.25rem;">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <h1 class="display-4 fw-bold text-dark mb-2">500</h1>
+    <h4 class="fw-semibold text-danger mb-2">Internal Server Error</h4>
+    <p class="text-muted mb-4">An unexpected error occurred while processing the request. Our engineering team has been logged.</p>
+    <div class="d-flex justify-content-center gap-2">
+      <a href="/dashboard" class="btn btn-primary px-4"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+      <button onclick="window.location.reload()" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-clockwise me-1"></i> Reload Page</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

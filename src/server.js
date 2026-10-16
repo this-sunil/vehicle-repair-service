@@ -69,10 +69,130 @@ app.use("/api",notificationRoute);
 app.use("/api",subscriptionRoute);
 app.use("/auth",tokenRoute);
 
-app.get("/", (req, res) => {
-  return res.render("dashboard");
+// ==========================================
+// EJS Admin Panel View Routes
+// ==========================================
+// Dashboard
+app.get(["/", "/dashboard"], (req, res) => {
+  return res.render("admin/dashboard", { pageTitle: "Executive Dashboard", activeMenu: "dashboard" });
 });
 
+// Authentication
+app.get("/login", (req, res) => {
+  return res.render("auth/login", { pageTitle: "Sign In" });
+});
+
+app.get("/register", (req, res) => {
+  return res.render("auth/register", { pageTitle: "Register Account" });
+});
+
+// Users Module
+app.get("/users", (req, res) => {
+  return res.render("users/index", { pageTitle: "Users Management", activeMenu: "users" });
+});
+app.get("/users/create", (req, res) => {
+  return res.render("users/create", { pageTitle: "Register User", activeMenu: "users" });
+});
+app.get("/users/:id", (req, res) => {
+  return res.render("users/show", { pageTitle: "User Details", activeMenu: "users", userId: req.params.id });
+});
+app.get("/users/:id/edit", (req, res) => {
+  return res.render("users/edit", { pageTitle: "Edit User", activeMenu: "users", userId: req.params.id });
+});
+
+// Categories Module
+app.get("/categories", (req, res) => {
+  return res.render("categories/index", { pageTitle: "Vehicle Categories", activeMenu: "categories" });
+});
+app.get("/categories/create", (req, res) => {
+  return res.render("categories/create", { pageTitle: "Add Category", activeMenu: "categories" });
+});
+app.get("/categories/:id", (req, res) => {
+  return res.render("categories/show", { pageTitle: "Category Details", activeMenu: "categories", categoryId: req.params.id });
+});
+app.get("/categories/:id/edit", (req, res) => {
+  return res.render("categories/edit", { pageTitle: "Edit Category", activeMenu: "categories", categoryId: req.params.id });
+});
+
+// Services Module
+app.get("/services", (req, res) => {
+  return res.render("services/index", { pageTitle: "Vehicle Services", activeMenu: "services" });
+});
+app.get("/services/create", (req, res) => {
+  return res.render("services/create", { pageTitle: "Add Service", activeMenu: "services" });
+});
+app.get("/services/:id", (req, res) => {
+  return res.render("services/show", { pageTitle: "Service Details", activeMenu: "services", serviceId: req.params.id });
+});
+app.get("/services/:id/edit", (req, res) => {
+  return res.render("services/edit", { pageTitle: "Edit Service", activeMenu: "services", serviceId: req.params.id });
+});
+
+// Bookings Module
+app.get("/bookings", (req, res) => {
+  return res.render("bookings/index", { pageTitle: "Service Bookings", activeMenu: "bookings" });
+});
+app.get("/bookings/create", (req, res) => {
+  return res.render("bookings/create", { pageTitle: "Book Appointment", activeMenu: "bookings" });
+});
+app.get("/bookings/:id", (req, res) => {
+  return res.render("bookings/show", { pageTitle: "Appointment Details", activeMenu: "bookings", bookingId: req.params.id });
+});
+app.get("/bookings/:id/edit", (req, res) => {
+  return res.render("bookings/edit", { pageTitle: "Reschedule Appointment", activeMenu: "bookings", bookingId: req.params.id });
+});
+
+// Shops & Centers Module
+app.get("/shops", (req, res) => {
+  return res.render("shops/index", { pageTitle: "Service Centers & Shops", activeMenu: "shops" });
+});
+app.get("/shops/create", (req, res) => {
+  return res.render("shops/create", { pageTitle: "Add Service Center", activeMenu: "shops" });
+});
+app.get("/shops/:id", (req, res) => {
+  return res.render("shops/show", { pageTitle: "Service Center Details", activeMenu: "shops", shopId: req.params.id });
+});
+app.get("/shops/:id/edit", (req, res) => {
+  return res.render("shops/edit", { pageTitle: "Edit Service Center", activeMenu: "shops", shopId: req.params.id });
+});
+
+// Notifications Module
+app.get("/notifications", (req, res) => {
+  return res.render("notifications/index", { pageTitle: "Notifications", activeMenu: "notifications" });
+});
+app.get("/notifications/create", (req, res) => {
+  return res.render("notifications/create", { pageTitle: "Send Notification", activeMenu: "notifications" });
+});
+app.get("/notifications/:id", (req, res) => {
+  return res.render("notifications/show", { pageTitle: "Notification Details", activeMenu: "notifications", notificationId: req.params.id });
+});
+app.get("/notifications/:id/edit", (req, res) => {
+  return res.render("notifications/edit", { pageTitle: "Edit Notification", activeMenu: "notifications", notificationId: req.params.id });
+});
+
+// Subscription Plans Module
+app.get("/plans", (req, res) => {
+  return res.render("plans/index", { pageTitle: "Subscription Plans", activeMenu: "plans" });
+});
+app.get("/plans/create", (req, res) => {
+  return res.render("plans/create", { pageTitle: "Add Plan", activeMenu: "plans" });
+});
+app.get("/plans/:id", (req, res) => {
+  return res.render("plans/show", { pageTitle: "Plan Details", activeMenu: "plans", planId: req.params.id });
+});
+app.get("/plans/:id/edit", (req, res) => {
+  return res.render("plans/edit", { pageTitle: "Edit Plan", activeMenu: "plans", planId: req.params.id });
+});
+
+// Admin Profile & System Settings
+app.get("/admin/profile", (req, res) => {
+  return res.render("admin/profile", { pageTitle: "Admin Profile", activeMenu: "profile" });
+});
+app.get("/admin/settings", (req, res) => {
+  return res.render("admin/settings", { pageTitle: "Application Settings", activeMenu: "settings" });
+});
+
+// Static / Informational Pages
 app.get("/privacy", (req, res) => {
   return res.render("privacy");
 });
@@ -81,20 +201,19 @@ app.get("/terms-condition", (req, res) => {
   return res.render("terms");
 });
 
-app.get("/login", (req, res) => {
-  res.render("pages/samples/login");
+// Legacy / Demo Routes
+app.get("/charts", (req, res) => res.render("pages/charts/chartjs"));
+app.get("/basic-table", (req, res) => res.render("pages/tables/basic-table"));
+app.get("/basic-elements", (req, res) => res.render("pages/forms/basic_elements"));
+
+// Errors
+app.get("/403", (req, res) => res.status(403).render("errors/403", { pageTitle: "Access Denied" }));
+app.get("/500", (req, res) => res.status(500).render("errors/500", { pageTitle: "Server Error" }));
+
+// 404 Catch-All
+app.use((req, res) => {
+  res.status(404).render("errors/404", { pageTitle: "Page Not Found" });
 });
-
-app.get("/register", (req, res) => {
-  res.render("pages/samples/register");
-});
-
-app.get("/charts",(req,res)=>res.render("pages/charts/chartjs"));
-app.get("/users",(req,res)=>res.render("pages/users"));
-
-app.get("/basic-table",(req,res)=>res.render("pages/tables/basic-table"));
-
-app.get("/basic-elements",(req,res)=>res.render("pages/forms/basic_elements"));
 
 const PORT = process.env.PORT || 4000;
 

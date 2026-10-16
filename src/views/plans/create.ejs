@@ -1,0 +1,74 @@
+<%- include('../partials/head', { pageTitle: 'Create Plan', activeMenu: 'plans' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'plans' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Plans', url: '/plans' }, { label: 'Create Plan' } ] }) %>
+          <h1 class="page-title">Add Subscription Plan</h1>
+          <p class="page-subtitle">Configure pricing and recurring membership benefits for customers</p>
+        </div>
+        <a href="/plans" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Plans
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Plan Pricing Specification</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreatePlanForm">
+                <div class="mb-3">
+                  <label class="form-label">Plan Title <span class="text-danger">*</span></label>
+                  <input type="text" name="plan_title" class="form-control" placeholder="e.g. Platinum Roadside Assistance" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Billing Interval / Type <span class="text-danger">*</span></label>
+                  <select name="plan_type" class="form-select" required>
+                    <option value="Monthly" selected>Monthly</option>
+                    <option value="Quarterly">Quarterly (3 Months)</option>
+                    <option value="Half-Yearly">Half-Yearly (6 Months)</option>
+                    <option value="Yearly">Annual (Yearly)</option>
+                  </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Price (INR) <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">₹</span>
+                    <input type="number" step="any" name="plan_price" class="form-control" placeholder="499" required>
+                  </div>
+                  <div class="form-text">Customer subscription fee per billing cycle.</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Plan
+                  </button>
+                  <a href="/plans" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/plans.js"></script>

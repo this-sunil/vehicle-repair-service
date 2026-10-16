@@ -1,0 +1,121 @@
+<!-- Sidebar Navigation -->
+<aside class="admin-sidebar" id="adminSidebar">
+  <!-- Brand Header -->
+  <div class="sidebar-header">
+    <a href="/dashboard" class="brand-link">
+      <div class="brand-icon">
+        <i class="bi bi-tools"></i>
+      </div>
+      <span>VehicleService</span>
+    </a>
+  </div>
+
+  <!-- Navigation Links -->
+  <ul class="sidebar-nav">
+    <li class="nav-section-title">Main</li>
+    
+    <li class="nav-item">
+      <a href="/dashboard" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'dashboard') ? 'active' : '' %>">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-section-title">Operations</li>
+    
+    <li class="nav-item">
+      <a href="/bookings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'bookings') ? 'active' : '' %>">
+        <i class="bi bi-calendar-check"></i>
+        <span>Bookings</span>
+        <span class="badge bg-primary nav-badge" id="badgeBookingCount">20</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/services" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'services') ? 'active' : '' %>">
+        <i class="bi bi-wrench-adjustable-circle"></i>
+        <span>Vehicle Services</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/categories" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'categories') ? 'active' : '' %>">
+        <i class="bi bi-grid"></i>
+        <span>Categories</span>
+        <span class="badge bg-info text-dark nav-badge" id="badgeCategoryCount">4</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/shops" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'shops') ? 'active' : '' %>">
+        <i class="bi bi-geo-alt"></i>
+        <span>Shops & Centers</span>
+        <span class="badge bg-secondary nav-badge" id="badgeShopCount">50</span>
+      </a>
+    </li>
+
+    <li class="nav-section-title">Management</li>
+
+    <li class="nav-item">
+      <a href="/users" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'users') ? 'active' : '' %>">
+        <i class="bi bi-people"></i>
+        <span>Users</span>
+        <span class="badge bg-success nav-badge" id="badgeUserCount">37</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/plans" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'plans') ? 'active' : '' %>">
+        <i class="bi bi-card-checklist"></i>
+        <span>Subscription Plans</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/notifications" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'notifications') ? 'active' : '' %>">
+        <i class="bi bi-bell"></i>
+        <span>Notifications</span>
+      </a>
+    </li>
+
+    <li class="nav-section-title">System</li>
+
+    <li class="nav-item">
+      <a href="/admin/profile" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'profile') ? 'active' : '' %>">
+        <i class="bi bi-person-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="/admin/settings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'settings') ? 'active' : '' %>">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      </a>
+    </li>
+
+    <li class="nav-item mt-2">
+      <a href="#" class="nav-link text-danger btn-logout">
+        <i class="bi bi-box-arrow-right text-danger"></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Sidebar Footer Profile Snippet -->
+  <div class="sidebar-footer">
+    <a href="/admin/profile" class="user-snippet">
+      <img src="/public/images/placeholder.svg" alt="Admin" class="user-avatar admin-user-avatar">
+      <div class="user-info">
+        <span class="name admin-user-name">Admin</span>
+        <span class="role admin-user-role">Administrator</span>
+      </div>
+    </a>
+    <button type="button" class="btn btn-sm btn-outline-secondary p-1 border-0 text-white-50 btn-logout" title="Sign Out">
+      <i class="bi bi-power fs-6"></i>
+    </button>
+  </div>
+</aside>
+
+<!-- Mobile Backdrop -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>

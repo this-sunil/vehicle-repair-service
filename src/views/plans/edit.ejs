@@ -1,0 +1,104 @@
+<%- include('../partials/head', { pageTitle: 'Edit Plan', activeMenu: 'plans' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'plans' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Plans', url: '/plans' }, { label: 'Plan #' + (typeof planId !== 'undefined' ? planId : ''), url: '/plans/' + (typeof planId !== 'undefined' ? planId : '') }, { label: 'Edit' } ] }) %>
+          <h1 class="page-title">Edit Subscription Plan</h1>
+          <p class="page-subtitle">Update pricing or billing cycle for this membership tier</p>
+        </div>
+        <a href="/plans" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Plans
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Modify Plan #<%= typeof planId !== 'undefined' ? planId : '' %></h5>
+            </div>
+            <div class="card-body">
+              <div id="planEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading plan details...
+              </div>
+
+              <form id="standaloneEditPlanForm" class="d-none">
+                <input type="hidden" name="pid" id="editPlanPidInput" value="<%= typeof planId !== 'undefined' ? planId : '' %>">
+
+                <div class="mb-3">
+                  <label class="form-label">Plan Title <span class="text-danger">*</span></label>
+                  <input type="text" name="plan_title" id="editPlanTitleInput" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Billing Interval <span class="text-danger">*</span></label>
+                  <select name="plan_type" id="editPlanTypeInput" class="form-select" required>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Quarterly">Quarterly</option>
+                    <option value="Half-Yearly">Half-Yearly</option>
+                    <option value="Yearly">Annual (Yearly)</option>
+                  </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Price (INR) <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">₹</span>
+                    <input type="number" step="any" name="plan_price" id="editPlanPriceInput" class="form-control" required>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/plans" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/plans.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const planId = Number('<%= typeof planId !== 'undefined' ? planId : '' %>');
+    if (!planId) return;
+
+    try {
+      const res = await apiRequest('/api/fetchPlan', { method: 'POST', body: {} });
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(p => p.pid === planId);
+        if (item) {
+          document.getElementById('editPlanTitleInput').value = item.plan_title || '';
+          document.getElementById('editPlanTypeInput').value = item.plan_type || 'Monthly';
+          document.getElementById('editPlanPriceInput').value = item.plan_price || '';
+
+          document.getElementById('planEditLoading').classList.add('d-none');
+          document.getElementById('standaloneEditPlanForm').classList.remove('d-none');
+        } else {
+          document.getElementById('planEditLoading').innerHTML = '<div class="text-danger">Plan not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('planEditLoading').innerHTML = '<div class="text-danger">Failed to load plan details.</div>';
+    }
+  });
+</script>

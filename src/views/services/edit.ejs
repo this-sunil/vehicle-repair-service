@@ -1,0 +1,104 @@
+<%- include('../partials/head', { pageTitle: 'Edit Service', activeMenu: 'services' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'services' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Services', url: '/services' }, { label: 'Service #' + (typeof serviceId !== 'undefined' ? serviceId : ''), url: '/services/' + (typeof serviceId !== 'undefined' ? serviceId : '') }, { label: 'Edit' } ] }) %>
+          <h1 class="page-title">Edit Service Package</h1>
+          <p class="page-subtitle">Update service title, description, and visual assets</p>
+        </div>
+        <a href="/services" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Services
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Modify Service #<%= typeof serviceId !== 'undefined' ? serviceId : '' %></h5>
+            </div>
+            <div class="card-body">
+              <div id="serviceEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading service details...
+              </div>
+
+              <form id="standaloneEditServiceForm" class="d-none" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="editServiceIdInput" value="<%= typeof serviceId !== 'undefined' ? serviceId : '' %>">
+
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                  <img src="/public/images/placeholder.svg" id="editServiceAvatarPreview" class="table-thumb" style="width: 72px; height: 72px; object-fit: cover; border-radius: 10px;">
+                  <div>
+                    <label class="form-label mb-1">Update Service Photo</label>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Service Title <span class="text-danger">*</span></label>
+                  <input type="text" name="title" id="editServiceTitleInput" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Description <span class="text-danger">*</span></label>
+                  <textarea name="description" id="editServiceDescInput" class="form-control" rows="5" required></textarea>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/services" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/services.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const serviceId = Number('<%= typeof serviceId !== 'undefined' ? serviceId : '' %>');
+    if (!serviceId) return;
+
+    try {
+      const res = await apiRequest('/api/getAllService', {
+        method: 'POST',
+        body: { page: 1, limit: 100 }
+      });
+
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(s => s.id === serviceId);
+        if (item) {
+          document.getElementById('editServiceTitleInput').value = item.title || '';
+          document.getElementById('editServiceDescInput').value = item.description || '';
+          if (item.photo) {
+            document.getElementById('editServiceAvatarPreview').src = getMediaUrl(item.photo);
+          }
+          document.getElementById('serviceEditLoading').classList.add('d-none');
+          document.getElementById('standaloneEditServiceForm').classList.remove('d-none');
+        } else {
+          document.getElementById('serviceEditLoading').innerHTML = '<div class="text-danger">Service package not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('serviceEditLoading').innerHTML = '<div class="text-danger">Failed to load service details.</div>';
+    }
+  });
+</script>

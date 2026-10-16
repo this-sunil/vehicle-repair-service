@@ -1,0 +1,160 @@
+<%- include('../partials/head', { pageTitle: 'Users Management', activeMenu: 'users' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Users' } ] }) %>
+          <h1 class="page-title">Users Management</h1>
+          <p class="page-subtitle">Manage customer accounts, roles, profiles, and access credentials</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadUsers()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
+            <i class="bi bi-person-plus me-1"></i> Add User
+          </button>
+          <a href="/users/create" class="btn btn-outline-primary btn-sm d-none d-md-inline-block">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Full Form
+          </a>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6 col-lg-5">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="userSearchInput" placeholder="Search by name, phone, or ID...">
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3 col-lg-3">
+              <select class="form-select" id="userRoleFilter">
+                <option value="">All Roles</option>
+                <option value="user">Customers Only</option>
+                <option value="admin">Administrators</option>
+              </select>
+            </div>
+            <div class="col text-end">
+              <span class="text-muted small">Total: <strong id="usersCountSpan" class="text-dark">—</strong> accounts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Table Card -->
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 searchable-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">ID</th>
+                <th>User Profile</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th class="text-end" style="width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Dynamically populated by users.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createUserModalLabel"><i class="bi bi-person-plus text-primary me-2"></i>Register New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="createUserForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" name="phone" class="form-control" placeholder="9876543210" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password <span class="text-danger">*</span></label>
+            <input type="password" name="pass" class="form-control" placeholder="••••••••" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Profile Photo (Optional)</label>
+            <input type="file" name="photo" class="form-control" accept="image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Register User
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel"><i class="bi bi-pencil-square text-primary me-2"></i>Edit User Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editUserForm" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="">
+        <div class="modal-body">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="/public/images/placeholder.svg" id="editUserPhotoPreview" alt="Photo" class="table-thumb rounded-circle" style="width: 56px; height: 56px;">
+            <div>
+              <div class="fw-semibold">Update Avatar</div>
+              <input type="file" name="photo" class="form-control form-control-sm mt-1" accept="image/*">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" name="phone" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/public/js/users.js"></script>

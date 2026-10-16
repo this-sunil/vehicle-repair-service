@@ -1,0 +1,138 @@
+<%- include('../partials/head', { pageTitle: 'Edit Service Center', activeMenu: 'shops' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'shops' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Shops', url: '/shops' }, { label: 'Shop #' + (typeof shopId !== 'undefined' ? shopId : ''), url: '/shops/' + (typeof shopId !== 'undefined' ? shopId : '') }, { label: 'Edit' } ] }) %>
+          <h1 class="page-title">Edit Service Center</h1>
+          <p class="page-subtitle">Update workshop details, hours, contact, and operational status</p>
+        </div>
+        <a href="/shops" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Shops
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Modify Service Center #<%= typeof shopId !== 'undefined' ? shopId : '' %></h5>
+            </div>
+            <div class="card-body">
+              <div id="shopEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading center details...
+              </div>
+
+              <form id="standaloneEditShopForm" class="d-none" enctype="multipart/form-data">
+                <input type="hidden" name="sid" id="editShopSidInput" value="<%= typeof shopId !== 'undefined' ? shopId : '' %>">
+
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                  <img src="/public/images/placeholder.svg" id="editShopPhotoPreview" class="table-thumb" style="width: 72px; height: 72px; object-fit: cover; border-radius: 10px;">
+                  <div>
+                    <label class="form-label mb-1">Update Shop Photo</label>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Shop Name <span class="text-danger">*</span></label>
+                    <input type="text" name="shopName" id="editShopNameInput" class="form-control" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">City Location <span class="text-danger">*</span></label>
+                    <input type="text" name="city" id="editShopCityInput" class="form-control" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Phone <span class="text-danger">*</span></label>
+                    <input type="tel" name="phone" id="editShopPhoneInput" class="form-control" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Operating Schedule</label>
+                    <input type="text" name="shopTime" id="editShopTimeInput" class="form-control">
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label">Latitude</label>
+                    <input type="number" step="any" name="lat" id="editShopLatInput" class="form-control">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Longitude</label>
+                    <input type="number" step="any" name="long" id="editShopLongInput" class="form-control">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Operating Status</label>
+                    <select name="status" id="editShopStatusInput" class="form-select">
+                      <option value="true">Operational</option>
+                      <option value="false">Closed / Inactive</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/shops" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/shops.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const shopId = Number('<%= typeof shopId !== 'undefined' ? shopId : '' %>');
+    if (!shopId) return;
+
+    try {
+      const res = await apiRequest('/api/fetchShop', {
+        method: 'POST',
+        body: { page: 1, limit: 100 }
+      });
+
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(s => s.sid === shopId);
+        if (item) {
+          document.getElementById('editShopNameInput').value = item.shopname || item.shopName || '';
+          document.getElementById('editShopCityInput').value = item.city || '';
+          document.getElementById('editShopPhoneInput').value = item.phone || '';
+          document.getElementById('editShopTimeInput').value = item.shoptime || item.shopTime || '';
+          document.getElementById('editShopLatInput').value = item.lat || '';
+          document.getElementById('editShopLongInput').value = item.long || '';
+          document.getElementById('editShopStatusInput').value = (item.status === true || item.status === 'true') ? 'true' : 'false';
+
+          const photo = item.shopphoto || item.shopPhoto;
+          if (photo) {
+            document.getElementById('editShopPhotoPreview').src = getMediaUrl(photo);
+          }
+
+          document.getElementById('shopEditLoading').classList.add('d-none');
+          document.getElementById('standaloneEditShopForm').classList.remove('d-none');
+        } else {
+          document.getElementById('shopEditLoading').innerHTML = '<div class="text-danger">Service center not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('shopEditLoading').innerHTML = '<div class="text-danger">Failed to load service center details.</div>';
+    }
+  });
+</script>

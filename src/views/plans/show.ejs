@@ -1,0 +1,96 @@
+<%- include('../partials/head', { pageTitle: 'Plan Details', activeMenu: 'plans' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'plans' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Plans', url: '/plans' }, { label: 'Plan Details' } ] }) %>
+          <h1 class="page-title">Subscription Plan Details</h1>
+          <p class="page-subtitle">Inspect membership tier benefits, pricing, and cycle</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/plans" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Plans
+          </a>
+          <a href="/plans/<%= typeof planId !== 'undefined' ? planId : '' %>/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Plan
+          </a>
+        </div>
+      </div>
+
+      <div id="showPlanLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div> Loading plan details...
+      </div>
+
+      <div id="showPlanContent" class="d-none">
+        <div class="row g-4">
+          <div class="col-lg-6 col-xl-5">
+            <div class="card p-4 text-center">
+              <div class="stat-icon primary mx-auto mb-3" style="width: 72px; height: 72px; font-size: 2rem;">
+                <i class="bi bi-card-checklist"></i>
+              </div>
+              <h3 class="fw-bold mb-1" id="showPlanTitle">—</h3>
+              <p class="text-muted small mb-3">Recurring Membership Package</p>
+              
+              <div class="p-3 bg-light rounded mb-3">
+                <div class="text-muted small">Subscription Fee</div>
+                <div class="display-6 fw-bold text-dark mt-1" id="showPlanPrice">—</div>
+                <div class="badge bg-primary-subtle text-primary mt-2 px-3 py-1 fs-6" id="showPlanType">—</div>
+              </div>
+
+              <div class="text-start">
+                <div class="mb-2 d-flex justify-content-between small">
+                  <span class="text-muted">Plan ID:</span>
+                  <strong id="showPlanId">#<%= typeof planId !== 'undefined' ? planId : '' %></strong>
+                </div>
+                <div class="mb-2 d-flex justify-content-between small">
+                  <span class="text-muted">Created:</span>
+                  <span id="showPlanCreated">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/plans.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const planId = Number('<%= typeof planId !== 'undefined' ? planId : '' %>');
+    if (!planId) return;
+
+    try {
+      const res = await apiRequest('/api/fetchPlan', { method: 'POST', body: {} });
+      if (res.ok && res.data.result) {
+        const item = res.data.result.find(p => p.pid === planId);
+        if (item) {
+          document.getElementById('showPlanTitle').textContent = item.plan_title || 'Plan';
+          document.getElementById('showPlanPrice').textContent = formatCurrency(item.plan_price);
+          document.getElementById('showPlanType').textContent = `Billed ${item.plan_type || 'Monthly'}`;
+          document.getElementById('showPlanId').textContent = `#${item.pid}`;
+          document.getElementById('showPlanCreated').textContent = formatDate(item.created_at);
+
+          document.getElementById('showPlanLoading').classList.add('d-none');
+          document.getElementById('showPlanContent').classList.remove('d-none');
+        } else {
+          document.getElementById('showPlanLoading').innerHTML = '<div class="text-danger">Plan not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('showPlanLoading').innerHTML = '<div class="text-danger">Failed to load plan details.</div>';
+    }
+  });
+</script>

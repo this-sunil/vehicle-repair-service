@@ -1,0 +1,148 @@
+<%- include('../partials/head', { pageTitle: 'Notifications', activeMenu: 'notifications' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Notifications' } ] }) %>
+          <h1 class="page-title">Broadcast Notifications</h1>
+          <p class="page-subtitle">Publish maintenance advisories, seasonal discounts, and customer alerts</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadNotifications()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createNotificationModal">
+            <i class="bi bi-bell me-1"></i> Send Notification
+          </button>
+          <a href="/notifications/create" class="btn btn-outline-primary btn-sm d-none d-md-inline-block">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Full Form
+          </a>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6 col-lg-5">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="notificationSearchInput" placeholder="Search broadcasts by title or content...">
+              </div>
+            </div>
+            <div class="col text-end">
+              <span class="text-muted small">Total: <strong id="notificationsCountSpan" class="text-dark">—</strong> notifications</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Table Card -->
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 searchable-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">ID</th>
+                <th>Notification Title</th>
+                <th>Message Content</th>
+                <th>Broadcast Date</th>
+                <th class="text-end" style="width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="notificationsTableBody">
+              <!-- Populated by notifications.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<!-- Create Notification Modal -->
+<div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createNotificationModalLabel"><i class="bi bi-megaphone text-primary me-2"></i>Broadcast Announcement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="createNotificationForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control" placeholder="e.g. Monsoon Service Camp Discounts" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message Details <span class="text-danger">*</span></label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Compose alert content for customers..." required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Banner Image (Optional)</label>
+            <input type="file" name="photo" class="form-control" accept="image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Send Broadcast
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Notification Modal -->
+<div class="modal fade" id="editNotificationModal" tabindex="-1" aria-labelledby="editNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editNotificationModalLabel"><i class="bi bi-pencil-square text-primary me-2"></i>Edit Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editNotificationForm" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="">
+        <div class="modal-body">
+          <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light rounded">
+            <img src="/public/images/placeholder.svg" id="editNotificationPhotoPreview" class="table-thumb" style="width: 56px; height: 56px;">
+            <div>
+              <div class="fw-semibold">Update Banner</div>
+              <input type="file" name="photo" class="form-control form-control-sm mt-1" accept="image/*">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message Details <span class="text-danger">*</span></label>
+            <textarea name="description" class="form-control" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/public/js/notifications.js"></script>

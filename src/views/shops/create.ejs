@@ -1,0 +1,91 @@
+<%- include('../partials/head', { pageTitle: 'Add Service Center', activeMenu: 'shops' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'shops' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Shops', url: '/shops' }, { label: 'Add Center' } ] }) %>
+          <h1 class="page-title">Register Service Station</h1>
+          <p class="page-subtitle">Add a partner auto workshop, garage, or service center</p>
+        </div>
+        <a href="/shops" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Shops
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Service Center Information</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreateShopForm" enctype="multipart/form-data">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Shop / Garage Name <span class="text-danger">*</span></label>
+                    <input type="text" name="shopName" class="form-control" placeholder="e.g. Express Auto Garage" required autofocus>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">City Location <span class="text-danger">*</span></label>
+                    <input type="text" name="city" class="form-control" placeholder="e.g. Pune, Navi Mumbai" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Contact Phone <span class="text-danger">*</span></label>
+                    <input type="tel" name="phone" class="form-control" placeholder="10-digit phone number" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Operating Schedule</label>
+                    <input type="text" name="shopTime" class="form-control" value="09:00 AM - 08:00 PM">
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label">Latitude</label>
+                    <input type="number" step="any" name="lat" class="form-control" value="18.5204">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Longitude</label>
+                    <input type="number" step="any" name="long" class="form-control" value="73.8567">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <select name="status" class="form-select">
+                      <option value="true" selected>Operational</option>
+                      <option value="false">Closed / Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label">Shop Photo / Front View</label>
+                    <input type="file" name="photo" class="form-control" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Register Shop
+                  </button>
+                  <a href="/shops" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/shops.js"></script>

@@ -1,0 +1,216 @@
+<%- include('../partials/head', { pageTitle: 'Service Bookings', activeMenu: 'bookings' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings' } ] }) %>
+          <h1 class="page-title">Service Bookings & Appointments</h1>
+          <p class="page-subtitle">Track, reschedule, and manage customer service reservations</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadBookings()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createBookingModal">
+            <i class="bi bi-plus-lg me-1"></i> Book Appointment
+          </button>
+          <a href="/bookings/create" class="btn btn-outline-primary btn-sm d-none d-md-inline-block">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Full Form
+          </a>
+        </div>
+      </div>
+
+      <!-- Filters Toolbar -->
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6 col-lg-5">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="bookingSearchInput" placeholder="Search by customer, vehicle, reg no, or service...">
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3 col-lg-3">
+              <select class="form-select" id="bookingTypeFilter">
+                <option value="">All Vehicle Types</option>
+                <option value="Car">Car</option>
+                <option value="Bike">Bike / Two-Wheeler</option>
+                <option value="Heavy">Commercial / Heavy</option>
+              </select>
+            </div>
+            <div class="col text-end">
+              <span class="text-muted small">Total: <strong id="bookingsCountSpan" class="text-dark">—</strong> appointments</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings Table Card -->
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 searchable-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">ID</th>
+                <th>Vehicle Details</th>
+                <th>Customer</th>
+                <th>Service Name</th>
+                <th>Type</th>
+                <th>Scheduled Slot</th>
+                <th class="text-end" style="width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTableBody">
+              <!-- Populated by bookings.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<!-- Create Appointment Modal -->
+<div class="modal fade" id="createBookingModal" tabindex="-1" aria-labelledby="createBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createBookingModalLabel"><i class="bi bi-calendar-plus text-primary me-2"></i>Book Service Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="createBookingForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Customer Account <span class="text-danger">*</span></label>
+              <select name="id" id="bookingUidSelect" class="form-select" required>
+                <option value="" disabled selected>Loading customer accounts...</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Requested Service <span class="text-danger">*</span></label>
+              <select name="service_name" id="bookingServiceSelect" class="form-select" required>
+                <option value="" disabled selected>Loading catalog services...</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Vehicle Make & Model <span class="text-danger">*</span></label>
+              <input type="text" name="vehicle_name" class="form-control" placeholder="e.g. Hyundai Creta, Honda City" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Registration Number <span class="text-danger">*</span></label>
+              <input type="text" name="registration_no" class="form-control" placeholder="e.g. MH 12 AB 1234" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+              <select name="vehicle_type" class="form-select" required>
+                <option value="Car" selected>Car (4-Wheeler)</option>
+                <option value="Bike">Bike (2-Wheeler)</option>
+                <option value="Truck">Commercial / Truck</option>
+                <option value="EV">Electric Vehicle (EV)</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Slot Date <span class="text-danger">*</span></label>
+              <input type="date" name="slot_date" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Slot Time <span class="text-danger">*</span></label>
+              <input type="time" name="slot_time" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Vehicle Photo</label>
+              <input type="file" name="vehicle_photo" class="form-control" accept="image/*">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Confirm Appointment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Appointment Modal -->
+<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBookingModalLabel"><i class="bi bi-pencil-square text-primary me-2"></i>Reschedule / Edit Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editBookingForm" enctype="multipart/form-data">
+        <input type="hidden" name="book_id" value="">
+        <div class="modal-body">
+          <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light rounded">
+            <img src="/public/images/placeholder.svg" id="editBookingPhotoPreview" class="table-thumb" style="width: 56px; height: 56px;">
+            <div>
+              <div class="fw-semibold">Update Vehicle Picture</div>
+              <input type="file" name="vehicle_photo" class="form-control form-control-sm mt-1" accept="image/*">
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Vehicle Name <span class="text-danger">*</span></label>
+              <input type="text" name="vehicle_name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Registration No <span class="text-danger">*</span></label>
+              <input type="text" name="registration_no" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Service Name <span class="text-danger">*</span></label>
+              <input type="text" name="service_name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+              <select name="vehicle_type" class="form-select" required>
+                <option value="Car">Car</option>
+                <option value="Bike">Bike</option>
+                <option value="Truck">Truck</option>
+                <option value="EV">EV</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Slot Date <span class="text-danger">*</span></label>
+              <input type="text" name="slot_date" class="form-control" placeholder="DD/MM/YYYY" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Slot Time <span class="text-danger">*</span></label>
+              <input type="text" name="slot_time" class="form-control" placeholder="e.g. 10:30 AM" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/public/js/bookings.js"></script>

@@ -1,0 +1,66 @@
+<%- include('../partials/head', { pageTitle: 'Add Service', activeMenu: 'services' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'services' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Services', url: '/services' }, { label: 'Add Service' } ] }) %>
+          <h1 class="page-title">Create Service Package</h1>
+          <p class="page-subtitle">Add a repair, diagnostic, or maintenance offering</p>
+        </div>
+        <a href="/services" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Services
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Service Details</h5>
+            </div>
+            <div class="card-body">
+              <form id="standaloneCreateServiceForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label class="form-label">Service Title <span class="text-danger">*</span></label>
+                  <input type="text" name="title" class="form-control" placeholder="e.g. Engine Diagnostic & Tuning" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Service Description <span class="text-danger">*</span></label>
+                  <textarea name="description" class="form-control" rows="4" placeholder="Describe the inclusions, workflow, and customer benefits of this service..." required></textarea>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Service Photo / Illustration</label>
+                  <input type="file" name="photo" class="form-control" accept="image/*">
+                  <div class="form-text">Upload a high quality photo representing this service.</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Publish Service
+                  </button>
+                  <a href="/services" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/services.js"></script>

@@ -1,0 +1,244 @@
+<%- include('../partials/head', { pageTitle: 'Admin Dashboard', activeMenu: 'dashboard' }) %>
+
+<div class="admin-wrapper">
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar', { activeMenu: 'dashboard' }) %>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- Content -->
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Dashboard' } ] }) %>
+          <h1 class="page-title">Executive Dashboard</h1>
+          <p class="page-subtitle">Real-time performance metrics and vehicle service operations overview</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="btnRefreshDashboard">
+            <i class="bi bi-arrow-clockwise me-1"></i> Refresh Data
+          </button>
+          <a href="/bookings/create" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i> New Booking
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards Row -->
+      <div class="row g-3 mb-4">
+        <!-- Total Bookings -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-details">
+              <span class="stat-label">Total Bookings</span>
+              <div class="stat-value" id="kpiBookings">—</div>
+              <div class="stat-trend text-primary">
+                <i class="bi bi-calendar-check"></i> <span>Service appointments</span>
+              </div>
+            </div>
+            <div class="stat-icon primary">
+              <i class="bi bi-journal-bookmark"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Users -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-details">
+              <span class="stat-label">Customers / Users</span>
+              <div class="stat-value" id="kpiUsers">—</div>
+              <div class="stat-trend text-success">
+                <i class="bi bi-person-check"></i> <span>Registered accounts</span>
+              </div>
+            </div>
+            <div class="stat-icon success">
+              <i class="bi bi-people"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Services -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-details">
+              <span class="stat-label">Catalog Services</span>
+              <div class="stat-value" id="kpiServices">—</div>
+              <div class="stat-trend text-info">
+                <i class="bi bi-wrench"></i> <span>Active service items</span>
+              </div>
+            </div>
+            <div class="stat-icon info">
+              <i class="bi bi-tools"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Shops -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-details">
+              <span class="stat-label">Partner Centers</span>
+              <div class="stat-value" id="kpiShops">—</div>
+              <div class="stat-trend text-warning">
+                <i class="bi bi-shop"></i> <span>Auto repair garages</span>
+              </div>
+            </div>
+            <div class="stat-icon warning">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Metrics Row -->
+      <div class="row g-3 mb-4">
+        <!-- Vehicle Categories -->
+        <div class="col-sm-6 col-md-4">
+          <div class="card p-3 mb-0">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="text-muted small fw-semibold">Vehicle Categories</div>
+                <div class="fs-4 fw-bold mt-1" id="kpiCategories">—</div>
+                <div class="small text-muted">Two-wheelers, cars, etc.</div>
+              </div>
+              <a href="/categories" class="btn btn-sm btn-light border"><i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription Plans -->
+        <div class="col-sm-6 col-md-4">
+          <div class="card p-3 mb-0">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="text-muted small fw-semibold">Subscription Plans</div>
+                <div class="fs-4 fw-bold mt-1" id="kpiPlans">—</div>
+                <div class="small text-muted">Monthly, annual tier options</div>
+              </div>
+              <a href="/plans" class="btn btn-sm btn-light border"><i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Broadcast Notifications -->
+        <div class="col-sm-12 col-md-4">
+          <div class="card p-3 mb-0">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="text-muted small fw-semibold">Notifications</div>
+                <div class="fs-4 fw-bold mt-1" id="kpiNotifications">—</div>
+                <div class="small text-muted">Customer announcements</div>
+              </div>
+              <a href="/notifications" class="btn btn-sm btn-light border"><i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="row g-3 mb-4">
+        <!-- Bookings by Vehicle Type -->
+        <div class="col-lg-6">
+          <div class="card h-100 mb-0">
+            <div class="card-header">
+              <h5 class="card-title"><i class="bi bi-pie-chart text-primary me-2"></i>Bookings by Vehicle Type</h5>
+              <span class="badge bg-light text-muted border">Live Data</span>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 280px;">
+              <canvas id="vehicleTypeChart" style="max-height: 250px;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shops Distribution by City -->
+        <div class="col-lg-6">
+          <div class="card h-100 mb-0">
+            <div class="card-header">
+              <h5 class="card-title"><i class="bi bi-bar-chart-line text-success me-2"></i>Service Centers by City</h5>
+              <span class="badge bg-light text-muted border">Live Data</span>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 280px;">
+              <canvas id="cityChart" style="max-height: 250px;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Records Row -->
+      <div class="row g-3">
+        <!-- Recent Bookings Table -->
+        <div class="col-xl-7">
+          <div class="card mb-0">
+            <div class="card-header">
+              <h5 class="card-title"><i class="bi bi-calendar-event text-primary me-2"></i>Recent Appointments</h5>
+              <a href="/bookings" class="btn btn-sm btn-link text-decoration-none">View All Bookings &rarr;</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0" id="recentBookingsTable">
+                <thead>
+                  <tr>
+                    <th>Customer / Vehicle</th>
+                    <th>Service</th>
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentBookingsTbody">
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
+                      Loading recent appointments...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Registered Users Table -->
+        <div class="col-xl-5">
+          <div class="card mb-0">
+            <div class="card-header">
+              <h5 class="card-title"><i class="bi bi-people text-success me-2"></i>Recent Registered Users</h5>
+              <a href="/users" class="btn btn-sm btn-link text-decoration-none">View All Users &rarr;</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0" id="recentUsersTable">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody id="recentUsersTbody">
+                  <tr>
+                    <td colspan="3" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm me-2 text-success" role="status"></div>
+                      Loading users...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<!-- Dashboard Specific Logic -->
+<script src="/public/js/dashboard.js"></script>

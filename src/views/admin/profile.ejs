@@ -1,0 +1,131 @@
+<%- include('../partials/head', { pageTitle: 'Admin Profile', activeMenu: 'profile' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'profile' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Admin Profile' } ] }) %>
+          <h1 class="page-title">Administrator Account</h1>
+          <p class="page-subtitle">Manage personal profile details, contact information, and security credentials</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Identity Card -->
+        <div class="col-lg-4">
+          <div class="card text-center p-4">
+            <img src="/public/images/placeholder.svg" alt="Admin" class="profileAvatarPreview rounded-circle mx-auto mb-3 shadow-sm" style="width: 110px; height: 110px; object-fit: cover; border: 3px solid #e2e8f0;">
+            <h4 class="fw-bold mb-1" id="profileDisplayName">Admin</h4>
+            <div class="mb-3">
+              <span class="badge bg-danger-subtle text-danger px-3 py-1 text-uppercase" id="profileDisplayRole">ADMIN</span>
+            </div>
+            <hr>
+            <div class="text-start">
+              <div class="mb-2 d-flex justify-content-between small">
+                <span class="text-muted">Registered Phone:</span>
+                <strong class="font-monospace" id="profileDisplayPhone">—</strong>
+              </div>
+              <div class="mb-2 d-flex justify-content-between small">
+                <span class="text-muted">Member Since:</span>
+                <span id="profileDisplayCreated">—</span>
+              </div>
+              <div class="d-flex justify-content-between small">
+                <span class="text-muted">Access Level:</span>
+                <span class="text-success fw-semibold"><i class="bi bi-shield-check me-1"></i>Full System Root</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Profile & Security Tabs -->
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header border-bottom-0 pb-0">
+              <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                <li class="nav-item">
+                  <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#generalTabPane" type="button" role="tab">
+                    <i class="bi bi-person me-1"></i> General Details
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#securityTabPane" type="button" role="tab">
+                    <i class="bi bi-shield-lock me-1"></i> Security & Password
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body pt-4">
+              <div class="tab-content" id="profileTabContent">
+                <!-- General Tab -->
+                <div class="tab-pane fade show active" id="generalTabPane" role="tabpanel">
+                  <form id="adminProfileForm" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="profileIdInput" value="1">
+
+                    <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                      <img src="/public/images/placeholder.svg" class="profileAvatarPreview table-thumb rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                      <div>
+                        <label class="form-label mb-1">Change Profile Avatar</label>
+                        <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Administrator Name <span class="text-danger">*</span></label>
+                      <input type="text" name="name" id="profileNameInput" class="form-control" required>
+                    </div>
+
+                    <div class="mb-4">
+                      <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                      <input type="tel" name="phone" id="profilePhoneInput" class="form-control" required>
+                      <div class="form-text">Used for receiving system alerts and two-factor verifications.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                      <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                      Update Profile
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Security Tab -->
+                <div class="tab-pane fade" id="securityTabPane" role="tabpanel">
+                  <form id="adminPasswordForm">
+                    <input type="hidden" name="phone" id="passPhoneInput" value="">
+
+                    <div class="mb-3">
+                      <label class="form-label">New Password <span class="text-danger">*</span></label>
+                      <input type="password" name="current_pass" class="form-control" placeholder="••••••••" required>
+                      <div class="form-text">Minimum 8 characters with letters, numbers, and symbols.</div>
+                    </div>
+
+                    <div class="mb-4">
+                      <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
+                      <input type="password" name="confirm_pass" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger px-4">
+                      <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                      Change Password
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/profile.js"></script>

@@ -1,0 +1,103 @@
+<%- include('../partials/head', { pageTitle: 'Edit User', activeMenu: 'users' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Users', url: '/users' }, { label: 'User #' + (typeof userId !== 'undefined' ? userId : ''), url: '/users/' + (typeof userId !== 'undefined' ? userId : '') }, { label: 'Edit' } ] }) %>
+          <h1 class="page-title">Edit User Profile</h1>
+          <p class="page-subtitle">Update customer information and profile image</p>
+        </div>
+        <a href="/users" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i> Back to Users
+        </a>
+      </div>
+
+      <!-- Edit Form Card -->
+      <div class="row">
+        <div class="col-lg-8 col-xl-7">
+          <div class="card position-relative" id="userEditCard">
+            <div class="card-header">
+              <h5 class="card-title">Modify Account #<span id="displayUserId"><%= typeof userId !== 'undefined' ? userId : '' %></span></h5>
+            </div>
+            <div class="card-body">
+              <div id="userEditLoading" class="text-center py-4">
+                <div class="spinner-border text-primary me-2"></div> Loading user details...
+              </div>
+
+              <form id="standaloneEditUserForm" class="d-none" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="editUserIdInput" value="<%= typeof userId !== 'undefined' ? userId : '' %>">
+
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
+                  <img src="/public/images/placeholder.svg" id="editPageAvatarPreview" class="table-thumb rounded-circle" style="width: 64px; height: 64px;">
+                  <div>
+                    <label class="form-label mb-1">Change Profile Avatar</label>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                  <input type="text" name="name" id="editUserNameInput" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" name="phone" id="editUserPhoneInput" class="form-control" required>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
+                    Save Changes
+                  </button>
+                  <a href="/users" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/users.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const userId = '<%= typeof userId !== 'undefined' ? userId : '' %>';
+    if (!userId) return;
+
+    try {
+      const res = await apiRequest('/api/getProfile', {
+        method: 'POST',
+        body: { id: userId }
+      });
+
+      if (res.ok && res.data.result) {
+        const u = res.data.result;
+        document.getElementById('editUserNameInput').value = u.name || '';
+        document.getElementById('editUserPhoneInput').value = u.phone || '';
+        if (u.photo) {
+          document.getElementById('editPageAvatarPreview').src = getMediaUrl(u.photo);
+        }
+        document.getElementById('userEditLoading').classList.add('d-none');
+        document.getElementById('standaloneEditUserForm').classList.remove('d-none');
+      } else {
+        document.getElementById('userEditLoading').innerHTML = `<div class="text-danger">${res.data.msg || 'User not found.'}</div>`;
+      }
+    } catch (e) {
+      document.getElementById('userEditLoading').innerHTML = '<div class="text-danger">Failed to load user profile.</div>';
+    }
+  });
+</script>

@@ -13,11 +13,12 @@ const createNotificationTable = () => {
 createNotificationTable();
 
 export const addNotificationController = async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, subtitle } = req.body;
+  const content = description || subtitle || "";
   try {
     const photo = req.file ? req.file.filename : "";
-    const query = `INSERT INTO notification(title,description,photo) VALUES($1,$2,$3) RETURNING *`;
-    const { rows } = await pool.query(query, [title, description, photo]);
+    const query = `INSERT INTO notification(title,subtitle,photo) VALUES($1,$2,$3) RETURNING *`;
+    const { rows } = await pool.query(query, [title, content, photo]);
     if (rows.length === 0) {
       return res.status(400).json({
         status: false,
@@ -38,16 +39,19 @@ export const addNotificationController = async (req, res) => {
 };
 
 export const updateNotificationController = async (req, res) => {
-  const { id, title, description } = req.body;
+  const { id, title, description, subtitle } = req.body;
+  const content = description || subtitle;
   try {
     const fields = [];
     const values = [];
     let currentIndex = 1;
-    const data = { title, description };
-    for (const [key, value] of Object.entries(data)) {
-      fields.push(`${key}=$${currentIndex}`);
-      values.push(value);
-      currentIndex++;
+    if (title !== undefined && title !== null && title !== "") {
+      fields.push(`title=$${currentIndex++}`);
+      values.push(title);
+    }
+    if (content !== undefined && content !== null && content !== "") {
+      fields.push(`subtitle=$${currentIndex++}`);
+      values.push(content);
     }
     const photo = req.file ? req.file.filename : "";
     if (photo) {
@@ -55,7 +59,7 @@ export const updateNotificationController = async (req, res) => {
       values.push(photo);
     }
     values.push(id);
-    const query = `UPDATE SET ${fields.join(", ")} notification WHERE id=$${currentIndex}`;
+    const query = `UPDATE notification SET ${fields.join(", ")} WHERE id=$${currentIndex} RETURNING *`;
     const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
       return res.status(400).json({

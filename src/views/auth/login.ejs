@@ -1,0 +1,147 @@
+<%- include('../partials/head', { pageTitle: 'Admin Sign In' }) %>
+
+<div class="auth-page-wrapper">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="auth-brand-icon">
+        <i class="bi bi-tools"></i>
+      </div>
+      <h2 class="auth-title">Vehicle Service</h2>
+      <p class="auth-subtitle">Sign in to your administrative dashboard</p>
+    </div>
+
+    <!-- Error Alert Container -->
+    <div id="loginAlert" class="alert alert-danger d-none" role="alert"></div>
+
+    <!-- Quick Credentials Helper -->
+    <div class="alert alert-primary-subtle border border-primary-subtle p-2 mb-3 rounded d-flex align-items-center justify-content-between">
+      <div class="small">
+        <i class="bi bi-info-circle me-1 text-primary"></i>
+        <strong>Admin Default:</strong> 9798657558
+      </div>
+      <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2" id="btnFillAdmin">
+        Auto-fill
+      </button>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="mb-3">
+        <label for="phoneInput" class="form-label">Phone Number <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-phone"></i></span>
+          <input type="tel" class="form-control" id="phoneInput" name="phone" placeholder="e.g. 9798657558" required autofocus>
+        </div>
+        <div class="invalid-feedback" id="phoneError">Please enter a valid phone number.</div>
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <label for="passwordInput" class="form-label">Password <span class="text-danger">*</span></label>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" id="passwordInput" name="pass" placeholder="••••••••" required>
+          <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+        <div class="invalid-feedback" id="passwordError">Password is required.</div>
+      </div>
+
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+        <label class="form-check-label small text-muted" for="rememberMe">Remember this device</label>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary btn-lg fw-semibold" id="btnLoginSubmit">
+          <span class="spinner-border spinner-border-sm me-2 d-none" id="loginSpinner" role="status" aria-hidden="true"></span>
+          Sign In
+        </button>
+      </div>
+
+      <div class="text-center text-muted small">
+        Need an account? <a href="/register" class="text-primary fw-semibold text-decoration-none">Register</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Core Admin JS -->
+<script src="/public/js/admin.js"></script>
+
+<script>
+  // Toggle password visibility
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  const passInput = document.getElementById('passwordInput');
+  toggleBtn.addEventListener('click', () => {
+    const isPass = passInput.getAttribute('type') === 'password';
+    passInput.setAttribute('type', isPass ? 'text' : 'password');
+    toggleBtn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+  });
+
+  // Auto-fill admin credentials
+  document.getElementById('btnFillAdmin').addEventListener('click', () => {
+    document.getElementById('phoneInput').value = '9798657558';
+    document.getElementById('passwordInput').value = 'admin@9437#$';
+  });
+
+  // Form Submission
+  const form = document.getElementById('loginForm');
+  const alertBox = document.getElementById('loginAlert');
+  const submitBtn = document.getElementById('btnLoginSubmit');
+  const spinner = document.getElementById('loginSpinner');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    alertBox.classList.add('d-none');
+    alertBox.textContent = '';
+
+    const phone = document.getElementById('phoneInput').value.trim();
+    const pass = document.getElementById('passwordInput').value.trim();
+    const remember = document.getElementById('rememberMe').checked;
+
+    if (!phone || !pass) {
+      alertBox.textContent = 'Please fill in both phone number and password.';
+      alertBox.classList.remove('d-none');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, pass })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.status && data.token) {
+        Auth.setToken(data.token, remember);
+        Auth.setUser(data.result, remember);
+        Notify.toast('success', 'Login successful! Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
+      } else {
+        alertBox.textContent = data.msg || 'Invalid phone number or password.';
+        alertBox.classList.remove('d-none');
+      }
+    } catch (err) {
+      alertBox.textContent = 'Server connection failed. Please ensure the server is running.';
+      alertBox.classList.remove('d-none');
+    } finally {
+      submitBtn.disabled = false;
+      spinner.classList.add('d-none');
+    }
+  });
+</script>
+</body>
+</html>

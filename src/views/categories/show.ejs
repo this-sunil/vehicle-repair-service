@@ -1,0 +1,91 @@
+<%- include('../partials/head', { pageTitle: 'Category Details', activeMenu: 'categories' }) %>
+
+<div class="admin-wrapper">
+  <%- include('../partials/sidebar', { activeMenu: 'categories' }) %>
+
+  <div class="admin-main">
+    <%- include('../partials/navbar') %>
+
+    <main class="admin-content">
+      <%- include('../partials/flash-messages') %>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Categories', url: '/categories' }, { label: 'Category Details' } ] }) %>
+          <h1 class="page-title">Category Details</h1>
+          <p class="page-subtitle">Inspect vehicle category metadata and visual branding</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/categories" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Categories
+          </a>
+          <a href="/categories/<%= typeof categoryId !== 'undefined' ? categoryId : '' %>/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Category
+          </a>
+        </div>
+      </div>
+
+      <div id="showCategoryLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div> Loading category...
+      </div>
+
+      <div id="showCategoryContent" class="d-none">
+        <div class="row g-4">
+          <div class="col-lg-6 col-xl-5">
+            <div class="card p-4 text-center">
+              <img src="/public/images/placeholder.svg" id="showCategoryAvatar" alt="Icon" class="table-thumb mx-auto mb-3 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; border-radius: 16px;">
+              <h3 class="fw-bold mb-1" id="showCategoryTitle">—</h3>
+              <div class="mb-3">
+                <span class="badge bg-light text-primary border px-3 py-1 fs-6" id="showCategoryType">—</span>
+              </div>
+              <hr>
+              <div class="text-start">
+                <div class="mb-2 d-flex justify-content-between">
+                  <span class="text-muted small">Category ID:</span>
+                  <span class="fw-semibold small" id="showCategoryId">#<%= typeof categoryId !== 'undefined' ? categoryId : '' %></span>
+                </div>
+                <div class="mb-2 d-flex justify-content-between">
+                  <span class="text-muted small">Created Date:</span>
+                  <span class="fw-semibold small" id="showCategoryCreated">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/public/js/categories.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const cid = Number('<%= typeof categoryId !== 'undefined' ? categoryId : '' %>');
+    if (!cid) return;
+
+    try {
+      const res = await apiRequest('/api/getAllCategory?limit=100&page=1');
+      if (res.ok && res.data.result) {
+        const cat = res.data.result.find(c => c.cid === cid);
+        if (cat) {
+          document.getElementById('showCategoryTitle').textContent = cat.title || 'Untitled';
+          document.getElementById('showCategoryType').textContent = cat.vehicle_type || '—';
+          document.getElementById('showCategoryId').textContent = `#${cat.cid}`;
+          document.getElementById('showCategoryCreated').textContent = formatDate(cat.created_at);
+          if (cat.photo) {
+            document.getElementById('showCategoryAvatar').src = getMediaUrl(cat.photo);
+          }
+          document.getElementById('showCategoryLoading').classList.add('d-none');
+          document.getElementById('showCategoryContent').classList.remove('d-none');
+        } else {
+          document.getElementById('showCategoryLoading').innerHTML = '<div class="text-danger">Category not found.</div>';
+        }
+      }
+    } catch (e) {
+      document.getElementById('showCategoryLoading').innerHTML = '<div class="text-danger">Failed to load category details.</div>';
+    }
+  });
+</script>

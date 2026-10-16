@@ -1,0 +1,62 @@
+<% 
+  var curPage = (typeof currentPage !== 'undefined' && currentPage) ? Number(currentPage) : 1;
+  var totalPages = (typeof totalPage !== 'undefined' && totalPage) ? Number(totalPage) : 1;
+  var totalItems = (typeof totalItem !== 'undefined') ? Number(totalItem) : null;
+  var baseUrl = (typeof pageUrl !== 'undefined') ? pageUrl : '?page=';
+%>
+<% if (totalPages > 1 || totalItems !== null) { %>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 border-top">
+  <div class="text-muted small">
+    <% if (totalItems !== null) { %>
+      Showing page <strong><%= curPage %></strong> of <strong><%= totalPages %></strong> (<%= totalItems %> total records)
+    <% } else { %>
+      Page <strong><%= curPage %></strong> of <strong><%= totalPages %></strong>
+    <% } %>
+  </div>
+
+  <% if (totalPages > 1) { %>
+  <nav aria-label="Table pagination">
+    <ul class="pagination pagination-sm mb-0">
+      <!-- Previous -->
+      <li class="page-item <%= curPage <= 1 ? 'disabled' : '' %>">
+        <a class="page-link" href="<%= baseUrl %><%= curPage - 1 %>" tabindex="<%= curPage <= 1 ? '-1' : '0' %>">
+          <i class="bi bi-chevron-left"></i>
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <% 
+        var startPage = Math.max(1, curPage - 2);
+        var endPage = Math.min(totalPages, curPage + 2);
+        if (startPage > 1) { 
+      %>
+        <li class="page-item"><a class="page-link" href="<%= baseUrl %>1">1</a></li>
+        <% if (startPage > 2) { %>
+          <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+        <% } %>
+      <% } %>
+
+      <% for (var i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === curPage ? 'active' : '' %>">
+          <a class="page-link" href="<%= baseUrl %><%= i %>"><%= i %></a>
+        </li>
+      <% } %>
+
+      <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %>
+          <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+        <% } %>
+        <li class="page-item"><a class="page-link" href="<%= baseUrl %><%= totalPages %>"><%= totalPages %></a></li>
+      <% } %>
+
+      <!-- Next -->
+      <li class="page-item <%= curPage >= totalPages ? 'disabled' : '' %>">
+        <a class="page-link" href="<%= baseUrl %><%= curPage + 1 %>" tabindex="<%= curPage >= totalPages ? '-1' : '0' %>">
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <% } %>
+</div>
+<% } %>

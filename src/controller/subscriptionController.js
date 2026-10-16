@@ -42,14 +42,16 @@ export const updatePlanController=async(req,res)=>{
         const fields=[];
         const values=[];
         let currentIndex=1;
-        const data={pid,plan_title,plan_type,plan_price};
+        const data={plan_title,plan_type,plan_price};
         for(const [key,value] of Object.entries(data)){
-            fields.push(`${key}=$${currentIndex}`);
-            values.push(value);
-            currentIndex++;
+            if (value !== undefined && value !== null && value !== "") {
+                fields.push(`${key}=$${currentIndex}`);
+                values.push(value);
+                currentIndex++;
+            }
         }
         values.push(pid);
-        const query=`UPDATE SET ${fields.join(", ")} plan WHERE pid=$${currentIndex} RETURNING *`;
+        const query=`UPDATE plan SET ${fields.join(", ")} WHERE pid=$${currentIndex} RETURNING *`;
         const {rows}=await pool.query(query,values);
         if(rows.length>0){
             return res.status(200).json({

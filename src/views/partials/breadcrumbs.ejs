@@ -1,16 +1,12 @@
 <% if (typeof crumbs !== 'undefined' && crumbs && crumbs.length > 0) { %>
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="/dashboard"><i class="bi bi-house-door me-1"></i>Home</a>
-    </li>
-    <% crumbs.forEach(function(crumb, index) { %>
-      <% if (index === crumbs.length - 1 || !crumb.url) { %>
-        <li class="breadcrumb-item active" aria-current="page"><%= crumb.label %></li>
-      <% } else { %>
-        <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.label %></a></li>
-      <% } %>
-    <% }); %>
-  </ol>
-</nav>
+<ol class="breadcrumb float-sm-right mb-0 small">
+  <li class="breadcrumb-item"><a href="/dashboard"><i class="fas fa-home mr-1 text-primary"></i>Home</a></li>
+  <% crumbs.forEach(function(crumb, index) { %>
+    <% if (index === crumbs.length - 1 || !crumb.url) { %>
+      <li class="breadcrumb-item active"><%= crumb.label %></li>
+    <% } else { %>
+      <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.label %></a></li>
+    <% } %>
+  <% }); %>
+</ol>
 <% } %>

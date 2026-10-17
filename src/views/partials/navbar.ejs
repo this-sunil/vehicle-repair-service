@@ -1,92 +1,116 @@
-<!-- Top Navbar -->
-<header class="admin-navbar">
-  <!-- Left Side: Toggle & Search -->
-  <div class="navbar-left">
-    <!-- Desktop Sidebar Toggle -->
-    <button type="button" class="btn-toggle-sidebar d-none d-lg-flex" id="sidebarToggleBtn" title="Toggle Sidebar">
-      <i class="bi bi-layout-sidebar"></i>
-    </button>
-    <!-- Mobile Sidebar Toggle -->
-    <button type="button" class="btn-toggle-sidebar d-flex d-lg-none" id="mobileSidebarToggleBtn" title="Open Menu">
-      <i class="bi bi-list fs-4"></i>
-    </button>
+<!-- AdminLTE Top Navigation Bar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom elevation-1">
+  <!-- Left navbar links -->
+  <ul class="navbar-nav align-items-center">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button" id="sidebarToggleBtn" title="Toggle Sidebar">
+        <i class="fas fa-bars"></i>
+      </a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="/dashboard" class="nav-link font-weight-semibold">Dashboard</a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="/bookings" class="nav-link">Bookings</a>
+    </li>
+    <li class="nav-item d-none d-md-inline-block">
+      <a href="/services" class="nav-link">Services</a>
+    </li>
+    <li class="nav-item d-none d-md-inline-block">
+      <a href="/shops" class="nav-link">Shops</a>
+    </li>
+  </ul>
 
-    <!-- Global Search -->
-    <div class="navbar-search d-none d-md-block">
-      <i class="bi bi-search"></i>
-      <input type="text" class="form-control" id="tableSearchInput" placeholder="Quick search in tables...">
-    </div>
-  </div>
-
-  <!-- Right Side: Quick Actions, Alerts & User Menu -->
-  <div class="navbar-right">
-    <!-- Quick Create Dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-sm btn-outline-primary dropdown-toggle rounded-pill px-3" type="button" id="quickActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-plus-lg me-1"></i> Create
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="quickActionDropdown">
-        <li><h6 class="dropdown-header">Quick Actions</h6></li>
-        <li><a class="dropdown-item" href="/bookings/create"><i class="bi bi-calendar-plus text-primary me-2"></i>New Booking</a></li>
-        <li><a class="dropdown-item" href="/services/create"><i class="bi bi-wrench text-info me-2"></i>Add Service</a></li>
-        <li><a class="dropdown-item" href="/categories/create"><i class="bi bi-grid-plus text-warning me-2"></i>New Category</a></li>
-        <li><a class="dropdown-item" href="/shops/create"><i class="bi bi-shop text-success me-2"></i>Add Shop</a></li>
-        <li><a class="dropdown-item" href="/users/create"><i class="bi bi-person-plus text-secondary me-2"></i>Register User</a></li>
-      </ul>
-    </div>
-
-    <!-- Notifications Dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-toggle-sidebar position-relative" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-bell"></i>
-        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-          <span class="visually-hidden">New alerts</span>
-        </span>
-      </button>
-      <div class="dropdown-menu dropdown-menu-end shadow-sm p-0" style="width: 290px;" aria-labelledby="notificationsDropdown">
-        <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
-          <h6 class="mb-0 fw-bold">Notifications</h6>
-          <a href="/notifications" class="text-primary small text-decoration-none">View all</a>
-        </div>
-        <div class="p-2">
-          <a href="/bookings" class="dropdown-item d-flex gap-2 p-2 rounded">
-            <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width:36px;height:36px;">
-              <i class="bi bi-calendar-check"></i>
-            </div>
-            <div>
-              <div class="small fw-semibold">New Bookings Received</div>
-              <div class="text-muted small">Check latest customer slots</div>
-            </div>
-          </a>
-        </div>
-        <div class="p-2 border-top text-center">
-          <a href="/notifications/create" class="btn btn-sm btn-link text-decoration-none p-0">Broadcast Notification</a>
+  <!-- Right navbar links -->
+  <ul class="navbar-nav ml-auto align-items-center">
+    <!-- Navbar Search -->
+    <li class="nav-item d-none d-lg-block mr-2">
+      <div class="input-group input-group-sm" style="width: 240px;">
+        <input class="form-control form-control-navbar" type="search" placeholder="Quick search..." id="tableSearchInput" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-navbar" type="button">
+            <i class="fas fa-search"></i>
+          </button>
         </div>
       </div>
-    </div>
+    </li>
 
-    <!-- Live System Status indicator -->
-    <div class="d-none d-sm-flex align-items-center gap-2 px-2 py-1 rounded bg-light border">
-      <span class="p-1 bg-success rounded-circle"></span>
-      <span class="small text-muted fw-semibold">API Online</span>
-    </div>
+    <!-- Quick Create Dropdown -->
+    <li class="nav-item dropdown mr-1">
+      <a class="nav-link btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-primary d-inline-flex align-items-center" data-toggle="dropdown" href="#" role="button">
+        <i class="fas fa-plus mr-1"></i> <span class="d-none d-sm-inline">Create</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow border-0">
+        <span class="dropdown-header font-weight-bold text-uppercase small">Quick Actions</span>
+        <div class="dropdown-divider"></div>
+        <a href="/bookings/create" class="dropdown-item">
+          <i class="fas fa-calendar-plus mr-2 text-primary"></i> New Booking
+        </a>
+        <a href="/services/create" class="dropdown-item">
+          <i class="fas fa-wrench mr-2 text-warning"></i> Add Service
+        </a>
+        <a href="/categories/create" class="dropdown-item">
+          <i class="fas fa-th-large mr-2 text-info"></i> New Category
+        </a>
+        <a href="/shops/create" class="dropdown-item">
+          <i class="fas fa-store mr-2 text-danger"></i> Add Service Center
+        </a>
+        <a href="/users/create" class="dropdown-item">
+          <i class="fas fa-user-plus mr-2 text-success"></i> Register User
+        </a>
+      </div>
+    </li>
+
+    <!-- Notifications Dropdown Menu -->
+    <li class="nav-item dropdown mr-1">
+      <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-bell"></i>
+        <span class="badge badge-danger navbar-badge" style="font-size: 10px;">3</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow border-0">
+        <span class="dropdown-header font-weight-bold">3 System Alerts</span>
+        <div class="dropdown-divider"></div>
+        <a href="/bookings" class="dropdown-item">
+          <i class="fas fa-calendar-check mr-2 text-primary"></i> New service appointment
+          <span class="float-right text-muted text-sm">3 mins</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="/users" class="dropdown-item">
+          <i class="fas fa-users mr-2 text-success"></i> 2 new customer registrations
+          <span class="float-right text-muted text-sm">12 hours</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="/notifications" class="dropdown-item dropdown-footer font-weight-bold text-primary">See All Notifications</a>
+      </div>
+    </li>
+
+    <!-- Fullscreen Toggle -->
+    <li class="nav-item d-none d-sm-block">
+      <a class="nav-link" data-widget="fullscreen" href="#" role="button" title="Toggle Fullscreen">
+        <i class="fas fa-expand-arrows-alt"></i>
+      </a>
+    </li>
 
     <!-- User Profile Dropdown -->
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="/public/images/placeholder.svg" alt="Admin" class="user-avatar admin-user-avatar" style="width: 36px; height: 36px;">
-        <span class="d-none d-md-inline fw-semibold text-dark admin-user-name">Admin</span>
+    <li class="nav-item dropdown user-menu ml-1">
+      <a href="#" class="nav-link dropdown-toggle d-flex align-items-center p-0" data-toggle="dropdown">
+        <img src="/public/images/placeholder.svg" class="user-image img-circle elevation-1 admin-user-avatar" alt="Admin" style="width: 32px; height: 32px; object-fit: cover;">
+        <span class="d-none d-md-inline ml-2 font-weight-semibold text-dark admin-user-name">Admin</span>
       </a>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenuDropdown">
-        <li class="px-3 py-2 border-bottom">
-          <div class="fw-bold admin-user-name">Admin</div>
-          <div class="text-muted small admin-user-role">Administrator</div>
+      <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow border-0">
+        <!-- User image -->
+        <li class="user-header bg-primary text-center py-3">
+          <img src="/public/images/placeholder.svg" class="img-circle elevation-2 admin-user-avatar" alt="Admin" style="width: 60px; height: 60px; object-fit: cover;">
+          <p class="mt-2 mb-0 font-weight-bold admin-user-name">Administrator</p>
+          <small class="admin-user-role">Super Admin &bull; Root Access</small>
         </li>
-        <li><a class="dropdown-item" href="/admin/profile"><i class="bi bi-person me-2"></i>My Profile</a></li>
-        <li><a class="dropdown-item" href="/admin/settings"><i class="bi bi-gear me-2"></i>Site Settings</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-danger btn-logout" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+        <!-- Menu Footer-->
+        <li class="user-footer d-flex justify-content-between p-3 bg-light">
+          <a href="/admin/profile" class="btn btn-default btn-flat btn-sm"><i class="fas fa-user mr-1"></i> Profile</a>
+          <a href="/admin/settings" class="btn btn-default btn-flat btn-sm"><i class="fas fa-cog mr-1"></i> Settings</a>
+          <a href="#" class="btn btn-danger btn-flat btn-sm btn-logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+        </li>
       </ul>
-    </div>
-  </div>
-</header>
+    </li>
+  </ul>
+</nav>

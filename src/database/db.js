@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({debug:true,encoding:'utf-8',override:true});
 const pool=new Pool({
     // host:`${process.env.DB_HOSTNAME}`,
     // user: `${process.env.DB_USER}`,

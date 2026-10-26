@@ -1,127 +1,115 @@
-<!-- Main AdminLTE Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4" id="adminSidebar">
-  <!-- Brand Logo -->
-  <a href="/dashboard" class="brand-link bg-dark">
-    <div class="brand-image d-inline-flex align-items-center justify-content-center bg-primary rounded-circle elevation-2" style="width: 34px; height: 34px; margin-left: 0.8rem; margin-right: 0.5rem;">
-      <i class="fas fa-tools text-white" style="font-size: 15px;"></i>
+<!-- Corona Sidebar -->
+<aside class="corona-sidebar" id="coronaSidebar">
+  <!-- Brand -->
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <i class="fas fa-tools"></i>
     </div>
-    <span class="brand-text font-weight-bold tracking-tight">Vehicle<span class="text-primary font-weight-light">Service</span></span>
-  </a>
+    <span class="brand-name">Vehicle<span>Service</span></span>
+  </div>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
-      <div class="image">
-        <img src="/public/images/placeholder.svg" class="img-circle elevation-2 admin-user-avatar" alt="Admin" style="width: 36px; height: 36px; object-fit: cover;">
-      </div>
-      <div class="info">
-        <a href="/admin/profile" class="d-block font-weight-bold admin-user-name">Administrator</a>
-        <div class="text-xs text-muted d-flex align-items-center">
-          <span class="badge badge-success badge-pill py-0 px-2 mr-1" style="font-size: 9px;"><i class="fas fa-circle mr-1" style="font-size: 7px;"></i>Online</span>
-          <span class="admin-user-role">Super Admin</span>
-        </div>
+  <!-- User Panel -->
+  <div class="sidebar-user">
+    <img src="/public/images/placeholder.svg" class="sidebar-user-avatar admin-user-avatar" alt="Admin">
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name admin-user-name">Administrator</div>
+      <div class="sidebar-user-role">
+        <span class="sidebar-status-dot"></span>
+        <span class="admin-user-role">Super Admin</span>
       </div>
     </div>
+  </div>
 
-    <!-- Sidebar Menu -->
-    <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-header text-uppercase font-weight-bold text-muted small">Operations & Workflow</li>
+  <!-- Navigation -->
+  <nav>
+    <ul class="sidebar-menu">
+      <li class="sidebar-menu-label">Operations &amp; Workflow</li>
 
-        <li class="nav-item">
-          <a href="/dashboard" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'dashboard') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-            <p>Executive Dashboard</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/dashboard" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'dashboard') ? 'active' : '' %>">
+          <i class="bi bi-speedometer2"></i>
+          <span>Executive Dashboard</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/bookings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'bookings') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-calendar-check text-primary"></i>
-            <p>
-              Bookings
-              <span class="badge badge-primary right" id="badgeBookingCount">20</span>
-            </p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/bookings" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'bookings') ? 'active' : '' %>">
+          <i class="bi bi-calendar-check"></i>
+          <span>Bookings</span>
+          <span class="sidebar-menu-badge badge bg-primary" id="badgeBookingCount">20</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/services" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'services') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-wrench text-warning"></i>
-            <p>Vehicle Services</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/services" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'services') ? 'active' : '' %>">
+          <i class="bi bi-wrench-adjustable"></i>
+          <span>Vehicle Services</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/categories" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'categories') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-th-large text-info"></i>
-            <p>
-              Categories
-              <span class="badge badge-info right" id="badgeCategoryCount">4</span>
-            </p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/categories" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'categories') ? 'active' : '' %>">
+          <i class="bi bi-grid-3x3-gap"></i>
+          <span>Categories</span>
+          <span class="sidebar-menu-badge badge bg-info" id="badgeCategoryCount">4</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/shops" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'shops') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-map-marker-alt text-danger"></i>
-            <p>
-              Shops & Centers
-              <span class="badge badge-secondary right" id="badgeShopCount">50</span>
-            </p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/shops" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'shops') ? 'active' : '' %>">
+          <i class="bi bi-geo-alt"></i>
+          <span>Shops &amp; Centers</span>
+          <span class="sidebar-menu-badge badge bg-secondary" id="badgeShopCount">50</span>
+        </a>
+      </li>
 
-        <li class="nav-header text-uppercase font-weight-bold text-muted small mt-2">Management</li>
+      <li class="sidebar-menu-label">Management</li>
 
-        <li class="nav-item">
-          <a href="/users" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'users') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-users text-success"></i>
-            <p>
-              Users & Customers
-              <span class="badge badge-success right" id="badgeUserCount">37</span>
-            </p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/users" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'users') ? 'active' : '' %>">
+          <i class="bi bi-people"></i>
+          <span>Users &amp; Customers</span>
+          <span class="sidebar-menu-badge badge bg-success" id="badgeUserCount">37</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/plans" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'plans') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-id-card text-purple"></i>
-            <p>Subscription Plans</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/plans" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'plans') ? 'active' : '' %>">
+          <i class="bi bi-credit-card-2-front"></i>
+          <span>Subscription Plans</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/notifications" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'notifications') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-bullhorn text-teal"></i>
-            <p>Broadcast Alerts</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/notifications" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'notifications') ? 'active' : '' %>">
+          <i class="bi bi-megaphone"></i>
+          <span>Broadcast Alerts</span>
+        </a>
+      </li>
 
-        <li class="nav-header text-uppercase font-weight-bold text-muted small mt-2">Configuration</li>
+      <li class="sidebar-menu-label">Configuration</li>
 
-        <li class="nav-item">
-          <a href="/admin/profile" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'profile') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-user-shield text-info"></i>
-            <p>Admin Profile</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/admin/profile" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'profile') ? 'active' : '' %>">
+          <i class="bi bi-shield-person"></i>
+          <span>Admin Profile</span>
+        </a>
+      </li>
 
-        <li class="nav-item">
-          <a href="/admin/settings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'settings') ? 'active' : '' %>">
-            <i class="nav-icon fas fa-cogs text-secondary"></i>
-            <p>Platform Settings</p>
-          </a>
-        </li>
+      <li class="sidebar-menu-item">
+        <a href="/admin/settings" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'settings') ? 'active' : '' %>">
+          <i class="bi bi-gear"></i>
+          <span>Platform Settings</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-        <li class="nav-item mt-2">
-          <a href="#" class="nav-link text-danger btn-logout">
-            <i class="nav-icon fas fa-sign-out-alt"></i>
-            <p class="font-weight-bold">Sign Out</p>
-          </a>
-        </li>
-      </ul>
-    </nav>
+  <!-- Logout Footer -->
+  <div class="sidebar-footer">
+    <a href="#" class="btn-logout">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Sign Out</span>
+    </a>
   </div>
 </aside>

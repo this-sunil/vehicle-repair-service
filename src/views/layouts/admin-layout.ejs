@@ -1,21 +1,18 @@
 <%- include('../partials/head', { pageTitle: typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' }) %>
 
-<div class="wrapper">
-  <!-- Navbar -->
-  <%- include('../partials/navbar') %>
-
-  <!-- Main Sidebar Container -->
+<div class="corona-wrapper">
+  <!-- Sidebar -->
   <%- include('../partials/sidebar', { activeMenu: typeof activeMenu !== 'undefined' ? activeMenu : 'dashboard' }) %>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <section class="content pt-3 pb-4">
-      <div class="container-fluid">
-        <%- include('../partials/flash-messages') %>
-        <%- typeof body !== 'undefined' ? body : '' %>
-      </div>
-    </section>
-  </div>
+  <!-- Main Area -->
+  <div class="corona-main">
+    <%- include('../partials/navbar') %>
 
-  <!-- Footer -->
-  <%- include('../partials/footer') %>
+    <main class="corona-content">
+      <%- include('../partials/flash-messages') %>
+      <%- typeof body !== 'undefined' ? body : '' %>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </div>
+</div>

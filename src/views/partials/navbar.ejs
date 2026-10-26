@@ -1,116 +1,102 @@
-<!-- AdminLTE Top Navigation Bar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom elevation-1">
-  <!-- Left navbar links -->
-  <ul class="navbar-nav align-items-center">
-    <li class="nav-item">
-      <a class="nav-link" data-widget="pushmenu" href="#" role="button" id="sidebarToggleBtn" title="Toggle Sidebar">
-        <i class="fas fa-bars"></i>
-      </a>
-    </li>
-    <li class="nav-item d-none d-sm-inline-block">
-      <a href="/dashboard" class="nav-link font-weight-semibold">Dashboard</a>
-    </li>
-    <li class="nav-item d-none d-sm-inline-block">
-      <a href="/bookings" class="nav-link">Bookings</a>
-    </li>
-    <li class="nav-item d-none d-md-inline-block">
-      <a href="/services" class="nav-link">Services</a>
-    </li>
-    <li class="nav-item d-none d-md-inline-block">
-      <a href="/shops" class="nav-link">Shops</a>
-    </li>
-  </ul>
+<!-- Corona Topbar Navbar -->
+<nav class="corona-navbar">
+  <!-- Left -->
+  <div class="navbar-left">
+    <button class="btn-sidebar-toggle" id="sidebarToggleBtn" title="Toggle Sidebar">
+      <i class="bi bi-list"></i>
+    </button>
 
-  <!-- Right navbar links -->
-  <ul class="navbar-nav ml-auto align-items-center">
-    <!-- Navbar Search -->
-    <li class="nav-item d-none d-lg-block mr-2">
-      <div class="input-group input-group-sm" style="width: 240px;">
-        <input class="form-control form-control-navbar" type="search" placeholder="Quick search..." id="tableSearchInput" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="button">
-            <i class="fas fa-search"></i>
-          </button>
+    <!-- Breadcrumb / Page Nav (desktop) -->
+    <div class="d-none d-md-flex align-items-center gap-2">
+      <a href="/dashboard" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Dashboard</a>
+      <span class="text-muted mx-1" style="font-size:0.75rem;">/</span>
+      <a href="/bookings" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Bookings</a>
+      <span class="text-muted mx-1" style="font-size:0.75rem;">/</span>
+      <a href="/services" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Services</a>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="navbar-right">
+    <!-- Search -->
+    <div class="topbar-search d-none d-lg-block">
+      <i class="bi bi-search"></i>
+      <input type="text" class="form-control" placeholder="Quick search..." id="tableSearchInput">
+    </div>
+
+    <!-- Quick Create -->
+    <div class="dropdown">
+      <button class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+        <i class="bi bi-plus-lg me-1"></i>
+        <span class="d-none d-sm-inline">Create</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><span class="dropdown-header">Quick Actions</span></li>
+        <li><a class="dropdown-item" href="/bookings/create"><i class="bi bi-calendar-plus text-primary"></i> New Booking</a></li>
+        <li><a class="dropdown-item" href="/services/create"><i class="bi bi-wrench text-warning"></i> Add Service</a></li>
+        <li><a class="dropdown-item" href="/categories/create"><i class="bi bi-grid-3x3-gap text-info"></i> New Category</a></li>
+        <li><a class="dropdown-item" href="/shops/create"><i class="bi bi-shop text-danger"></i> Add Service Center</a></li>
+        <li><a class="dropdown-item" href="/users/create"><i class="bi bi-person-plus text-success"></i> Register User</a></li>
+      </ul>
+    </div>
+
+    <!-- Notifications -->
+    <div class="dropdown">
+      <a href="#" class="navbar-icon-btn" data-bs-toggle="dropdown">
+        <i class="bi bi-bell"></i>
+        <span class="navbar-badge">3</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+        <div class="dropdown-header d-flex align-items-center justify-content-between">
+          <span>System Alerts</span>
+          <span class="badge bg-danger rounded-pill">3</span>
         </div>
-      </div>
-    </li>
-
-    <!-- Quick Create Dropdown -->
-    <li class="nav-item dropdown mr-1">
-      <a class="nav-link btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-primary d-inline-flex align-items-center" data-toggle="dropdown" href="#" role="button">
-        <i class="fas fa-plus mr-1"></i> <span class="d-none d-sm-inline">Create</span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right shadow border-0">
-        <span class="dropdown-header font-weight-bold text-uppercase small">Quick Actions</span>
-        <div class="dropdown-divider"></div>
-        <a href="/bookings/create" class="dropdown-item">
-          <i class="fas fa-calendar-plus mr-2 text-primary"></i> New Booking
-        </a>
-        <a href="/services/create" class="dropdown-item">
-          <i class="fas fa-wrench mr-2 text-warning"></i> Add Service
-        </a>
-        <a href="/categories/create" class="dropdown-item">
-          <i class="fas fa-th-large mr-2 text-info"></i> New Category
-        </a>
-        <a href="/shops/create" class="dropdown-item">
-          <i class="fas fa-store mr-2 text-danger"></i> Add Service Center
-        </a>
-        <a href="/users/create" class="dropdown-item">
-          <i class="fas fa-user-plus mr-2 text-success"></i> Register User
-        </a>
-      </div>
-    </li>
-
-    <!-- Notifications Dropdown Menu -->
-    <li class="nav-item dropdown mr-1">
-      <a class="nav-link" data-toggle="dropdown" href="#">
-        <i class="far fa-bell"></i>
-        <span class="badge badge-danger navbar-badge" style="font-size: 10px;">3</span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow border-0">
-        <span class="dropdown-header font-weight-bold">3 System Alerts</span>
         <div class="dropdown-divider"></div>
         <a href="/bookings" class="dropdown-item">
-          <i class="fas fa-calendar-check mr-2 text-primary"></i> New service appointment
-          <span class="float-right text-muted text-sm">3 mins</span>
+          <i class="bi bi-calendar-check text-primary me-2"></i>
+          <div>
+            <div style="font-size:0.82rem; font-weight:600;">New service appointment</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">3 mins ago</div>
+          </div>
         </a>
-        <div class="dropdown-divider"></div>
         <a href="/users" class="dropdown-item">
-          <i class="fas fa-users mr-2 text-success"></i> 2 new customer registrations
-          <span class="float-right text-muted text-sm">12 hours</span>
+          <i class="bi bi-people text-success me-2"></i>
+          <div>
+            <div style="font-size:0.82rem; font-weight:600;">2 new customer registrations</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">12 hours ago</div>
+          </div>
         </a>
         <div class="dropdown-divider"></div>
-        <a href="/notifications" class="dropdown-item dropdown-footer font-weight-bold text-primary">See All Notifications</a>
+        <a href="/notifications" class="dropdown-item justify-content-center text-primary fw-semibold">
+          See All Notifications <i class="bi bi-arrow-right ms-1"></i>
+        </a>
       </div>
-    </li>
+    </div>
 
-    <!-- Fullscreen Toggle -->
-    <li class="nav-item d-none d-sm-block">
-      <a class="nav-link" data-widget="fullscreen" href="#" role="button" title="Toggle Fullscreen">
-        <i class="fas fa-expand-arrows-alt"></i>
-      </a>
-    </li>
+    <!-- Fullscreen -->
+    <button class="navbar-icon-btn d-none d-sm-flex" id="btnFullscreen" title="Toggle Fullscreen">
+      <i class="bi bi-fullscreen"></i>
+    </button>
 
-    <!-- User Profile Dropdown -->
-    <li class="nav-item dropdown user-menu ml-1">
-      <a href="#" class="nav-link dropdown-toggle d-flex align-items-center p-0" data-toggle="dropdown">
-        <img src="/public/images/placeholder.svg" class="user-image img-circle elevation-1 admin-user-avatar" alt="Admin" style="width: 32px; height: 32px; object-fit: cover;">
-        <span class="d-none d-md-inline ml-2 font-weight-semibold text-dark admin-user-name">Admin</span>
+    <!-- User Dropdown -->
+    <div class="dropdown">
+      <a href="#" class="navbar-user" data-bs-toggle="dropdown">
+        <img src="/public/images/placeholder.svg" class="admin-user-avatar" alt="Admin">
+        <span class="user-name d-none d-md-inline admin-user-name">Admin</span>
+        <i class="bi bi-chevron-down d-none d-md-inline" style="font-size:0.7rem; color:var(--text-muted);"></i>
       </a>
-      <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow border-0">
-        <!-- User image -->
-        <li class="user-header bg-primary text-center py-3">
-          <img src="/public/images/placeholder.svg" class="img-circle elevation-2 admin-user-avatar" alt="Admin" style="width: 60px; height: 60px; object-fit: cover;">
-          <p class="mt-2 mb-0 font-weight-bold admin-user-name">Administrator</p>
-          <small class="admin-user-role">Super Admin &bull; Root Access</small>
+      <ul class="dropdown-menu dropdown-menu-end" style="min-width: 200px;">
+        <li>
+          <div class="px-3 py-2 border-bottom" style="border-color:var(--border-subtle)!important;">
+            <div class="fw-700 admin-user-name" style="font-size:0.85rem; font-weight:700;">Administrator</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);" class="admin-user-role">Super Admin · Root Access</div>
+          </div>
         </li>
-        <!-- Menu Footer-->
-        <li class="user-footer d-flex justify-content-between p-3 bg-light">
-          <a href="/admin/profile" class="btn btn-default btn-flat btn-sm"><i class="fas fa-user mr-1"></i> Profile</a>
-          <a href="/admin/settings" class="btn btn-default btn-flat btn-sm"><i class="fas fa-cog mr-1"></i> Settings</a>
-          <a href="#" class="btn btn-danger btn-flat btn-sm btn-logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
-        </li>
+        <li><a class="dropdown-item mt-1" href="/admin/profile"><i class="bi bi-person-circle text-primary"></i> Profile</a></li>
+        <li><a class="dropdown-item" href="/admin/settings"><i class="bi bi-gear text-secondary"></i> Settings</a></li>
+        <li><div class="dropdown-divider"></div></li>
+        <li><a class="dropdown-item text-danger btn-logout" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
       </ul>
-    </li>
-  </ul>
+    </div>
+  </div>
 </nav>

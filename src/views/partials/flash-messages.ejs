@@ -1,21 +1,17 @@
 <div id="flashAlertContainer" class="mb-3">
   <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
-    <div class="alert alert-success alert-dismissible fade show elevation-1" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <h5><i class="icon fas fa-check-circle"></i> Success</h5>
-      <%= success_msg %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <strong>Success!</strong> <%= success_msg %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <% } %>
 
   <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
-    <div class="alert alert-danger alert-dismissible fade show elevation-1" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <h5><i class="icon fas fa-ban"></i> Alert</h5>
-      <%= error_msg %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <strong>Error!</strong> <%= error_msg %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <% } %>
 </div>

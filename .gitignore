@@ -1,0 +1,5 @@
+# Ignore private keys
+private.key
+public.key
+.env
+

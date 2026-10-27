@@ -55,7 +55,6 @@ const limiter = rateLimit({
 app.use("/upload", express.static(path.join(process.cwd(), "src/upload")));
 app.use("/public", express.static(path.join(process.cwd(), "src/public")));
 app.use("/bootstrap-icons", express.static(path.join(process.cwd(), "node_modules/bootstrap-icons")));
-app.use(express.static(path.join(process.cwd(), "src/public/dist/")));
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "src/views"));
 
@@ -202,9 +201,6 @@ app.get("/terms-condition", (req, res) => {
 });
 
 // Legacy / Demo Routes
-app.get("/charts", (req, res) => res.render("pages/charts/chartjs"));
-app.get("/basic-table", (req, res) => res.render("pages/tables/basic-table"));
-app.get("/basic-elements", (req, res) => res.render("pages/forms/basic_elements"));
 
 // Errors
 app.get("/403", (req, res) => res.status(403).render("errors/403", { pageTitle: "Access Denied" }));

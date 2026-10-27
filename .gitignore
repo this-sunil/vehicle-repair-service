@@ -3,3 +3,4 @@ private.key
 public.key
 .env
 
+src/firebase.json

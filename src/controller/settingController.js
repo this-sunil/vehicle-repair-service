@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const settingTable=async()=>{
     const query=`CREATE TABLE IF NOT EXISTS settings(sid SERIAL PRIMARY KEY,contact_url TEXT NOT NULL,terms_condition_url TEXT NOT NULL,privacy_policy_url TEXT NOT NULL,photo TEXT NOT NULL,created_at TIMESTAMP default CURRENT_TIMESTAMP)`;
@@ -24,6 +25,7 @@ export const addSettingController=async(req,res)=>{
                 msg:"Something Went Wrong !!!"
             });
         }
+        logActivity(req, { action: "create", entity: "setting", entityId: rows[0].sid, details: `Saved platform settings (contact, terms, privacy links)` });
         return res.status(200).json({
             status:true,
             msg:"Setting Table Inserted Successfully !!!",
@@ -49,6 +51,7 @@ export const deleteSettingController=async(req,res)=>{
             msg:"No Data Found !!!"
         });
      }
+     logActivity(req, { action: "delete", entity: "setting", entityId: id, details: `Deleted platform settings entry #${id}` });
      return res.status(200).json({
         status:true,
         msg:"Delete Setting Successfully!!!",
@@ -89,6 +92,7 @@ export const updateSettingController=async(req,res)=>{
                 msg:"Something Went Wrong !!!"
             });
         }
+        logActivity(req, { action: "update", entity: "setting", entityId: sid, details: `Updated platform settings` });
         return res.status(200).json({
             status:true,
             msg:"Update Setting Successfully !!!",

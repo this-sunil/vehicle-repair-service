@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const createBookTable = () => {
   const query = `
@@ -108,6 +109,12 @@ export const addBookingController = async (req, res) => {
     // =========================
     // Success
     // =========================
+    logActivity(req, {
+      action: "create",
+      entity: "booking",
+      entityId: bookingResult.rows[0].book_id,
+      details: `Booked ${service_name} for ${vehicle_name} (${registration_no}) on ${slot_date} ${slot_time}`,
+    });
     return res.status(200).json({
       status: true,
       msg: "Inserted successfully",
@@ -183,6 +190,12 @@ export const deleteBookingController = async (req, res) => {
         msg: "Failed to delete",
       });
     }
+    logActivity(req, {
+      action: "delete",
+      entity: "booking",
+      entityId: book_id,
+      details: `Deleted booking #${book_id} (${rows[0].vehicle_name}, ${rows[0].registration_no})`,
+    });
     return res.status(200).json({
       status: true,
       msg: "Booking Delete Successfully !!!",
@@ -249,6 +262,12 @@ export const updateBookingController = async (req, res) => {
         msg: "Failed to update",
       });
     }
+    logActivity(req, {
+      action: "update",
+      entity: "booking",
+      entityId: rows[0].book_id,
+      details: `Rescheduled booking #${rows[0].book_id} to ${rows[0].slot_date} ${rows[0].slot_time}`,
+    });
     return res.status(200).json({
       status: true,
       msg: "Update Booking Slot Successfully",

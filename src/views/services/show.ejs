@@ -1,94 +1,44 @@
-<%- include('../partials/head', { pageTitle: 'Service Details', activeMenu: 'services' }) %>
+<%- include('../partials/head', { pageTitle: 'Service Details', bodyAttrs: 'data-protected data-page="services-show" data-id="' + (typeof serviceId !== 'undefined' ? serviceId : '') + '"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'services' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'services' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
-
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Services', url: '/services' }, { label: 'Service Details' } ] }) %>
-          <h1 class="page-title">Service Details</h1>
-          <p class="page-subtitle">Inspect service specifications, description, and status</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <a href="/services" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back to Services
-          </a>
-          <a href="/services/<%= typeof serviceId !== 'undefined' ? serviceId : '' %>/edit" class="btn btn-primary btn-sm">
-            <i class="bi bi-pencil me-1"></i> Edit Service
-          </a>
-        </div>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/services" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Service details</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Catalog entry overview</p>
       </div>
+    </div>
 
-      <div id="showServiceLoading" class="text-center py-5">
-        <div class="spinner-border text-primary me-2"></div> Loading service details...
-      </div>
-
-      <div id="showServiceContent" class="d-none">
-        <div class="row g-4">
-          <div class="col-lg-8">
-            <div class="card mb-4">
-              <div class="card-body p-4">
-                <div class="d-flex flex-column flex-sm-row gap-4 mb-4">
-                  <img src="/public/images/placeholder.svg" id="showServicePhoto" alt="Service Photo" class="rounded-3 shadow-sm" style="width: 140px; height: 140px; object-fit: cover;">
-                  <div class="flex-grow-1">
-                    <span class="badge bg-primary-subtle text-primary mb-2">Active Catalog Service</span>
-                    <h2 class="fw-bold mb-2 text-dark" id="showServiceTitle">—</h2>
-                    <p class="text-muted small mb-0">Record ID: <strong id="showServiceId">#<%= typeof serviceId !== 'undefined' ? serviceId : '' %></strong> &bull; Created: <span id="showServiceCreated">—</span></p>
-                  </div>
-                </div>
-
-                <h5 class="fw-bold mb-2">Service Description & Scope</h5>
-                <div class="p-3 bg-light rounded text-secondary" id="showServiceDescription" style="white-space: pre-line; line-height: 1.7;">
-                  —
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="mx-auto grid max-w-4xl grid-cols-1 gap-4 lg:grid-cols-3">
+      <div class="card overflow-hidden lg:col-span-1">
+        <div class="grid h-48 place-items-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900" id="s-photo">
+          <i class="bi bi-tools text-5xl text-slate-300 dark:text-slate-600"></i>
+        </div>
+        <div class="p-5">
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-white" id="s-title">Loading…</h3>
+          <p class="mt-1 text-xs text-slate-400" id="s-added">—</p>
         </div>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div class="card p-6 lg:col-span-2">
+        <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100"><i class="bi bi-card-text text-brand-500"></i> Description</h3>
+        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300" id="s-desc">—</p>
+        <div class="mt-6 flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+          <button class="btn-secondary btn-md" id="s-del"><i class="bi bi-trash3"></i> Delete</button>
+          <a href="#" class="btn-primary btn-md" id="s-edit-link"><i class="bi bi-pencil"></i> Edit Service</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/services.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const serviceId = Number('<%= typeof serviceId !== 'undefined' ? serviceId : '' %>');
-    if (!serviceId) return;
-
-    try {
-      const res = await apiRequest('/api/getAllService', {
-        method: 'POST',
-        body: { page: 1, limit: 100 }
-      });
-
-      if (res.ok && res.data.result) {
-        const item = res.data.result.find(s => s.id === serviceId);
-        if (item) {
-          document.getElementById('showServiceTitle').textContent = item.title || 'Untitled';
-          document.getElementById('showServiceDescription').textContent = item.description || 'No description provided.';
-          document.getElementById('showServiceId').textContent = `#${item.id}`;
-          document.getElementById('showServiceCreated').textContent = formatDate(item.created_at);
-          if (item.photo) {
-            document.getElementById('showServicePhoto').src = getMediaUrl(item.photo);
-          }
-          document.getElementById('showServiceLoading').classList.add('d-none');
-          document.getElementById('showServiceContent').classList.remove('d-none');
-        } else {
-          document.getElementById('showServiceLoading').innerHTML = '<div class="text-danger">Service not found.</div>';
-        }
-      }
-    } catch (e) {
-      document.getElementById('showServiceLoading').innerHTML = '<div class="text-danger">Failed to load service details.</div>';
-    }
-  });
-</script>
+<script src="/public/js/services.js" defer></script>
+</body>
+</html>

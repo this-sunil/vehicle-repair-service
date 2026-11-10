@@ -1,55 +1,11 @@
-<% 
-  var curPage = (typeof currentPage !== 'undefined' && currentPage) ? Number(currentPage) : 1;
-  var totalPages = (typeof totalPage !== 'undefined' && totalPage) ? Number(totalPage) : 1;
-  var totalItems = (typeof totalItem !== 'undefined') ? Number(totalItem) : null;
-  var baseUrl = (typeof pageUrl !== 'undefined') ? pageUrl : '?page=';
-%>
-<% if (totalPages > 1 || totalItems !== null) { %>
-<div class="card-footer clearfix d-flex flex-wrap align-items-center justify-content-between py-2 px-3 bg-light">
-  <div class="text-muted small">
-    <% if (totalItems !== null) { %>
-      Showing page <strong><%= curPage %></strong> of <strong><%= totalPages %></strong> (<%= totalItems %> total items)
-    <% } else { %>
-      Page <strong><%= curPage %></strong> of <strong><%= totalPages %></strong>
-    <% } %>
+<!-- Pagination bar — driven by VS.pagination() in admin.js -->
+<div id="vs-pag" class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
+  <p class="text-xs font-medium text-slate-400" data-pag-info>Loading…</p>
+  <div class="flex items-center gap-1.5">
+    <button class="btn-secondary btn-sm" data-pag-prev disabled>
+      <i class="bi bi-chevron-left"></i> Prev
+    </button>
+    <span class="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300" data-pag-label>1 / 1</span>
+    <button class="btn-secondary btn-sm" data-pag-next>Next <i class="bi bi-chevron-right"></i></button>
   </div>
-
-  <% if (totalPages > 1) { %>
-  <ul class="pagination pagination-sm m-0">
-    <!-- Previous -->
-    <li class="page-item <%= curPage <= 1 ? 'disabled' : '' %>">
-      <a class="page-link" href="<%= baseUrl %><%= curPage - 1 %>">&laquo;</a>
-    </li>
-
-    <% 
-      var startPage = Math.max(1, curPage - 2);
-      var endPage = Math.min(totalPages, curPage + 2);
-      if (startPage > 1) { 
-    %>
-      <li class="page-item"><a class="page-link" href="<%= baseUrl %>1">1</a></li>
-      <% if (startPage > 2) { %>
-        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
-      <% } %>
-    <% } %>
-
-    <% for (var i = startPage; i <= endPage; i++) { %>
-      <li class="page-item <%= i === curPage ? 'active' : '' %>">
-        <a class="page-link" href="<%= baseUrl %><%= i %>"><%= i %></a>
-      </li>
-    <% } %>
-
-    <% if (endPage < totalPages) { %>
-      <% if (endPage < totalPages - 1) { %>
-        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
-      <% } %>
-      <li class="page-item"><a class="page-link" href="<%= baseUrl %><%= totalPages %>"><%= totalPages %></a></li>
-    <% } %>
-
-    <!-- Next -->
-    <li class="page-item <%= curPage >= totalPages ? 'disabled' : '' %>">
-      <a class="page-link" href="<%= baseUrl %><%= curPage + 1 %>">&raquo;</a>
-    </li>
-  </ul>
-  <% } %>
 </div>
-<% } %>

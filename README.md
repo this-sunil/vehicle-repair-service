@@ -18,18 +18,7 @@
 - ⚙️ Node.js + Express (REST API Backend)
 - 🗄️ PostgreSQL (Database)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-This version is fully API-driven and does **not use Firebase**.  
-=======
-
->>>>>>> e928d5f (save)
-=======
-
-=======
-This version is fully API-driven and does **not use Firebase**.  
->>>>>>> 9967109 (Revise README for project details and features)
->>>>>>> d70b3a9 (Revise README for project details and features)
+This version is fully API-driven and does **not use Firebase**.
 All authentication, booking logic, and data management are handled via a custom Node.js backend.
 
 ---
@@ -38,17 +27,27 @@ All authentication, booking logic, and data management are handled via a custom 
 
 ## 🔐 Authentication System (Custom Backend)
 
-- User registration & login
-- JWT-based authentication
+- **Admin-only login** — no public registration
+- JWT-based authentication (30-minute expiry, token refresh)
 - Secure password hashing using bcrypt
-- Role-based access (User / Mechanic / Admin)
-- Middleware-protected routes
+- Only accounts with the `admin` role can sign in
+- `POST /api/register` (user creation) requires a logged-in admin token
+
+### Default Admin Credentials
+
+| Phone       | Password      |
+| ----------- | ------------- |
+| 9798657558  | `admin@1234`  |
+
+> ⚠️ Change the default password immediately after your first login via the
+> **Profile** page (uses your old password to set a new one). The password is
+> seeded from `ADMIN_PASS` in `.env` when the users table is first created.
 
 ### Auth APIs
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/profile`
+- `POST /api/auth/login` (admin only)
+- `POST /api/auth/register` (admin token required)
+- `POST /api/auth/forgotPass` (change own password)
 
 ---
 
@@ -170,6 +169,39 @@ PostgreSQL Database
 - Slot validation to prevent conflicts
 - Clean REST API structure
 - Production-ready scalable architecture
+- **Tailwind CSS admin panel** — responsive, dark-mode, with AI copilot & insights
+
+---
+
+## 🎨 Admin Panel (Tailwind CSS + AI)
+
+The admin panel uses precompiled Tailwind CSS (no CDN dependency) with a custom
+indigo brand palette, Inter font, dark mode (class strategy), collapsible
+sidebar, command palette (⌘K), toasts, and an AI copilot.
+
+### Build the CSS
+
+Whenever you change classes in `src/views/**` or `src/public/js/**` or edit
+`src/tailwind/admin.css`, regenerate the stylesheet:
+
+```bash
+npm run build:css
+```
+
+This compiles `src/tailwind/admin.css` → `src/public/css/admin.css` (minified).
+Requires no dev dependencies — it runs the Tailwind CLI via `npx`.
+
+### AI Features
+
+- **Smart Insights** (`GET /api/ai/insights`) — auto-generated analytics cards on
+  the dashboard. Works out of the box with no external API key (local analytics
+  over your live database).
+- **AI Copilot** (`POST /api/ai/chat`) — floating chat assistant that answers
+  questions about bookings, customers, services, plans and centers.
+
+**Optional Gemini upgrade:** add `GEMINI_API_KEY` to `.env` and restart the
+server to have the copilot powered by Google Gemini 2.0 Flash instead of the
+built-in intent engine. The badge in the copilot header shows the active engine.
 
 ---
 

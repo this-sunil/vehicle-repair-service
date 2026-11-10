@@ -7,9 +7,16 @@ export const tokenController=async (req,res) => {
         const query=`SELECT * FROM users WHERE id=$1`;
         const { rows }=await pool.query(query,[id]);
         if(rows.length===0){
-            return res.status({
+            return res.status(400).json({
                 status:false,
                 msg:"User doesn't exist !!!"
+            });
+        }
+        // Admin-only project: tokens are only minted for admin accounts
+        if(rows[0].role!=="admin"){
+            return res.status(403).json({
+                status:false,
+                msg:"Only admin accounts can request tokens !!!"
             });
         }
         const token=await generateToken(rows[0]);

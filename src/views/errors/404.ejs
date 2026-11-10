@@ -1,20 +1,23 @@
-<%- include('../partials/head', { pageTitle: '404 Page Not Found' }) %>
+<%- include('../partials/head', { pageTitle: 'Page Not Found' }) %>
 
-<div class="auth-wrapper">
-  <div class="auth-card text-center" style="max-width: 480px;">
-    <div class="stat-icon warning mx-auto mb-3" style="width: 72px; height: 72px; font-size: 2.25rem;">
-      <i class="bi bi-question-circle"></i>
+<main class="relative grid min-h-screen place-items-center overflow-hidden px-4">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-brand-500/10 blur-3xl"></div>
+    <div class="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl"></div>
+  </div>
+
+  <div class="relative text-center animate-fadeUp">
+    <h1 class="bg-gradient-to-r from-brand-500 to-violet-600 bg-clip-text text-[7rem] font-black leading-none tracking-tighter text-transparent sm:text-[10rem]">404</h1>
+    <div class="mx-auto -mt-4 grid h-14 w-14 -translate-x-1/2 translate-y-1/2 place-items-center rounded-2xl bg-white shadow-lg ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800" style="transform: translate(-50%, -50%)">
+      <i class="bi bi-compass text-2xl text-brand-500"></i>
     </div>
-    <h1 class="display-4 fw-bold text-dark mb-2">404</h1>
-    <h4 class="fw-semibold text-warning mb-2">Page Not Found</h4>
-    <p class="text-muted mb-4">The page or resource you requested could not be located on the server. Please verify the URL or return to dashboard.</p>
-    <div class="d-flex justify-content-center gap-2">
-      <a href="/dashboard" class="btn btn-primary px-4"><i class="bi bi-house-door me-1"></i> Return Home</a>
-      <button onclick="window.history.back()" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left me-1"></i> Go Back</button>
+    <h2 class="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">This road doesn't exist</h2>
+    <p class="mx-auto mt-2 max-w-sm text-sm text-slate-500 dark:text-slate-400">The page you're looking for was moved, renamed, or never existed. Let's get you back on track.</p>
+    <div class="mt-8 flex justify-center gap-3">
+      <a href="/dashboard" class="btn-secondary btn-md"><i class="bi bi-arrow-left"></i> Go Back</a>
+      <a href="/dashboard" class="btn-primary btn-md"><i class="bi bi-house-door"></i> Dashboard</a>
     </div>
   </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</main>
 </body>
 </html>

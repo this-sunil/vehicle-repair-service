@@ -1,115 +1,94 @@
-<!-- Corona Sidebar -->
-<aside class="corona-sidebar" id="coronaSidebar">
+<!-- Mobile overlay -->
+<div id="vs-sidebar-overlay" class="fixed inset-0 z-40 hidden bg-slate-950/60 backdrop-blur-sm lg:hidden"></div>
+
+<!-- Sidebar -->
+<aside id="vs-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-slate-950 shadow-2xl shadow-slate-950/40 transition-all duration-200 lg:translate-x-0 dark:border-r dark:border-slate-900">
+
   <!-- Brand -->
-  <div class="sidebar-brand">
-    <div class="brand-logo">
-      <i class="fas fa-tools"></i>
+  <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-5">
+    <div class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-brand-500 to-violet-600 shadow-lg shadow-brand-600/40">
+      <i class="bi bi-tools text-lg text-white"></i>
     </div>
-    <span class="brand-name">Vehicle<span>Service</span></span>
+    <div class="sidebar-text overflow-hidden">
+      <div class="truncate text-base font-extrabold tracking-tight text-white">Vehicle<span class="text-brand-400">Service</span></div>
+      <div class="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Control Center</div>
+    </div>
+    <!-- Close (mobile) -->
+    <button id="vs-sidebar-close" class="icon-btn ml-auto text-slate-400 lg:hidden" aria-label="Close menu">
+      <i class="bi bi-x-lg"></i>
+    </button>
   </div>
 
-  <!-- User Panel -->
-  <div class="sidebar-user">
-    <img src="/public/images/placeholder.svg" class="sidebar-user-avatar admin-user-avatar" alt="Admin">
-    <div class="sidebar-user-info">
-      <div class="sidebar-user-name admin-user-name">Administrator</div>
-      <div class="sidebar-user-role">
-        <span class="sidebar-status-dot"></span>
-        <span class="admin-user-role">Super Admin</span>
+  <!-- User -->
+  <div class="sidebar-text mx-4 mt-4 flex items-center gap-3 rounded-2xl bg-white/[0.04] p-3 ring-1 ring-inset ring-white/5">
+    <div class="admin-user-avatar grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-600 to-violet-600 text-sm font-bold text-white">A</div>
+    <div class="min-w-0 flex-1">
+      <div class="admin-user-name truncate text-sm font-bold text-white">Administrator</div>
+      <div class="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+        <span class="admin-user-role truncate">Super Admin</span>
       </div>
     </div>
+    <i class="bi bi-patch-check-fill text-brand-400"></i>
   </div>
 
-  <!-- Navigation -->
-  <nav>
-    <ul class="sidebar-menu">
-      <li class="sidebar-menu-label">Operations &amp; Workflow</li>
+  <!-- Nav -->
+  <nav class="vs-scrollbar flex-1 space-y-5 overflow-y-auto px-4 py-5">
+    <div>
+      <div class="nav-label sidebar-text">Operations</div>
+      <a href="/dashboard" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'dashboard') ? 'active' : '' %>">
+        <i class="bi bi-speedometer2"></i><span class="sidebar-text">Dashboard</span>
+      </a>
+      <a href="/bookings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'bookings') ? 'active' : '' %>">
+        <i class="bi bi-calendar-check"></i><span class="sidebar-text">Bookings</span>
+        <span class="sidebar-text ml-auto badge bg-brand-500/15 text-brand-300" id="badgeBookingCount">0</span>
+      </a>
+      <a href="/services" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'services') ? 'active' : '' %>">
+        <i class="bi bi-wrench-adjustable"></i><span class="sidebar-text">Services</span>
+      </a>
+      <a href="/categories" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'categories') ? 'active' : '' %>">
+        <i class="bi bi-grid-3x3-gap"></i><span class="sidebar-text">Categories</span>
+        <span class="sidebar-text ml-auto badge bg-sky-500/15 text-sky-300" id="badgeCategoryCount">0</span>
+      </a>
+      <a href="/shops" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'shops') ? 'active' : '' %>">
+        <i class="bi bi-buildings"></i><span class="sidebar-text">Shops &amp; Centers</span>
+        <span class="sidebar-text ml-auto badge bg-slate-500/20 text-slate-300" id="badgeShopCount">0</span>
+      </a>
+    </div>
 
-      <li class="sidebar-menu-item">
-        <a href="/dashboard" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'dashboard') ? 'active' : '' %>">
-          <i class="bi bi-speedometer2"></i>
-          <span>Executive Dashboard</span>
-        </a>
-      </li>
+    <div>
+      <div class="nav-label sidebar-text">Management</div>
+      <a href="/users" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'users') ? 'active' : '' %>">
+        <i class="bi bi-people"></i><span class="sidebar-text">Users</span>
+        <span class="sidebar-text ml-auto badge bg-emerald-500/15 text-emerald-300" id="badgeUserCount">0</span>
+      </a>
+      <a href="/plans" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'plans') ? 'active' : '' %>">
+        <i class="bi bi-credit-card-2-front"></i><span class="sidebar-text">Plans</span>
+      </a>
+      <a href="/notifications" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'notifications') ? 'active' : '' %>">
+        <i class="bi bi-megaphone"></i><span class="sidebar-text">Broadcasts</span>
+        <span class="sidebar-text ml-auto badge bg-violet-500/15 text-violet-300" id="badgeNotificationCount">0</span>
+      </a>
+    </div>
 
-      <li class="sidebar-menu-item">
-        <a href="/bookings" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'bookings') ? 'active' : '' %>">
-          <i class="bi bi-calendar-check"></i>
-          <span>Bookings</span>
-          <span class="sidebar-menu-badge badge bg-primary" id="badgeBookingCount">20</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/services" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'services') ? 'active' : '' %>">
-          <i class="bi bi-wrench-adjustable"></i>
-          <span>Vehicle Services</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/categories" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'categories') ? 'active' : '' %>">
-          <i class="bi bi-grid-3x3-gap"></i>
-          <span>Categories</span>
-          <span class="sidebar-menu-badge badge bg-info" id="badgeCategoryCount">4</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/shops" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'shops') ? 'active' : '' %>">
-          <i class="bi bi-geo-alt"></i>
-          <span>Shops &amp; Centers</span>
-          <span class="sidebar-menu-badge badge bg-secondary" id="badgeShopCount">50</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-label">Management</li>
-
-      <li class="sidebar-menu-item">
-        <a href="/users" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'users') ? 'active' : '' %>">
-          <i class="bi bi-people"></i>
-          <span>Users &amp; Customers</span>
-          <span class="sidebar-menu-badge badge bg-success" id="badgeUserCount">37</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/plans" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'plans') ? 'active' : '' %>">
-          <i class="bi bi-credit-card-2-front"></i>
-          <span>Subscription Plans</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/notifications" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'notifications') ? 'active' : '' %>">
-          <i class="bi bi-megaphone"></i>
-          <span>Broadcast Alerts</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-label">Configuration</li>
-
-      <li class="sidebar-menu-item">
-        <a href="/admin/profile" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'profile') ? 'active' : '' %>">
-          <i class="bi bi-shield-person"></i>
-          <span>Admin Profile</span>
-        </a>
-      </li>
-
-      <li class="sidebar-menu-item">
-        <a href="/admin/settings" class="sidebar-menu-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'settings') ? 'active' : '' %>">
-          <i class="bi bi-gear"></i>
-          <span>Platform Settings</span>
-        </a>
-      </li>
-    </ul>
+    <div>
+      <div class="nav-label sidebar-text">System</div>
+      <a href="/activity" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'activity') ? 'active' : '' %>">
+        <i class="bi bi-clock-history"></i><span class="sidebar-text">Activity Log</span>
+      </a>
+      <a href="/admin/profile" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'profile') ? 'active' : '' %>">
+        <i class="bi bi-person-circle"></i><span class="sidebar-text">Profile</span>
+      </a>
+      <a href="/admin/settings" class="nav-link <%= (typeof activeMenu !== 'undefined' && activeMenu === 'settings') ? 'active' : '' %>">
+        <i class="bi bi-gear"></i><span class="sidebar-text">Settings</span>
+      </a>
+    </div>
   </nav>
 
-  <!-- Logout Footer -->
-  <div class="sidebar-footer">
-    <a href="#" class="btn-logout">
-      <i class="bi bi-box-arrow-right"></i>
-      <span>Sign Out</span>
-    </a>
+  <!-- Logout -->
+  <div class="shrink-0 border-t border-white/10 p-4">
+    <button class="nav-link w-full text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" data-logout>
+      <i class="bi bi-box-arrow-right"></i><span class="sidebar-text">Sign Out</span>
+    </button>
   </div>
 </aside>

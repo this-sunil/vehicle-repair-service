@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 const createSubscriptionTable=(req,res)=>{
     const query=`CREATE TABLE IF NOT EXISTS plan(pid SERIAL PRIMARY KEY,plan_title VARCHAR(255) NOT NULL,plan_type VARCHAR(255) NOT NULL,plan_price FLOAT NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
     pool.query(query,(err)=>{
@@ -16,6 +17,7 @@ export const addPlanController=async(req,res)=>{
         const query=`INSERT INTO plan(plan_title,plan_type,plan_price) values($1,$2,$3) RETURNING *`;
         const {rows}=await pool.query(query,[plan_title,plan_type,plan_price]);
         if(rows.length>0){
+            logActivity(req, { action: "create", entity: "plan", entityId: rows[0].pid, details: `Added plan "${plan_title}" (₹${plan_price}/${plan_type})` });
             return res.status(200).json({
                 status:true,
                 msg:"Plan Added Successfully !!!",
@@ -54,6 +56,7 @@ export const updatePlanController=async(req,res)=>{
         const query=`UPDATE plan SET ${fields.join(", ")} WHERE pid=$${currentIndex} RETURNING *`;
         const {rows}=await pool.query(query,values);
         if(rows.length>0){
+            logActivity(req, { action: "update", entity: "plan", entityId: pid, details: `Updated plan "${(rows[0]||{}).plan_title || pid}"` });
             return res.status(200).json({
                 status:true,
                 msg:"Plan Update Successfully !!!",
@@ -77,7 +80,7 @@ export const updatePlanController=async(req,res)=>{
 export const deletePlanController=async(req,res)=>{
     const pid=req.body.pid;
     try {
-        const query=`DELETE FROM plan WHERE pid=$1`;
+        const query=`DELETE FROM plan WHERE pid=$1 RETURNING *`;
         const {rows}=await pool.query(query,[pid]);
         if(rows.length===0){
             return res.status(400).json({
@@ -85,6 +88,7 @@ export const deletePlanController=async(req,res)=>{
                 msg:"DELETE Operation failed"
             });
         }
+        logActivity(req, { action: "delete", entity: "plan", entityId: pid, details: `Deleted plan "${(rows[0]||{}).plan_title || pid}"` });
         return res.status(200).json({
             status:true,
             msg:"Delete Plan Successfully !!!",

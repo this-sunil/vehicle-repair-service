@@ -1,6 +1,8 @@
 import pool from "../database/db.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../middleware/verifyToken.js";
+import { isAccountLocked, recordLoginFailure, resetLoginFailures } from "../middleware/security.js";
+import { logActivity } from "./activityController.js";
 
 const createAdmin = async () => {
   try {
@@ -47,6 +49,15 @@ export const loginController = async (req, res) => {
   const { phone, pass } = req.body;
   
   try {
+    // ---- brute-force lockout check ----
+    const lockedMin = isAccountLocked(phone);
+    if (lockedMin > 0) {
+      return res.status(423).json({
+        status: false,
+        msg: `Account temporarily locked. Try again in ${lockedMin} minute${lockedMin > 1 ? "s" : ""}.`,
+      });
+    }
+
     const query = `SELECT * FROM users WHERE phone=$1`;
     const { rows } = await pool.query(query, [phone]);
     if (rows.length === 0) {
@@ -55,16 +66,28 @@ export const loginController = async (req, res) => {
         msg: "User doesn't exists !!!",
       });
     }
-    const isMatch = bcrypt.compare(pass, rows[0].pass);
-
-    if (!isMatch) {
-      return res.status(400).json({
+    if (rows[0].role !== "admin") {
+      return res.status(403).json({
         status: false,
-        msg: "Password doesn't Match",
+        msg: "Only admin accounts can access this panel !!!",
       });
     }
+    const isMatch = await bcrypt.compare(pass, rows[0].pass);
+
+    if (!isMatch) {
+      const remain = recordLoginFailure(phone); // returns minutes locked if tripped
+      logActivity(req, { action: "security", entity: "auth", details: `Failed login (wrong password) for phone ${phone}` });
+      return res.status(400).json({
+        status: false,
+        msg: remain > 0
+          ? `Password doesn't Match. Account locked for ${remain} minute${remain > 1 ? "s" : ""}.`
+          : "Password doesn't Match",
+      });
+    }
+    resetLoginFailures(phone);
+    logActivity(req, { action: "login", entity: "auth", entityId: rows[0].id, details: "Admin signed in" });
     delete rows[0].pass;
-    const token = await generateToken(rows[0].role);
+    const token = await generateToken(rows[0]);
 
     return res.status(200).json({
       status: true,
@@ -85,6 +108,13 @@ export const registerController = async (req, res) => {
   const { name, phone, pass } = req.body;
   const role = "user";
   try {
+    // Admin-only: user creation is restricted to authenticated admins
+    if (!req.user || req.user.role !== "admin") {
+      return res.status(403).json({
+        status: false,
+        msg: "Only admins can create users !!!",
+      });
+    }
     const checkQuery = `SELECT * FROM users WHERE phone=$1`;
     const result = await pool.query(checkQuery, [phone]);
     if (result.rows.length > 0) {
@@ -110,11 +140,10 @@ export const registerController = async (req, res) => {
       });
     }
     delete rows[0].pass;
-    const token = await generateToken(rows[0].role);
+    logActivity(req, { action: "create", entity: "user", entityId: rows[0].id, details: `Created user "${name}" (${phone})` });
     return res.status(200).json({
       status: true,
       msg: "User register Successfully !!!",
-      token: token,
       result: rows[0],
     });
   } catch (error) {
@@ -138,7 +167,7 @@ export const fetchProfileController = async (req, res) => {
       });
     }
     delete rows[0].pass;
-    const token = await generateToken(rows[0].role);
+    const token = await generateToken(rows[0]);
     return res.status(200).json({
       status: true,
       msg: "Fetch User Successfully",
@@ -146,7 +175,7 @@ export const fetchProfileController = async (req, res) => {
       result: rows[0],
     });
   } catch (error) {
-    confirm.log(`Error =>${error.msg}`);
+    console.log(`Error =>${error.message}`);
     return res.status(500).json({
       status: false,
       msg: "Internal Server Error",
@@ -168,6 +197,7 @@ export const deleteUserController = async (req, res) => {
     }
     const query = `DELETE FROM users WHERE id=$1 RETURNING *`;
     const { rows } = await pool.query(query, [id]);
+    logActivity(req, { action: "delete", entity: "user", entityId: id, details: `Deleted user "${(rows[0] || {}).name || id}"` });
 
     return res.status(200).json({
       status: true,
@@ -220,7 +250,8 @@ export const updateProfileController = async (req, res) => {
     const { rows } = await pool.query(query, values);
     
     delete rows[0].pass;
-    const token = await generateToken(rows[0].role);
+    logActivity(req, { action: "update", entity: "user", entityId: id, details: `Updated profile of "${(rows[0] || {}).name || id}"` });
+    const token = await generateToken(rows[0]);
     return res.status(200).json({
       status: true,
       token: token,
@@ -254,10 +285,17 @@ export const forgotPassController=async(req,res)=>{
         msg:"Wrong Password !!!"
       });
     }
+    const hashPass=await bcrypt.hash(current_pass,10);
     const query=`UPDATE users SET pass=$2 WHERE phone=$1 RETURNING *`;
-    const {rows}=await pool.query(query,[current_pass]);
-    
+    const {rows}=await pool.query(query,[phone,hashPass]);
+    if(rows.length===0){
+      return res.status(400).json({
+        status:false,
+        msg:"Failed to change password"
+      });
+    }
     delete rows[0].pass;
+    logActivity(req, { action: "security", entity: "user", entityId: rows[0].id, details: `Password changed for "${(rows[0] || {}).name || phone}"` });
     return res.status(200).json({
       status:true,
       msg:"Change Pass Successfully!!!",

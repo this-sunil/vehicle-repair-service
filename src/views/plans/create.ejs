@@ -1,74 +1,58 @@
-<%- include('../partials/head', { pageTitle: 'Create Plan', activeMenu: 'plans' }) %>
+<%- include('../partials/head', { pageTitle: 'Add Plan', bodyAttrs: 'data-protected data-page="plans-create"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'plans' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'plans' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/plans" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Create a subscription plan</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Design a recurring package for customers</p>
+      </div>
+    </div>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Plans', url: '/plans' }, { label: 'Create Plan' } ] }) %>
-          <h1 class="page-title">Add Subscription Plan</h1>
-          <p class="page-subtitle">Configure pricing and recurring membership benefits for customers</p>
+    <form id="plan-create-form" class="mx-auto max-w-xl space-y-5 card p-6 sm:p-8" novalidate>
+      <div>
+        <label class="label" for="plan_title">Plan Title</label>
+        <div class="relative">
+          <i class="bi bi-credit-card-2-front absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input id="plan_title" type="text" class="input !pl-10" placeholder="e.g. Premium Care" required />
         </div>
-        <a href="/plans" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-arrow-left me-1"></i> Back to Plans
-        </a>
+        <p class="field-error hidden" data-error-for="plan_title"></p>
       </div>
 
-      <div class="row">
-        <div class="col-lg-8 col-xl-6">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Plan Pricing Specification</h5>
-            </div>
-            <div class="card-body">
-              <form id="standaloneCreatePlanForm">
-                <div class="mb-3">
-                  <label class="form-label">Plan Title <span class="text-danger">*</span></label>
-                  <input type="text" name="plan_title" class="form-control" placeholder="e.g. Platinum Roadside Assistance" required autofocus>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Billing Interval / Type <span class="text-danger">*</span></label>
-                  <select name="plan_type" class="form-select" required>
-                    <option value="Monthly" selected>Monthly</option>
-                    <option value="Quarterly">Quarterly (3 Months)</option>
-                    <option value="Half-Yearly">Half-Yearly (6 Months)</option>
-                    <option value="Yearly">Annual (Yearly)</option>
-                  </select>
-                </div>
-
-                <div class="mb-4">
-                  <label class="form-label">Price (INR) <span class="text-danger">*</span></label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light">₹</span>
-                    <input type="number" step="any" name="plan_price" class="form-control" placeholder="499" required>
-                  </div>
-                  <div class="form-text">Customer subscription fee per billing cycle.</div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                    Save Plan
-                  </button>
-                  <a href="/plans" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <div>
+        <label class="label" for="plan_type">Billing Cycle</label>
+        <select id="plan_type" class="input" required>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+        <p class="field-error hidden" data-error-for="plan_type"></p>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div>
+        <label class="label" for="plan_price">Price (₹)</label>
+        <div class="relative">
+          <i class="bi bi-currency-rupee absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input id="plan_price" type="number" min="0" step="0.01" class="input !pl-10" placeholder="499" required />
+        </div>
+        <p class="field-error hidden" data-error-for="plan_price"></p>
+      </div>
+
+      <div class="flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+        <a href="/plans" class="btn-secondary btn-md">Cancel</a>
+        <button type="submit" class="btn-primary btn-md"><i class="bi bi-check-lg"></i> Create Plan</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/plans.js"></script>
+<script src="/public/js/plans.js" defer></script>
+</body>
+</html>

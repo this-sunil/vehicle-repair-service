@@ -1,91 +1,40 @@
-<%- include('../partials/head', { pageTitle: 'Category Details', activeMenu: 'categories' }) %>
+<%- include('../partials/head', { pageTitle: 'Category Details', bodyAttrs: 'data-protected data-page="categories-show" data-id="' + (typeof categoryId !== 'undefined' ? categoryId : '') + '"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'categories' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'categories' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
-
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Categories', url: '/categories' }, { label: 'Category Details' } ] }) %>
-          <h1 class="page-title">Category Details</h1>
-          <p class="page-subtitle">Inspect vehicle category metadata and visual branding</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <a href="/categories" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back to Categories
-          </a>
-          <a href="/categories/<%= typeof categoryId !== 'undefined' ? categoryId : '' %>/edit" class="btn btn-primary btn-sm">
-            <i class="bi bi-pencil me-1"></i> Edit Category
-          </a>
-        </div>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/categories" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Category details</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Vehicle classification overview</p>
       </div>
+    </div>
 
-      <div id="showCategoryLoading" class="text-center py-5">
-        <div class="spinner-border text-primary me-2"></div> Loading category...
+    <div class="mx-auto max-w-2xl card overflow-hidden">
+      <div class="grid h-52 place-items-center bg-gradient-to-br from-brand-500 to-violet-600" id="c-photo">
+        <i class="bi bi-grid-3x3-gap text-6xl text-white/70"></i>
       </div>
-
-      <div id="showCategoryContent" class="d-none">
-        <div class="row g-4">
-          <div class="col-lg-6 col-xl-5">
-            <div class="card p-4 text-center">
-              <img src="/public/images/placeholder.svg" id="showCategoryAvatar" alt="Icon" class="table-thumb mx-auto mb-3 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; border-radius: 16px;">
-              <h3 class="fw-bold mb-1" id="showCategoryTitle">—</h3>
-              <div class="mb-3">
-                <span class="badge bg-light text-primary border px-3 py-1 fs-6" id="showCategoryType">—</span>
-              </div>
-              <hr>
-              <div class="text-start">
-                <div class="mb-2 d-flex justify-content-between">
-                  <span class="text-muted small">Category ID:</span>
-                  <span class="fw-semibold small" id="showCategoryId">#<%= typeof categoryId !== 'undefined' ? categoryId : '' %></span>
-                </div>
-                <div class="mb-2 d-flex justify-content-between">
-                  <span class="text-muted small">Created Date:</span>
-                  <span class="fw-semibold small" id="showCategoryCreated">—</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="p-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" id="c-title">Loading…</h3>
+          <span class="badge-blue" id="c-type">—</span>
+        </div>
+        <p class="mt-2 text-xs text-slate-400" id="c-added">—</p>
+        <div class="mt-6 flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+          <button class="btn-secondary btn-md" id="c-del"><i class="bi bi-trash3"></i> Delete</button>
+          <a href="#" class="btn-primary btn-md" id="c-edit-link"><i class="bi bi-pencil"></i> Edit Category</a>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/categories.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const cid = Number('<%= typeof categoryId !== 'undefined' ? categoryId : '' %>');
-    if (!cid) return;
-
-    try {
-      const res = await apiRequest('/api/getAllCategory?limit=100&page=1');
-      if (res.ok && res.data.result) {
-        const cat = res.data.result.find(c => c.cid === cid);
-        if (cat) {
-          document.getElementById('showCategoryTitle').textContent = cat.title || 'Untitled';
-          document.getElementById('showCategoryType').textContent = cat.vehicle_type || '—';
-          document.getElementById('showCategoryId').textContent = `#${cat.cid}`;
-          document.getElementById('showCategoryCreated').textContent = formatDate(cat.created_at);
-          if (cat.photo) {
-            document.getElementById('showCategoryAvatar').src = getMediaUrl(cat.photo);
-          }
-          document.getElementById('showCategoryLoading').classList.add('d-none');
-          document.getElementById('showCategoryContent').classList.remove('d-none');
-        } else {
-          document.getElementById('showCategoryLoading').innerHTML = '<div class="text-danger">Category not found.</div>';
-        }
-      }
-    } catch (e) {
-      document.getElementById('showCategoryLoading').innerHTML = '<div class="text-danger">Failed to load category details.</div>';
-    }
-  });
-</script>
+<script src="/public/js/categories.js" defer></script>
+</body>
+</html>

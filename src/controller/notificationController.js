@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const createNotificationTable = () => {
   const query = `CREATE TABLE IF NOT EXISTS notification(id SERIAL PRIMARY KEY,title VARCHAR(255) NOT NULL,description TEXT NOT NULL,photo VARCHAR(255) NOT NULL,uid INT NOT NULL,FOREIGN KEY (uid) REFERENCES users(id) ON DELETE CASCADE,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
@@ -25,6 +26,7 @@ export const addNotificationController = async (req, res) => {
         msg: "Notification Insertion Failure"
       });
     }
+    logActivity(req, { action: "create", entity: "notification", entityId: rows[0].id, details: `Sent broadcast "${title}"` });
     return res.status(200).json({
       status: true,
       msg: "Notification Inserted Successfully !!!",
@@ -67,6 +69,7 @@ export const updateNotificationController = async (req, res) => {
         msg: "Failed Notification Update",
       });
     }
+    logActivity(req, { action: "update", entity: "notification", entityId: id, details: `Updated broadcast "${(rows[0]||{}).title || id}"` });
     return res.status(200).json({
       status: true,
       msg: "Update Notification Successfully",
@@ -83,14 +86,15 @@ export const updateNotificationController = async (req, res) => {
 export const deleteNotificationController = async (req, res) => {
   const id = req.body.id;
   try {
-    const query = `DELETE FROM notification WHERE id=$1`;
+    const query = `DELETE FROM notification WHERE id=$1 RETURNING *`;
     const { rows } = await pool.query(query, [id]);
     if (rows.length === 0) {
-      return res.status(200).json({
+      return res.status(400).json({
         status: false,
         msg: "Delete Data Failure",
       });
     }
+    logActivity(req, { action: "delete", entity: "notification", entityId: id, details: `Deleted broadcast "${(rows[0]||{}).title || id}"` });
     return res.status(200).json({
       status: true,
       msg: "Notification Deleted Successfully !!!",

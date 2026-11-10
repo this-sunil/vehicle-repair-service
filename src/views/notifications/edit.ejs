@@ -1,104 +1,48 @@
-<%- include('../partials/head', { pageTitle: 'Edit Notification', activeMenu: 'notifications' }) %>
+<%- include('../partials/head', { pageTitle: 'Edit Broadcast', bodyAttrs: 'data-protected data-page="notifications-edit" data-id="' + (typeof notificationId !== 'undefined' ? notificationId : '') + '"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/notifications" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Edit broadcast</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Update the announcement content</p>
+      </div>
+    </div>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Notifications', url: '/notifications' }, { label: 'Notification #' + (typeof notificationId !== 'undefined' ? notificationId : ''), url: '/notifications/' + (typeof notificationId !== 'undefined' ? notificationId : '') }, { label: 'Edit' } ] }) %>
-          <h1 class="page-title">Edit Broadcast Notification</h1>
-          <p class="page-subtitle">Update notification title, text, or visual banner</p>
-        </div>
-        <a href="/notifications" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-arrow-left me-1"></i> Back to Notifications
-        </a>
+    <form id="ntf-edit-form" class="mx-auto max-w-2xl space-y-5 card p-6 sm:p-8" novalidate>
+      <div>
+        <label class="label" for="title">Headline</label>
+        <input id="title" type="text" class="input" required />
+        <p class="field-error hidden" data-error-for="title"></p>
       </div>
 
-      <div class="row">
-        <div class="col-lg-8 col-xl-7">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Modify Notification #<%= typeof notificationId !== 'undefined' ? notificationId : '' %></h5>
-            </div>
-            <div class="card-body">
-              <div id="noteEditLoading" class="text-center py-4">
-                <div class="spinner-border text-primary me-2"></div> Loading notification...
-              </div>
-
-              <form id="standaloneEditNotificationForm" class="d-none" enctype="multipart/form-data">
-                <input type="hidden" name="id" id="editNoteIdInput" value="<%= typeof notificationId !== 'undefined' ? notificationId : '' %>">
-
-                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
-                  <img src="/public/images/placeholder.svg" id="editNoteAvatarPreview" class="table-thumb" style="width: 72px; height: 72px; object-fit: cover; border-radius: 10px;">
-                  <div>
-                    <label class="form-label mb-1">Update Banner</label>
-                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Notification Title <span class="text-danger">*</span></label>
-                  <input type="text" name="title" id="editNoteTitleInput" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Message Details <span class="text-danger">*</span></label>
-                  <textarea name="description" id="editNoteDescInput" class="form-control" rows="5" required></textarea>
-                </div>
-
-                <div class="d-flex align-items-center gap-2 mt-4">
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                    Save Changes
-                  </button>
-                  <a href="/notifications" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <div>
+        <label class="label" for="description">Message</label>
+        <textarea id="description" rows="4" class="input resize-none" required></textarea>
+        <p class="field-error hidden" data-error-for="description"></p>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div>
+        <label class="label" for="photo">Replace Banner <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+        <input id="photo" type="file" accept="image/*" class="input !py-2.5 !text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-brand-600 hover:file:bg-brand-100" />
+        <div id="photo-preview" class="mt-2 hidden"><img class="h-24 rounded-xl object-cover ring-2 ring-brand-100 dark:ring-brand-500/20" alt="preview" /></div>
+      </div>
+
+      <div class="flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+        <a href="/notifications" class="btn-secondary btn-md">Cancel</a>
+        <button type="submit" class="btn-primary btn-md"><i class="bi bi-check-lg"></i> Save Changes</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/notifications.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const noteId = Number('<%= typeof notificationId !== 'undefined' ? notificationId : '' %>');
-    if (!noteId) return;
-
-    try {
-      const res = await apiRequest('/api/fetchNotification', {
-        method: 'POST',
-        body: { page: 1 }
-      });
-
-      if (res.ok && res.data.result) {
-        const item = res.data.result.find(n => n.id === noteId);
-        if (item) {
-          document.getElementById('editNoteTitleInput').value = item.title || '';
-          document.getElementById('editNoteDescInput').value = item.subtitle || item.description || '';
-          if (item.photo) {
-            document.getElementById('editNoteAvatarPreview').src = getMediaUrl(item.photo);
-          }
-          document.getElementById('noteEditLoading').classList.add('d-none');
-          document.getElementById('standaloneEditNotificationForm').classList.remove('d-none');
-        } else {
-          document.getElementById('noteEditLoading').innerHTML = '<div class="text-danger">Notification not found.</div>';
-        }
-      }
-    } catch (e) {
-      document.getElementById('noteEditLoading').innerHTML = '<div class="text-danger">Failed to load notification.</div>';
-    }
-  });
-</script>
+<script src="/public/js/notifications.js" defer></script>
+</body>
+</html>

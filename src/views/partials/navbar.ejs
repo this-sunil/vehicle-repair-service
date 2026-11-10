@@ -1,102 +1,98 @@
-<!-- Corona Topbar Navbar -->
-<nav class="corona-navbar">
-  <!-- Left -->
-  <div class="navbar-left">
-    <button class="btn-sidebar-toggle" id="sidebarToggleBtn" title="Toggle Sidebar">
-      <i class="bi bi-list"></i>
+<!-- Topbar -->
+<header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
+  <div class="flex h-16 items-center gap-2 px-4 sm:gap-3 sm:px-6">
+
+    <!-- Sidebar toggles -->
+    <button id="vs-sidebar-open" class="icon-btn lg:hidden" aria-label="Open menu">
+      <i class="bi bi-list text-2xl"></i>
+    </button>
+    <button id="vs-sidebar-collapse" class="icon-btn hidden lg:inline-flex" aria-label="Collapse sidebar">
+      <i class="bi bi-layout-sidebar text-xl"></i>
     </button>
 
-    <!-- Breadcrumb / Page Nav (desktop) -->
-    <div class="d-none d-md-flex align-items-center gap-2">
-      <a href="/dashboard" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Dashboard</a>
-      <span class="text-muted mx-1" style="font-size:0.75rem;">/</span>
-      <a href="/bookings" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Bookings</a>
-      <span class="text-muted mx-1" style="font-size:0.75rem;">/</span>
-      <a href="/services" class="text-muted text-decoration-none" style="font-size:0.8125rem; font-weight:500;">Services</a>
-    </div>
-  </div>
-
-  <!-- Right -->
-  <div class="navbar-right">
-    <!-- Search -->
-    <div class="topbar-search d-none d-lg-block">
-      <i class="bi bi-search"></i>
-      <input type="text" class="form-control" placeholder="Quick search..." id="tableSearchInput">
-    </div>
-
-    <!-- Quick Create -->
-    <div class="dropdown">
-      <button class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-        <i class="bi bi-plus-lg me-1"></i>
-        <span class="d-none d-sm-inline">Create</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><span class="dropdown-header">Quick Actions</span></li>
-        <li><a class="dropdown-item" href="/bookings/create"><i class="bi bi-calendar-plus text-primary"></i> New Booking</a></li>
-        <li><a class="dropdown-item" href="/services/create"><i class="bi bi-wrench text-warning"></i> Add Service</a></li>
-        <li><a class="dropdown-item" href="/categories/create"><i class="bi bi-grid-3x3-gap text-info"></i> New Category</a></li>
-        <li><a class="dropdown-item" href="/shops/create"><i class="bi bi-shop text-danger"></i> Add Service Center</a></li>
-        <li><a class="dropdown-item" href="/users/create"><i class="bi bi-person-plus text-success"></i> Register User</a></li>
-      </ul>
-    </div>
-
-    <!-- Notifications -->
-    <div class="dropdown">
-      <a href="#" class="navbar-icon-btn" data-bs-toggle="dropdown">
-        <i class="bi bi-bell"></i>
-        <span class="navbar-badge">3</span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
-        <div class="dropdown-header d-flex align-items-center justify-content-between">
-          <span>System Alerts</span>
-          <span class="badge bg-danger rounded-pill">3</span>
-        </div>
-        <div class="dropdown-divider"></div>
-        <a href="/bookings" class="dropdown-item">
-          <i class="bi bi-calendar-check text-primary me-2"></i>
-          <div>
-            <div style="font-size:0.82rem; font-weight:600;">New service appointment</div>
-            <div style="font-size:0.72rem; color:var(--text-muted);">3 mins ago</div>
-          </div>
-        </a>
-        <a href="/users" class="dropdown-item">
-          <i class="bi bi-people text-success me-2"></i>
-          <div>
-            <div style="font-size:0.82rem; font-weight:600;">2 new customer registrations</div>
-            <div style="font-size:0.72rem; color:var(--text-muted);">12 hours ago</div>
-          </div>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a href="/notifications" class="dropdown-item justify-content-center text-primary fw-semibold">
-          See All Notifications <i class="bi bi-arrow-right ms-1"></i>
-        </a>
+    <!-- Page title -->
+    <div class="min-w-0">
+      <h1 class="truncate text-sm font-bold text-slate-900 dark:text-white sm:text-base"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' %></h1>
+      <div class="hidden items-center gap-1.5 text-[11px] font-medium text-slate-400 sm:flex">
+        <i class="bi bi-house-door text-xs"></i>
+        <span>/</span>
+        <span class="truncate"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' %></span>
       </div>
     </div>
 
-    <!-- Fullscreen -->
-    <button class="navbar-icon-btn d-none d-sm-flex" id="btnFullscreen" title="Toggle Fullscreen">
-      <i class="bi bi-fullscreen"></i>
-    </button>
+    <!-- Right cluster -->
+    <div class="ml-auto flex items-center gap-1 sm:gap-1.5">
 
-    <!-- User Dropdown -->
-    <div class="dropdown">
-      <a href="#" class="navbar-user" data-bs-toggle="dropdown">
-        <img src="/public/images/placeholder.svg" class="admin-user-avatar" alt="Admin">
-        <span class="user-name d-none d-md-inline admin-user-name">Admin</span>
-        <i class="bi bi-chevron-down d-none d-md-inline" style="font-size:0.7rem; color:var(--text-muted);"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" style="min-width: 200px;">
-        <li>
-          <div class="px-3 py-2 border-bottom" style="border-color:var(--border-subtle)!important;">
-            <div class="fw-700 admin-user-name" style="font-size:0.85rem; font-weight:700;">Administrator</div>
-            <div style="font-size:0.72rem; color:var(--text-muted);" class="admin-user-role">Super Admin · Root Access</div>
+      <!-- Search / Command palette -->
+      <button id="vs-cmd-trigger" class="hidden items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-400 transition hover:border-brand-300 hover:text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-brand-500/50 dark:hover:text-slate-300 md:flex lg:w-64 xl:w-72">
+        <i class="bi bi-search"></i>
+        <span>Search or ask AI…</span>
+        <kbd class="ml-auto rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-800">⌘K</kbd>
+      </button>
+      <button id="vs-cmd-trigger-mobile" class="icon-btn md:hidden" aria-label="Search">
+        <i class="bi bi-search"></i>
+      </button>
+
+      <!-- Quick create -->
+      <div class="relative" data-dd>
+        <button class="icon-btn" data-dd-toggle aria-label="Quick create">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        <div class="dropdown-menu card absolute right-0 top-12 z-50 hidden w-56 animate-scaleIn overflow-hidden p-1.5">
+          <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Quick Create</div>
+          <a href="/bookings/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-calendar-plus text-brand-500"></i>New Booking</a>
+          <a href="/services/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-wrench text-amber-500"></i>New Service</a>
+          <a href="/categories/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-grid-3x3-gap text-sky-500"></i>New Category</a>
+          <a href="/shops/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-building-add text-rose-500"></i>New Center</a>
+          <a href="/users/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-person-plus text-emerald-500"></i>New User</a>
+          <a href="/notifications/create" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-megaphone text-violet-500"></i>Send Broadcast</a>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="relative" data-dd>
+        <button class="icon-btn" data-dd-toggle aria-label="Notifications">
+          <i class="bi bi-bell"></i>
+          <span id="vs-bell-count" class="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white">0</span>
+        </button>
+        <div class="dropdown-menu card absolute right-0 top-12 z-50 hidden w-80 animate-scaleIn overflow-hidden p-1.5">
+          <div class="flex items-center justify-between px-3 py-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">System Alerts</span>
+            <span class="badge-red" id="vs-bell-badge">0</span>
           </div>
-        </li>
-        <li><a class="dropdown-item mt-1" href="/admin/profile"><i class="bi bi-person-circle text-primary"></i> Profile</a></li>
-        <li><a class="dropdown-item" href="/admin/settings"><i class="bi bi-gear text-secondary"></i> Settings</a></li>
-        <li><div class="dropdown-divider"></div></li>
-        <li><a class="dropdown-item text-danger btn-logout" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-      </ul>
+          <div id="vs-bell-list" class="space-y-1">
+            <a href="/notifications" class="flex items-start gap-2.5 rounded-xl px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800">
+              <i class="bi bi-inbox mt-0.5 text-slate-300"></i>
+              <div><div class="text-sm font-semibold text-slate-700 dark:text-slate-200">Loading alerts…</div><div class="text-xs text-slate-400">Checking your broadcasts</div></div>
+            </a>
+          </div>
+          <a href="/notifications" class="mt-1 flex items-center justify-center gap-1 border-t border-slate-100 px-3 py-2.5 text-xs font-bold text-brand-600 hover:text-brand-700 dark:border-slate-800 dark:text-brand-400">View all broadcasts <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- Theme -->
+      <button id="vs-theme-toggle" class="icon-btn" aria-label="Toggle theme">
+        <i class="bi bi-moon-stars theme-icon-dark"></i>
+        <i class="bi bi-brightness-high theme-icon-light"></i>
+      </button>
+
+      <!-- User -->
+      <div class="relative" data-dd>
+        <button class="flex items-center gap-2.5 rounded-2xl py-1.5 pl-1.5 pr-2.5 transition hover:bg-slate-100 dark:hover:bg-slate-800" data-dd-toggle>
+          <span class="admin-user-avatar grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-brand-600 to-violet-600 text-xs font-bold text-white">A</span>
+          <span class="admin-user-name hidden max-w-28 truncate text-sm font-semibold text-slate-700 dark:text-slate-200 md:block">Admin</span>
+          <i class="bi bi-chevron-down hidden text-[10px] text-slate-400 md:block"></i>
+        </button>
+        <div class="dropdown-menu card absolute right-0 top-12 z-50 hidden w-60 animate-scaleIn overflow-hidden p-1.5">
+          <div class="border-b border-slate-100 px-3 py-2.5 dark:border-slate-800">
+            <div class="admin-user-name text-sm font-bold text-slate-800 dark:text-white">Administrator</div>
+            <div class="admin-user-role text-xs text-slate-400">Super Admin · Root Access</div>
+          </div>
+          <a href="/admin/profile" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-person text-brand-500"></i>My Profile</a>
+          <a href="/admin/settings" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300"><i class="bi bi-gear text-slate-400"></i>Settings</a>
+          <button class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10" data-logout><i class="bi bi-box-arrow-right"></i>Sign Out</button>
+        </div>
+      </div>
     </div>
   </div>
-</nav>
+</header>

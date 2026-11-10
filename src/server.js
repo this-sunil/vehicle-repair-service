@@ -12,6 +12,8 @@ import notificationRoute from "./routes/notificationRoute.js";
 import shopRoute from "./routes/shopRoute.js";
 import tokenRoute from './routes/tokenRoute.js'
 import subscriptionRoute from "./routes/subscriptionRoute.js";
+import aiRoute from "./routes/aiRoute.js";
+import activityRoute from "./routes/activityRoute.js";
 import upload from "./middleware/upload.js";
 import rateLimit from "express-rate-limit";
 import { initializeApp, applicationDefault } from "firebase-admin/app";
@@ -65,6 +67,8 @@ app.use("/api", bookingRoute);
 app.use("/api",shopRoute);
 app.use("/api",notificationRoute);
 app.use("/api",subscriptionRoute);
+app.use("/api",aiRoute);
+app.use("/api",activityRoute);
 app.use("/auth",tokenRoute);
 
 // ==========================================
@@ -80,8 +84,9 @@ app.get("/login", (req, res) => {
   return res.render("auth/login", { pageTitle: "Sign In" });
 });
 
+// Registration is disabled — this panel is admin-only (login only)
 app.get("/register", (req, res) => {
-  return res.render("auth/register", { pageTitle: "Register Account" });
+  return res.redirect("/login");
 });
 
 // Users Module
@@ -136,6 +141,9 @@ app.get("/bookings/create", (req, res) => {
 app.get("/bookings/:id", (req, res) => {
   return res.render("bookings/show", { pageTitle: "Appointment Details", activeMenu: "bookings", bookingId: req.params.id });
 });
+app.get("/bookings/:id/invoice", (req, res) => {
+  return res.render("bookings/invoice", { pageTitle: "Invoice", bookingId: req.params.id });
+});
 app.get("/bookings/:id/edit", (req, res) => {
   return res.render("bookings/edit", { pageTitle: "Reschedule Appointment", activeMenu: "bookings", bookingId: req.params.id });
 });
@@ -188,6 +196,9 @@ app.get("/admin/profile", (req, res) => {
 });
 app.get("/admin/settings", (req, res) => {
   return res.render("admin/settings", { pageTitle: "Application Settings", activeMenu: "settings" });
+});
+app.get("/activity", (req, res) => {
+  return res.render("activity/index", { pageTitle: "Activity Log", activeMenu: "activity" });
 });
 
 // Static / Informational Pages

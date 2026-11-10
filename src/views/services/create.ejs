@@ -1,66 +1,51 @@
-<%- include('../partials/head', { pageTitle: 'Add Service', activeMenu: 'services' }) %>
+<%- include('../partials/head', { pageTitle: 'Add Service', bodyAttrs: 'data-protected data-page="services-create"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'services' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'services' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/services" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Add a vehicle service</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Offer a new repair or maintenance service</p>
+      </div>
+    </div>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Services', url: '/services' }, { label: 'Add Service' } ] }) %>
-          <h1 class="page-title">Create Service Package</h1>
-          <p class="page-subtitle">Add a repair, diagnostic, or maintenance offering</p>
+    <form id="svc-create-form" class="mx-auto max-w-2xl space-y-5 card p-6 sm:p-8" novalidate>
+      <div>
+        <label class="label" for="title">Service Title</label>
+        <div class="relative">
+          <i class="bi bi-tag absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input id="title" type="text" class="input !pl-10" placeholder="e.g. Full Engine Diagnostics" required />
         </div>
-        <a href="/services" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-arrow-left me-1"></i> Back to Services
-        </a>
+        <p class="field-error hidden" data-error-for="title"></p>
       </div>
 
-      <div class="row">
-        <div class="col-lg-8 col-xl-7">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Service Details</h5>
-            </div>
-            <div class="card-body">
-              <form id="standaloneCreateServiceForm" enctype="multipart/form-data">
-                <div class="mb-3">
-                  <label class="form-label">Service Title <span class="text-danger">*</span></label>
-                  <input type="text" name="title" class="form-control" placeholder="e.g. Engine Diagnostic & Tuning" required autofocus>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Service Description <span class="text-danger">*</span></label>
-                  <textarea name="description" class="form-control" rows="4" placeholder="Describe the inclusions, workflow, and customer benefits of this service..." required></textarea>
-                </div>
-
-                <div class="mb-4">
-                  <label class="form-label">Service Photo / Illustration</label>
-                  <input type="file" name="photo" class="form-control" accept="image/*">
-                  <div class="form-text">Upload a high quality photo representing this service.</div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                    Publish Service
-                  </button>
-                  <a href="/services" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <div>
+        <label class="label" for="description">Description</label>
+        <textarea id="description" rows="4" class="input resize-none" placeholder="Describe what this service includes…" required></textarea>
+        <p class="field-error hidden" data-error-for="description"></p>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div>
+        <label class="label" for="photo">Service Photo <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+        <input id="photo" type="file" accept="image/*" class="input !py-2.5 !text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-brand-600 hover:file:bg-brand-100" />
+        <div id="photo-preview" class="mt-2 hidden"><img class="h-24 rounded-xl object-cover ring-2 ring-brand-100 dark:ring-brand-500/20" alt="preview" /></div>
+      </div>
+
+      <div class="flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+        <a href="/services" class="btn-secondary btn-md">Cancel</a>
+        <button type="submit" class="btn-primary btn-md"><i class="bi bi-check-lg"></i> Add Service</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/services.js"></script>
+<script src="/public/js/services.js" defer></script>
+</body>
+</html>

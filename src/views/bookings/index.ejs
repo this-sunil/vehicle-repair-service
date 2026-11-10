@@ -1,220 +1,49 @@
-<%- include('../partials/head', { pageTitle: 'Service Bookings', activeMenu: 'bookings' }) %>
+<%- include('../partials/head', { pageTitle: 'Service Bookings', bodyAttrs: 'data-protected data-page="bookings"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 space-y-5 px-4 py-6 sm:px-6 lg:px-8">
+    <%- include('../partials/flash-messages') %>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings' } ] }) %>
-          <h1 class="page-title"><i class="bi bi-calendar-check text-primary me-2"></i>Service Bookings</h1>
-          <p class="page-subtitle">Track, reschedule, and manage customer vehicle maintenance reservations</p>
+    <div class="card">
+      <div class="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-slate-800 sm:flex-row sm:items-center">
+        <div class="relative flex-1 sm:max-w-xs">
+          <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input type="text" id="bk-search" placeholder="Search vehicle, customer, service…" class="input !pl-10" />
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadBookings()">
-            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
-          </button>
-          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createBookingModal">
-            <i class="bi bi-plus-lg me-1"></i> Book Appointment
-          </button>
-          <a href="/bookings/create" class="btn btn-outline-primary btn-sm d-none d-lg-inline-flex">
-            <i class="bi bi-box-arrow-up-right me-1"></i> Full Form
-          </a>
+        <select id="bk-type" class="input sm:max-w-44">
+          <option value="">All vehicle types</option>
+        </select>
+        <div class="flex gap-2 sm:ml-auto">
+          <button id="bk-refresh" class="btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+          <button id="bk-export" class="btn-secondary btn-sm"><i class="bi bi-filetype-csv"></i> Export</button>
+          <a href="/bookings/create" class="btn-primary btn-sm"><i class="bi bi-calendar-plus"></i> New Booking</a>
         </div>
       </div>
 
-      <!-- Filters & Search Toolbar -->
-      <div class="card mb-3">
-        <div class="card-body p-3">
-          <div class="row g-2 align-items-center">
-            <div class="col-md-5 col-lg-4">
-              <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" class="form-control" id="bookingSearchInput" placeholder="Search by customer, vehicle, reg no...">
-              </div>
-            </div>
-            <div class="col-md-4 col-lg-3">
-              <select class="form-select" id="bookingTypeFilter">
-                <option value="">All Vehicle Types</option>
-                <option value="Car">Car (4-Wheeler)</option>
-                <option value="Bike">Bike / Two-Wheeler</option>
-                <option value="Heavy">Commercial / Heavy</option>
-              </select>
-            </div>
-            <div class="col text-end">
-              <span class="text-muted" style="font-size:0.8125rem;">Total: <strong id="bookingsCountSpan" class="text-dark">—</strong> records</span>
-            </div>
-          </div>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="table-base">
+          <thead>
+            <tr><th>Customer</th><th>Vehicle</th><th>Service</th><th>Slot</th><th class="text-right">Actions</th></tr>
+          </thead>
+          <tbody id="bk-tbody">
+            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- Bookings Table Card -->
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title"><i class="bi bi-list-ul me-1"></i> Appointments List</h5>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0 searchable-table">
-            <thead>
-              <tr>
-                <th style="width:70px;">ID</th>
-                <th>Vehicle Details</th>
-                <th>Customer</th>
-                <th>Service Name</th>
-                <th>Type</th>
-                <th>Scheduled Slot</th>
-                <th class="text-end" style="width:130px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="bookingsTableBody">
-              <!-- Dynamically populated by bookings.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
-
-    <%- include('../partials/footer') %>
-  </div>
-</div>
-
-<!-- Create Appointment Modal -->
-<div class="modal fade" id="createBookingModal" tabindex="-1" aria-labelledby="createBookingModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createBookingModalLabel">
-          <i class="bi bi-calendar-plus text-primary me-2"></i>New Service Appointment
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form id="createBookingForm" enctype="multipart/form-data">
-        <div class="modal-body p-4">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Vehicle Name <span class="text-danger">*</span></label>
-              <input type="text" name="vehicle_name" class="form-control" placeholder="e.g. Honda City" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Registration No <span class="text-danger">*</span></label>
-              <input type="text" name="registration_no" class="form-control" placeholder="e.g. MH12AB1234" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Service Name <span class="text-danger">*</span></label>
-              <input type="text" name="service_name" class="form-control" placeholder="e.g. Full Service" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
-              <select name="vehicle_type" class="form-select" required>
-                <option value="">— Select Type —</option>
-                <option value="Car">Car</option>
-                <option value="Bike">Bike</option>
-                <option value="Truck">Truck</option>
-                <option value="EV">EV</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Customer Phone <span class="text-danger">*</span></label>
-              <input type="tel" name="customer_phone" class="form-control" placeholder="Customer mobile number" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Shop / Service Center <span class="text-danger">*</span></label>
-              <input type="text" name="shop_id" class="form-control" placeholder="Shop ID or name" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Slot Date <span class="text-danger">*</span></label>
-              <input type="date" name="slot_date" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Slot Time <span class="text-danger">*</span></label>
-              <input type="time" name="slot_time" class="form-control" required>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Vehicle Photo</label>
-              <input type="file" name="vehicle_photo" class="form-control" id="vehiclePhotoInput" accept="image/*">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">
-            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-            Confirm Appointment
-          </button>
-        </div>
-      </form>
+      <div class="p-4"><%- include('../partials/pagination') %></div>
     </div>
-  </div>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<!-- Edit Appointment Modal -->
-<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editBookingModalLabel">
-          <i class="bi bi-pencil-square text-primary me-2"></i>Reschedule / Edit Appointment
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form id="editBookingForm" enctype="multipart/form-data">
-        <input type="hidden" name="book_id" value="">
-        <div class="modal-body p-4">
-          <div class="d-flex align-items-center mb-4 p-3 rounded" style="background:#fafbff; border:1px solid var(--border);">
-            <img src="/public/images/placeholder.svg" id="editBookingPhotoPreview" class="table-thumb rounded me-3" style="width:56px;height:56px;object-fit:cover;">
-            <div class="flex-grow-1">
-              <label class="form-label mb-1">Update Vehicle Image</label>
-              <input type="file" name="vehicle_photo" class="form-control form-control-sm" accept="image/*">
-            </div>
-          </div>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Vehicle Name <span class="text-danger">*</span></label>
-              <input type="text" name="vehicle_name" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Registration No <span class="text-danger">*</span></label>
-              <input type="text" name="registration_no" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Service Name <span class="text-danger">*</span></label>
-              <input type="text" name="service_name" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
-              <select name="vehicle_type" class="form-select" required>
-                <option value="Car">Car</option>
-                <option value="Bike">Bike</option>
-                <option value="Truck">Truck</option>
-                <option value="EV">EV</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Slot Date <span class="text-danger">*</span></label>
-              <input type="text" name="slot_date" class="form-control" placeholder="DD/MM/YYYY" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Slot Time <span class="text-danger">*</span></label>
-              <input type="text" name="slot_time" class="form-control" placeholder="e.g. 10:30 AM" required>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">
-            <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-            Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script src="/public/js/bookings.js"></script>
+<script src="/public/js/bookings.js" defer></script>
+</body>
+</html>

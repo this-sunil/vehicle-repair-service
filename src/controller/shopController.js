@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const createShopTable = () => {
   const query = `CREATE TABLE IF NOT EXISTS shop(
@@ -29,9 +30,11 @@ export const addShopController=async(req,res)=>{
         const query=`INSERT INTO shop(shopName,shopPhoto,shopTime,phone,lat,long,status,city) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
         const {rows}=await pool.query(query,[shopName,shopPhoto,shopTime,phone,lat,long,status,city]);
         if(rows.length>0){
+            logActivity(req, { action: "create", entity: "shop", entityId: rows[0].sid, details: `Added service center "${shopName}" in ${city}` });
             return res.status(200).json({
                 status:true,
-                msg:"Shop Added Successfully"
+                msg:"Shop Added Successfully",
+                result:rows[0]
             });
         }
     } catch (error) {
@@ -65,6 +68,7 @@ export const updateShopController=async(req,res)=>{
         const query=`UPDATE shop SET ${fields.join(", ")} WHERE sid=$${currentIndex} RETURNING *`;
         const {rows}=await pool.query(query,values);
         if(rows.length>0){
+            logActivity(req, { action: "update", entity: "shop", entityId: sid, details: `Updated service center "${(rows[0]||{}).shopname || sid}"` });
             return res.status(200).json({
                 status:true,
                 msg:"Shop Update Successfully",
@@ -82,7 +86,7 @@ export const updateShopController=async(req,res)=>{
 export const deleteShopController=async(req,res)=>{
     const sid=req.body.sid;
     try {
-        const query=`DELETE FROM shop WHERE sid=$1`;
+        const query=`DELETE FROM shop WHERE sid=$1 RETURNING *`;
         const {rows}=await pool.query(query,[sid]);
         if(rows.length===0){
             return res.status(400).json({
@@ -90,6 +94,7 @@ export const deleteShopController=async(req,res)=>{
                 msg:"Delete Operation Failed"
             });
         }
+        logActivity(req, { action: "delete", entity: "shop", entityId: sid, details: `Deleted service center "${(rows[0]||{}).shopname || sid}"` });
         return res.status(200).json({
             status:true,
             msg:"Delete Successfully !!!",
@@ -155,16 +160,16 @@ export const searchByCityController = async (req, res) => {
     }
 
     const countQuery = `SELECT count(*) FROM shop WHERE city=$1`;
-    const result = await pool.query(countQuery, [city]);
+    const countResult = await pool.query(countQuery, [city]);
 
-    const totalItem = Number(result.rows[0].count);
+    const totalItem = Number(countResult.rows[0].count);
     const totalPage = Math.ceil(totalItem / limit);
     const offset = (page - 1) * limit;
 
     const query = `SELECT * FROM shop WHERE city=$1 ORDER BY sid LIMIT $2 OFFSET $3`;
-    const rows = await pool.query(query, [city, limit, offset]);
+    const result = await pool.query(query, [city, limit, offset]);
 
-    if (rows.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(400).json({
         status: false,
         msg: "No Data Found !!!"
@@ -176,7 +181,7 @@ export const searchByCityController = async (req, res) => {
       msg: "Fetch Shop Successfully !!!",
       currentPage: page,
       totalPage,
-      result: rows.rows,
+      result: result.rows,
       prevPage: page > 1,
       nextPage: page < totalPage
     });

@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300 dark:bg-slate-700;
+  }
+  [x-cloak] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm shadow-brand-600/25 hover:bg-brand-700 hover:shadow-md hover:shadow-brand-600/30 active:bg-brand-800;
+  }
+  .btn-secondary {
+    @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800;
+  }
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+  .btn-danger {
+    @apply btn bg-rose-600 text-white shadow-sm shadow-rose-600/25 hover:bg-rose-700 active:bg-rose-800;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-md {
+    @apply px-4 py-2.5;
+  }
+
+  /* ---------- Forms ---------- */
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500;
+  }
+  .input-error {
+    @apply border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 dark:border-rose-500/60;
+  }
+  .field-error {
+    @apply mt-1.5 text-xs font-medium text-rose-600 dark:text-rose-400;
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-600/5 dark:hover:border-brand-500/40;
+  }
+
+  /* ---------- Badges & pills ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold;
+  }
+  .badge-green {
+    @apply badge bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300;
+  }
+  .badge-red {
+    @apply badge bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300;
+  }
+  .badge-amber {
+    @apply badge bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300;
+  }
+  .badge-blue {
+    @apply badge bg-brand-100 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300;
+  }
+  .badge-slate {
+    @apply badge bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    @apply overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900;
+  }
+  .table-base {
+    @apply w-full min-w-max text-left text-sm;
+  }
+  .table-base thead th {
+    @apply whitespace-nowrap border-b border-slate-200 bg-slate-50/80 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400;
+  }
+  .table-base tbody td {
+    @apply border-b border-slate-100 px-4 py-3.5 text-slate-700 dark:border-slate-800/70 dark:text-slate-200;
+  }
+  .table-base tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-base tbody tr {
+    @apply transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/40;
+  }
+
+  /* ---------- Sidebar nav ---------- */
+  .nav-label {
+    @apply mb-1 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-600;
+  }
+  .nav-link {
+    @apply relative mb-0.5 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-150 hover:bg-white/[0.06] hover:text-white;
+  }
+  .nav-link .bi {
+    @apply text-lg leading-none;
+  }
+  .nav-link.active {
+    @apply bg-brand-600 text-white shadow-md shadow-brand-600/30 hover:bg-brand-600 hover:text-white;
+  }
+  .nav-link.active::before {
+    content: "";
+    @apply absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-brand-400;
+  }
+
+  /* ---------- Topbar ---------- */
+  .icon-btn {
+    @apply relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+  .icon-btn .bi {
+    @apply text-lg;
+  }
+
+  /* ---------- Misc ---------- */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-slate-200/70 dark:bg-slate-800;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent dark:via-slate-600/30;
+  }
+  .link {
+    @apply font-medium text-brand-600 hover:text-brand-700 hover:underline dark:text-brand-400 dark:hover:text-brand-300;
+  }
+
+  /* ---------- Copilot chat bubbles ---------- */
+  .cp-msg-user {
+    @apply ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-brand-600 px-3.5 py-2.5 text-sm leading-relaxed text-white shadow-sm shadow-brand-600/20;
+  }
+  .cp-msg-bot {
+    @apply mr-auto max-w-[92%] rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3.5 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200;
+  }
+  .typing-dot {
+    @apply inline-block h-1.5 w-1.5 animate-blink rounded-full bg-slate-400 dark:bg-slate-500;
+  }
+}
+
+@layer utilities {
+  /* ---------- Sidebar layout states ---------- */
+  #vs-sidebar {
+    @apply w-72;
+  }
+  body.vs-collapsed #vs-sidebar {
+    @apply lg:w-20;
+  }
+  body.vs-collapsed .sidebar-text {
+    @apply lg:hidden;
+  }
+  body.vs-collapsed .nav-label {
+    @apply lg:my-2 lg:h-0 lg:overflow-hidden lg:border-t lg:border-white/10 lg:px-0 lg:py-0 lg:text-[0px];
+  }
+  body.vs-collapsed #vs-sidebar nav {
+    @apply lg:px-2;
+  }
+  body.vs-collapsed #vs-sidebar .nav-link {
+    @apply lg:justify-center lg:px-0;
+  }
+  body.vs-collapsed #vs-sidebar .nav-link.active::before {
+    @apply lg:hidden;
+  }
+  #vs-main {
+    @apply lg:pl-72;
+  }
+  body.vs-collapsed #vs-main {
+    @apply lg:pl-20;
+  }
+
+  /* ---------- Theme toggle icons ---------- */
+  .theme-icon-light {
+    @apply hidden;
+  }
+  .dark .theme-icon-light {
+    @apply block;
+  }
+  .dark .theme-icon-dark {
+    @apply hidden;
+  }
+
+  /* ---------- Sidebar scrollbar ---------- */
+  .vs-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .vs-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-700/60;
+  }
+}
+

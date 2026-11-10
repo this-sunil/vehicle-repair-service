@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const createVehicleService = async () => {
   const query = `
@@ -31,6 +32,7 @@ export const addServiceController = async (req, res) => {
         msg: "rows doesn't Inserted !!!",
       });
     }
+    logActivity(req, { action: "create", entity: "service", entityId: rows[0].id, details: `Created service "${title}"` });
     return res.status(200).json({
       status: true,
       msg: "Inserted Successfully !!!",
@@ -76,6 +78,7 @@ export const updateServiceController = async (req, res) => {
         msg: "No Updates !!!",
       });
     }
+    logActivity(req, { action: "update", entity: "service", entityId: id, details: `Updated service "${(rows[0] || {}).title || id}"` });
     return res.status(200).json({
       status: true,
       msg: "Update Vehicle Successfully !!!",
@@ -101,6 +104,7 @@ export const deleteVehicleController = async (req, res) => {
         msg: "No Vehicle Found !!!",
       });
     }
+    logActivity(req, { action: "delete", entity: "service", entityId: id, details: `Deleted service "${(rows[0] || {}).title || id}"` });
     return res.status(200).json({
       status: true,
       msg: "Vehicle Service deleted !!!",

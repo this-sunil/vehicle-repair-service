@@ -1,4 +1,5 @@
 import pool from "../database/db.js";
+import { logActivity } from "./activityController.js";
 
 const createCatTable = async () => {
   const query = `CREATE TABLE IF NOT EXISTS category(cid SERIAL PRIMARY KEY,title TEXT NOT NULL,photo TEXT NOT NULL,vehicle_type TEXT NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
@@ -24,6 +25,7 @@ export const addCategoryController = async (req, res) => {
         msg: "Failed to insert category !!!",
       });
     }
+    logActivity(req, { action: "create", entity: "category", entityId: rows[0].cid, details: `Created category "${title}" (${type})` });
     return res.status(200).json({
       status: true,
       msg: "Insert Category Successfully !!!",
@@ -66,6 +68,7 @@ export const updateCategoryController = async (req, res) => {
         msg: "Failed to Update Category !!!",
       });
     }
+    logActivity(req, { action: "update", entity: "category", entityId: cid, details: `Updated category "${(rows[0] || {}).title || cid}"` });
     return res.status(200).json({
       status: true,
       msg: "Update Category Successfully !!!",
@@ -91,6 +94,7 @@ export const deleteCategoryController = async (req, res) => {
         msg: "Failed to Delete Category",
       });
     }
+    logActivity(req, { action: "delete", entity: "category", entityId: cid, details: `Deleted category "${(rows[0] || {}).title || cid}"` });
     return res.status(200).json({
       status: true,
       msg: "Delete Category Successfully !!!",

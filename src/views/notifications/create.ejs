@@ -1,66 +1,51 @@
-<%- include('../partials/head', { pageTitle: 'Send Notification', activeMenu: 'notifications' }) %>
+<%- include('../partials/head', { pageTitle: 'Send Broadcast', bodyAttrs: 'data-protected data-page="notifications-create"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'notifications' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/notifications" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Send a broadcast</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Push an announcement to your customers</p>
+      </div>
+    </div>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Notifications', url: '/notifications' }, { label: 'Send Announcement' } ] }) %>
-          <h1 class="page-title">Broadcast Notification</h1>
-          <p class="page-subtitle">Publish a push notification or service advisory to customers</p>
+    <form id="ntf-create-form" class="mx-auto max-w-2xl space-y-5 card p-6 sm:p-8" novalidate>
+      <div>
+        <label class="label" for="title">Headline</label>
+        <div class="relative">
+          <i class="bi bi-megaphone absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input id="title" type="text" class="input !pl-10" placeholder="e.g. Monsoon Service Camp — 20% OFF" required />
         </div>
-        <a href="/notifications" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-arrow-left me-1"></i> Back to Notifications
-        </a>
+        <p class="field-error hidden" data-error-for="title"></p>
       </div>
 
-      <div class="row">
-        <div class="col-lg-8 col-xl-7">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Notification Content</h5>
-            </div>
-            <div class="card-body">
-              <form id="standaloneCreateNotificationForm" enctype="multipart/form-data">
-                <div class="mb-3">
-                  <label class="form-label">Notification Title <span class="text-danger">*</span></label>
-                  <input type="text" name="title" class="form-control" placeholder="e.g. Free 20-Point Safety Check this Weekend" required autofocus>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Message Details / Subtitle <span class="text-danger">*</span></label>
-                  <textarea name="description" class="form-control" rows="4" placeholder="Enter full notification body text..." required></textarea>
-                </div>
-
-                <div class="mb-4">
-                  <label class="form-label">Banner Image (Optional)</label>
-                  <input type="file" name="photo" class="form-control" accept="image/*">
-                  <div class="form-text">Attach an announcement banner image.</div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                    Broadcast Now
-                  </button>
-                  <a href="/notifications" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <div>
+        <label class="label" for="description">Message</label>
+        <textarea id="description" rows="4" class="input resize-none" placeholder="Write the announcement your customers will receive…" required></textarea>
+        <p class="field-error hidden" data-error-for="description"></p>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div>
+        <label class="label" for="photo">Banner Photo <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+        <input id="photo" type="file" accept="image/*" class="input !py-2.5 !text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-brand-600 hover:file:bg-brand-100" />
+        <div id="photo-preview" class="mt-2 hidden"><img class="h-24 rounded-xl object-cover ring-2 ring-brand-100 dark:ring-brand-500/20" alt="preview" /></div>
+      </div>
+
+      <div class="flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+        <a href="/notifications" class="btn-secondary btn-md">Cancel</a>
+        <button type="submit" class="btn-primary btn-md"><i class="bi bi-send"></i> Send Broadcast</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/notifications.js"></script>
+<script src="/public/js/notifications.js" defer></script>
+</body>
+</html>

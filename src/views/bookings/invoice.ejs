@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice | Vehicle Service Admin</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234f46e5'><path d='M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679c.033.161.049.325.049.49v3.802a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5-1.5v-.5h-9v.5A1.5 1.5 0 0 1 3 14.5h-.5A1.5 1.5 0 0 1 1 13V9.198c0-.165.016-.329.049-.49l.335-1.68a1.8 1.8 0 0 1 .964-1.261c.171-.086.307-.23.382-.404l.79-1.848zM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM4.82 3.5a1 1 0 0 0-.92.606L3.272 5.5h9.456l-.628-1.394a1 1 0 0 0-.92-.606H4.82z'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, system-ui, sans-serif; background: #f1f5f9; color: #0f172a; padding: 2rem 1rem; }
+    .sheet { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 20px 50px rgba(15,23,42,.12); overflow: hidden; }
+    .topbar { background: #312e81; color: #fff; padding: 1.6rem 2.2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: .8rem; }
+    .brand .logo { width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,.15); display: grid; place-items: center; font-size: 1.3rem; }
+    .brand h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+    .brand small { display: block; color: #c7d2fe; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; }
+    .inv-no { text-align: right; }
+    .inv-no .label { font-size: .65rem; font-weight: 800; letter-spacing: .2em; color: #c7d2fe; text-transform: uppercase; }
+    .inv-no .num { font-size: 1.05rem; font-weight: 800; }
+    .inv-no .date { font-size: .8rem; color: #e0e7ff; margin-top: .15rem; }
+    .body { padding: 2rem 2.2rem; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .box h3 { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; color: #64748b; margin-bottom: .5rem; }
+    .box p { font-size: .9rem; line-height: 1.55; color: #334155; }
+    .box p strong { color: #0f172a; }
+    table.items { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+    table.items th { background: #f8fafc; text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: #475569; padding: .7rem .9rem; border-bottom: 2px solid #e2e8f0; }
+    table.items td { padding: .85rem .9rem; border-bottom: 1px solid #f1f5f9; font-size: .9rem; color: #334155; vertical-align: top; }
+    table.items td strong { color: #0f172a; }
+    .totals { display: flex; justify-content: flex-end; }
+    .totals .row { width: 260px; }
+    .totals .line { display: flex; justify-content: space-between; padding: .5rem 0; font-size: .9rem; color: #475569; }
+    .totals .line.grand { border-top: 2px solid #0f172a; margin-top: .4rem; padding-top: .8rem; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+    .meta-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .meta { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: .9rem 1rem; }
+    .meta .k { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: #64748b; }
+    .meta .v { font-size: .9rem; font-weight: 700; color: #0f172a; margin-top: .3rem; }
+    .foot { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 1.2rem 2.2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .foot p { font-size: .78rem; color: #64748b; }
+    .actions { max-width: 800px; margin: 0 auto 1.2rem; display: flex; gap: .6rem; justify-content: flex-end; }
+    .btn { display: inline-flex; align-items: center; gap: .45rem; border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: .85rem; padding: .6rem 1.1rem; border-radius: 10px; }
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-ghost { background: #fff; color: #334155; border: 1px solid #e2e8f0; }
+    .skeleton { display: inline-block; background: linear-gradient(90deg,#e2e8f0,#f1f5f9,#e2e8f0); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 1em; width: 90px; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .actions { display: none; }
+      .sheet { box-shadow: none; border-radius: 0; max-width: none; }
+    }
+    @media (max-width: 640px) {
+      .grid2, .meta-strip { grid-template-columns: 1fr; }
+      .body, .topbar, .foot { padding: 1.3rem; }
+    }
+  </style>
+</head>
+<body data-protected data-booking-id="<%= typeof bookingId !== 'undefined' ? bookingId : '' %>">
+
+  <div class="actions">
+    <a class="btn btn-ghost" href="/bookings/<%= typeof bookingId !== 'undefined' ? bookingId : '' %>"><i class="bi bi-arrow-left"></i> Back</a>
+    <button class="btn btn-primary" onclick="window.print()"><i class="bi bi-printer"></i> Print / Save PDF</button>
+  </div>
+
+  <div class="sheet">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"><i class="bi bi-tools"></i></div>
+        <div>
+          <h1>VehicleService</h1>
+          <small>Control Center</small>
+        </div>
+      </div>
+      <div class="inv-no">
+        <div class="label">Service Invoice</div>
+        <div class="num" id="inv-no">—</div>
+        <div class="date" id="inv-date"></div>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="grid2">
+        <div class="box">
+          <h3>Billed To</h3>
+          <p id="inv-customer">—</p>
+        </div>
+        <div class="box" style="text-align: right;">
+          <h3>Appointment</h3>
+          <p id="inv-appointment">—</p>
+        </div>
+      </div>
+
+      <div class="meta-strip">
+        <div class="meta"><div class="k">Vehicle</div><div class="v" id="inv-vehicle">—</div></div>
+        <div class="meta"><div class="k">Registration</div><div class="v" id="inv-reg">—</div></div>
+        <div class="meta"><div class="k">Type</div><div class="v" id="inv-type">—</div></div>
+      </div>
+
+      <table class="items">
+        <thead>
+          <tr><th>Description</th><th style="width:180px;">Scheduled</th><th style="width:120px; text-align:right;">Qty</th></tr>
+        </thead>
+        <tbody id="inv-items">
+          <tr><td colspan="3"><span class="skeleton"></span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="totals">
+        <div class="row">
+          <div class="line"><span>Services</span><span id="inv-count">—</span></div>
+          <div class="line grand"><span>Status</span><span id="inv-status">Scheduled</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <p>Generated by VehicleService Admin · <span id="inv-generated"></span></p>
+      <p><i class="bi bi-shield-check"></i> This is a system-generated document.</p>
+    </div>
+  </div>
+
+  <script src="/public/js/admin.js" defer></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!window.VS || !VS.session.isLoggedIn) return;
+      const id = document.body.dataset.bookingId || window.location.pathname.split("/")[2];
+      const r = await VS.api("/api/bookingHistory", { method: "POST", body: { uid: "all", page: 1, limit: 500 } });
+      const rows = r.ok && r.data && r.data.status ? r.data.result || [] : [];
+      const b = rows.find((x) => String(x.book_id) === String(id));
+      if (!b) {
+        document.getElementById("inv-items").innerHTML = "<tr><td colspan='3'>Booking not found.</td></tr>";
+        return;
+      }
+      const $ = (i) => document.getElementById(i);
+      const dt = b.created_at ? new Date(b.created_at) : new Date();
+      $("inv-no").textContent = "INV-" + String(b.book_id).padStart(5, "0");
+      $("inv-date").textContent = dt.toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
+      $("inv-customer").innerHTML = "<strong>" + VS.utils.escapeHtml(b.user_name || "Walk-in customer") + "</strong><br>" +
+        (b.user_phone ? "Phone: " + VS.utils.escapeHtml(String(b.user_phone)) : "");
+      $("inv-appointment").innerHTML = "<strong>" + VS.utils.escapeHtml(b.slot_date || "") + "</strong><br>" + VS.utils.escapeHtml(b.slot_time || "");
+      $("inv-vehicle").textContent = b.vehicle_name || "—";
+      $("inv-reg").textContent = b.registration_no || "—";
+      $("inv-type").textContent = b.vehicle_type || "—";
+      $("inv-count").textContent = "1";
+      $("inv-items").innerHTML =
+        "<tr><td><strong>" + VS.utils.escapeHtml(b.service_name || "Vehicle service") + "</strong><br>" +
+        "Service appointment for " + VS.utils.escapeHtml(b.vehicle_name || "vehicle") +
+        " (" + VS.utils.escapeHtml(b.registration_no || "") + ")</td>" +
+        "<td>" + VS.utils.escapeHtml(b.slot_date || "") + "<br>" + VS.utils.escapeHtml(b.slot_time || "") + "</td>" +
+        "<td style='text-align:right;'>1</td></tr>";
+      $("inv-generated").textContent = new Date().toLocaleString("en-IN");
+      document.title = "INV-" + String(b.book_id).padStart(5, "0") + " | Vehicle Service Admin";
+    });
+  </script>
+</body>
+</html>

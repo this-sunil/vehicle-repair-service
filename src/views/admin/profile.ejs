@@ -1,131 +1,90 @@
-<%- include('../partials/head', { pageTitle: 'Admin Profile', activeMenu: 'profile' }) %>
+<%- include('../partials/head', { pageTitle: 'Admin Profile', bodyAttrs: 'data-protected data-page="profile"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'profile' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'profile' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
-
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Admin Profile' } ] }) %>
-          <h1 class="page-title">Administrator Account</h1>
-          <p class="page-subtitle">Manage personal profile details, contact information, and security credentials</p>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <!-- Identity card -->
+      <div class="card overflow-hidden h-fit">
+        <div class="h-28 bg-gradient-to-r from-brand-600 to-violet-600"></div>
+        <div class="-mt-14 flex flex-col items-center px-6 pb-8 text-center">
+          <div id="pf-avatar" class="grid h-28 w-28 place-items-center rounded-3xl bg-gradient-to-br from-brand-500 to-violet-600 text-4xl font-extrabold text-white shadow-xl ring-4 ring-white dark:ring-slate-900">A</div>
+          <h2 class="mt-4 text-xl font-extrabold text-slate-900 dark:text-white" id="pf-name">Administrator</h2>
+          <span class="badge-blue mt-1.5 capitalize" id="pf-role">admin</span>
+          <dl class="mt-6 w-full space-y-3 text-left">
+            <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-2.5 dark:bg-slate-800/60">
+              <dt class="flex items-center gap-2 text-xs font-semibold text-slate-400"><i class="bi bi-telephone"></i> Phone</dt>
+              <dd class="text-sm font-bold text-slate-800 dark:text-slate-100" id="pf-phone">—</dd>
+            </div>
+            <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-2.5 dark:bg-slate-800/60">
+              <dt class="flex items-center gap-2 text-xs font-semibold text-slate-400"><i class="bi bi-calendar-event"></i> Member since</dt>
+              <dd class="text-sm font-bold text-slate-800 dark:text-slate-100" id="pf-joined">—</dd>
+            </div>
+          </dl>
         </div>
       </div>
 
-      <div class="row g-4">
-        <!-- Profile Identity Card -->
-        <div class="col-lg-4">
-          <div class="card text-center p-4">
-            <img src="/public/images/placeholder.svg" alt="Admin" class="profileAvatarPreview rounded-circle mx-auto mb-3 shadow-sm" style="width: 110px; height: 110px; object-fit: cover; border: 3px solid #e2e8f0;">
-            <h4 class="fw-bold mb-1" id="profileDisplayName">Admin</h4>
-            <div class="mb-3">
-              <span class="badge bg-danger-subtle text-danger px-3 py-1 text-uppercase" id="profileDisplayRole">ADMIN</span>
+      <!-- Forms -->
+      <div class="space-y-4 lg:col-span-2">
+        <form id="pf-form" class="card space-y-5 p-6 sm:p-8" novalidate>
+          <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100"><i class="bi bi-person-gear text-brand-500"></i> Profile Details</h3>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="label" for="pf-name-input">Full Name</label>
+              <input id="pf-name-input" type="text" class="input" required />
+              <p class="field-error hidden" data-error-for="pf-name-input"></p>
             </div>
-            <hr>
-            <div class="text-start">
-              <div class="mb-2 d-flex justify-content-between small">
-                <span class="text-muted">Registered Phone:</span>
-                <strong class="font-monospace" id="profileDisplayPhone">—</strong>
-              </div>
-              <div class="mb-2 d-flex justify-content-between small">
-                <span class="text-muted">Member Since:</span>
-                <span id="profileDisplayCreated">—</span>
-              </div>
-              <div class="d-flex justify-content-between small">
-                <span class="text-muted">Access Level:</span>
-                <span class="text-success fw-semibold"><i class="bi bi-shield-check me-1"></i>Full System Root</span>
-              </div>
+            <div>
+              <label class="label" for="pf-phone-input">Phone Number</label>
+              <input id="pf-phone-input" type="tel" inputmode="numeric" class="input" required />
+              <p class="field-error hidden" data-error-for="pf-phone-input"></p>
             </div>
           </div>
-        </div>
 
-        <!-- Edit Profile & Security Tabs -->
-        <div class="col-lg-8">
-          <div class="card">
-            <div class="card-header border-bottom-0 pb-0">
-              <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
-                <li class="nav-item">
-                  <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#generalTabPane" type="button" role="tab">
-                    <i class="bi bi-person me-1"></i> General Details
-                  </button>
-                </li>
-                <li class="nav-item">
-                  <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#securityTabPane" type="button" role="tab">
-                    <i class="bi bi-shield-lock me-1"></i> Security & Password
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <div class="card-body pt-4">
-              <div class="tab-content" id="profileTabContent">
-                <!-- General Tab -->
-                <div class="tab-pane fade show active" id="generalTabPane" role="tabpanel">
-                  <form id="adminProfileForm" enctype="multipart/form-data">
-                    <input type="hidden" name="id" id="profileIdInput" value="1">
-
-                    <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
-                      <img src="/public/images/placeholder.svg" class="profileAvatarPreview table-thumb rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
-                      <div>
-                        <label class="form-label mb-1">Change Profile Avatar</label>
-                        <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
-                      </div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Administrator Name <span class="text-danger">*</span></label>
-                      <input type="text" name="name" id="profileNameInput" class="form-control" required>
-                    </div>
-
-                    <div class="mb-4">
-                      <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                      <input type="tel" name="phone" id="profilePhoneInput" class="form-control" required>
-                      <div class="form-text">Used for receiving system alerts and two-factor verifications.</div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary px-4">
-                      <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                      Update Profile
-                    </button>
-                  </form>
-                </div>
-
-                <!-- Security Tab -->
-                <div class="tab-pane fade" id="securityTabPane" role="tabpanel">
-                  <form id="adminPasswordForm">
-                    <input type="hidden" name="phone" id="passPhoneInput" value="">
-
-                    <div class="mb-3">
-                      <label class="form-label">New Password <span class="text-danger">*</span></label>
-                      <input type="password" name="current_pass" class="form-control" placeholder="••••••••" required>
-                      <div class="form-text">Minimum 8 characters with letters, numbers, and symbols.</div>
-                    </div>
-
-                    <div class="mb-4">
-                      <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
-                      <input type="password" name="confirm_pass" class="form-control" placeholder="••••••••" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-danger px-4">
-                      <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                      Change Password
-                    </button>
-                  </form>
-                </div>
-              </div>
+          <div>
+            <label class="label" for="pf-photo">Profile Photo <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+            <div class="flex items-center gap-4">
+              <div id="pf-photo-preview" class="grid h-16 w-16 place-items-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800"><i class="bi bi-image text-2xl"></i></div>
+              <input id="pf-photo" type="file" accept="image/*" class="input !py-2.5 !text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-brand-600 hover:file:bg-brand-100" />
             </div>
           </div>
-        </div>
+
+          <div class="flex justify-end border-t border-slate-200 pt-5 dark:border-slate-800">
+            <button type="submit" class="btn-primary btn-md"><i class="bi bi-check-lg"></i> Save Profile</button>
+          </div>
+        </form>
+
+        <form id="pf-pass-form" class="card space-y-5 p-6 sm:p-8" novalidate>
+          <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100"><i class="bi bi-shield-lock text-rose-500"></i> Change Password</h3>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label class="label" for="pf-current">Current Password</label>
+              <input id="pf-current" type="password" class="input" autocomplete="current-password" required />
+              <p class="field-error hidden" data-error-for="pf-current"></p>
+            </div>
+            <div>
+              <label class="label" for="pf-new">New Password</label>
+              <input id="pf-new" type="password" class="input" autocomplete="new-password" required minlength="6" />
+              <p class="field-error hidden" data-error-for="pf-new"></p>
+            </div>
+          </div>
+
+          <div class="flex justify-end border-t border-slate-200 pt-5 dark:border-slate-800">
+            <button type="submit" class="btn-danger btn-md"><i class="bi bi-key"></i> Update Password</button>
+          </div>
+        </form>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/profile.js"></script>
+<script src="/public/js/profile.js" defer></script>
+</body>
+</html>

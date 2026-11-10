@@ -1,103 +1,50 @@
-<%- include('../partials/head', { pageTitle: 'Edit User', activeMenu: 'users' }) %>
+<%- include('../partials/head', { pageTitle: 'Edit User', bodyAttrs: 'data-protected data-page="users-edit" data-id="' + (typeof userId !== 'undefined' ? userId : '') + '"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'users' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
+  <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <a href="/users" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Edit user</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Update profile details</p>
+      </div>
+    </div>
 
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Users', url: '/users' }, { label: 'User #' + (typeof userId !== 'undefined' ? userId : ''), url: '/users/' + (typeof userId !== 'undefined' ? userId : '') }, { label: 'Edit' } ] }) %>
-          <h1 class="page-title">Edit User Profile</h1>
-          <p class="page-subtitle">Update customer information and profile image</p>
-        </div>
-        <a href="/users" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-arrow-left me-1"></i> Back to Users
-        </a>
+    <form id="user-edit-form" class="mx-auto max-w-2xl space-y-5 card p-6 sm:p-8" novalidate>
+      <div>
+        <label class="label" for="name">Full Name</label>
+        <input id="name" type="text" class="input" placeholder="Full name" required />
+        <p class="field-error hidden" data-error-for="name"></p>
       </div>
 
-      <!-- Edit Form Card -->
-      <div class="row">
-        <div class="col-lg-8 col-xl-7">
-          <div class="card position-relative" id="userEditCard">
-            <div class="card-header">
-              <h5 class="card-title">Modify Account #<span id="displayUserId"><%= typeof userId !== 'undefined' ? userId : '' %></span></h5>
-            </div>
-            <div class="card-body">
-              <div id="userEditLoading" class="text-center py-4">
-                <div class="spinner-border text-primary me-2"></div> Loading user details...
-              </div>
+      <div>
+        <label class="label" for="phone">Phone Number</label>
+        <input id="phone" type="tel" inputmode="numeric" class="input" placeholder="98765 43210" required />
+        <p class="field-error hidden" data-error-for="phone"></p>
+      </div>
 
-              <form id="standaloneEditUserForm" class="d-none" enctype="multipart/form-data">
-                <input type="hidden" name="id" id="editUserIdInput" value="<%= typeof userId !== 'undefined' ? userId : '' %>">
-
-                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded">
-                  <img src="/public/images/placeholder.svg" id="editPageAvatarPreview" class="table-thumb rounded-circle" style="width: 64px; height: 64px;">
-                  <div>
-                    <label class="form-label mb-1">Change Profile Avatar</label>
-                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" name="name" id="editUserNameInput" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                  <input type="tel" name="phone" id="editUserPhoneInput" class="form-control" required>
-                </div>
-
-                <div class="d-flex align-items-center gap-2 mt-4">
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm me-1 d-none" role="status"></span>
-                    Save Changes
-                  </button>
-                  <a href="/users" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
-          </div>
+      <div>
+        <label class="label" for="photo">Profile Photo <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+        <div class="flex items-center gap-4">
+          <div id="photo-preview" class="grid h-16 w-16 place-items-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800"><i class="bi bi-image text-2xl"></i></div>
+          <input id="photo" type="file" accept="image/*" class="input !py-2.5 !text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-brand-600 hover:file:bg-brand-100" />
         </div>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <div class="flex justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+        <a href="/users" class="btn-secondary btn-md">Cancel</a>
+        <button type="submit" class="btn-primary btn-md"><i class="bi bi-check-lg"></i> Save Changes</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/users.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const userId = '<%= typeof userId !== 'undefined' ? userId : '' %>';
-    if (!userId) return;
-
-    try {
-      const res = await apiRequest('/api/getProfile', {
-        method: 'POST',
-        body: { id: userId }
-      });
-
-      if (res.ok && res.data.result) {
-        const u = res.data.result;
-        document.getElementById('editUserNameInput').value = u.name || '';
-        document.getElementById('editUserPhoneInput').value = u.phone || '';
-        if (u.photo) {
-          document.getElementById('editPageAvatarPreview').src = getMediaUrl(u.photo);
-        }
-        document.getElementById('userEditLoading').classList.add('d-none');
-        document.getElementById('standaloneEditUserForm').classList.remove('d-none');
-      } else {
-        document.getElementById('userEditLoading').innerHTML = `<div class="text-danger">${res.data.msg || 'User not found.'}</div>`;
-      }
-    } catch (e) {
-      document.getElementById('userEditLoading').innerHTML = '<div class="text-danger">Failed to load user profile.</div>';
-    }
-  });
-</script>
+<script src="/public/js/users.js" defer></script>
+</body>
+</html>

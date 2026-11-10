@@ -1,24 +1,80 @@
-  <!-- Corona Footer -->
-  <footer class="corona-footer">
-    <span>Copyright &copy; <%= new Date().getFullYear() %> <a href="/dashboard">Vehicle Service</a>. All rights reserved.</span>
-    <span>Corona Admin &bull; Version 1.0.0</span>
-  </footer>
-</div><!-- .corona-main -->
-</div><!-- .corona-wrapper -->
+<footer class="border-t border-slate-200/80 bg-white/60 px-6 py-4 dark:border-slate-800 dark:bg-slate-950/60">
+  <div class="flex flex-col items-center justify-between gap-1 text-xs text-slate-400 sm:flex-row">
+    <p>© <%= new Date().getFullYear() %> <span class="font-semibold text-slate-500 dark:text-slate-300">VehicleService</span> — Control Center. All rights reserved.</p>
+    <div class="flex items-center gap-4">
+      <a href="/privacy" class="transition hover:text-brand-500">Privacy</a>
+      <a href="/terms-condition" class="transition hover:text-brand-500">Terms</a>
+      <span class="flex items-center gap-1.5">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>System healthy
+      </span>
+    </div>
+  </div>
+</footer>
 
-<!-- Sidebar Backdrop (Mobile) -->
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<!-- Toasts -->
+<div id="vs-toasts" class="fixed right-4 top-4 z-[80] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-2"></div>
 
-<!-- Bootstrap 5 Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ================= AI Copilot Widget ================= -->
+<button id="vs-copilot-fab" class="group fixed bottom-5 right-5 z-[60] grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-brand-500 to-violet-600 text-white shadow-xl shadow-brand-600/40 transition hover:scale-105 hover:shadow-2xl hover:shadow-brand-600/50" aria-label="Open AI Copilot">
+  <i class="bi bi-stars text-2xl"></i>
+  <span class="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 animate-pulse rounded-full bg-emerald-400 ring-2 ring-slate-100 dark:ring-slate-950"></span>
+</button>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div id="vs-copilot" class="pointer-events-none fixed bottom-5 right-5 z-[70] w-[calc(100vw-2.5rem)] max-w-sm translate-y-3 scale-95 opacity-0 transition-all duration-200 sm:w-96" x-cloak>
+  <div class="card flex h-[32rem] flex-col overflow-hidden shadow-2xl">
+    <!-- Header -->
+    <div class="flex items-center gap-3 border-b border-slate-200 bg-gradient-to-r from-brand-600 to-violet-600 px-4 py-3 dark:border-slate-800">
+      <div class="grid h-9 w-9 place-items-center rounded-xl bg-white/20">
+        <i class="bi bi-stars text-lg text-white"></i>
+      </div>
+      <div class="flex-1">
+        <div class="text-sm font-bold text-white">AI Copilot</div>
+        <div class="flex items-center gap-1.5 text-[11px] font-medium text-white/70">
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
+          <span id="vs-cp-engine">Online · data-aware</span>
+        </div>
+      </div>
+      <button id="vs-copilot-close" class="grid h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white" aria-label="Close copilot">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Messages -->
+    <div id="vs-cp-messages" class="vs-scrollbar flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4 dark:bg-slate-950/60"></div>
 
-<!-- Core Corona Admin JS -->
-<script src="/public/js/corona.js"></script>
-</body>
-</html>
+    <!-- Suggestions -->
+    <div id="vs-cp-suggests" class="flex flex-wrap gap-1.5 border-t border-slate-200 bg-white px-4 pt-3 dark:border-slate-800 dark:bg-slate-900">
+      <button class="cp-suggest badge-slate hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-500/10" data-q="Weekly summary">📊 Weekly summary</button>
+      <button class="cp-suggest badge-slate hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-500/10" data-q="Business suggestions">💡 Suggestions</button>
+      <button class="cp-suggest badge-slate hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-500/10" data-q="How many bookings do we have?">📅 Bookings</button>
+      <button class="cp-suggest badge-slate hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-500/10" data-q="What's our most popular service?">⭐ Top service</button>
+    </div>
+
+    <!-- Input -->
+    <form id="vs-cp-form" class="flex items-center gap-2 border-t border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+      <input id="vs-cp-input" type="text" autocomplete="off" placeholder="Ask about bookings, users, revenue…" class="input flex-1 !rounded-xl border-slate-200 bg-slate-50 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" />
+      <button type="submit" class="btn-primary btn-sm h-9 w-9 !rounded-xl !p-0" aria-label="Send">
+        <i class="bi bi-send-fill"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= Command Palette ================= -->
+<div id="vs-cmdk" class="fixed inset-0 z-[75] hidden">
+  <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" data-cmdk-close></div>
+  <div class="absolute left-1/2 top-[12%] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 animate-scaleIn">
+    <div class="card overflow-hidden shadow-2xl">
+      <div class="flex items-center gap-3 border-b border-slate-200 px-4 dark:border-slate-800">
+        <i class="bi bi-search text-slate-400"></i>
+        <input id="vs-cmdk-input" type="text" autocomplete="off" placeholder="Search pages, actions, or ask the AI…" class="w-full bg-transparent py-4 text-sm text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-100" />
+        <kbd class="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-800">ESC</kbd>
+      </div>
+      <div id="vs-cmdk-list" class="vs-scrollbar max-h-80 overflow-y-auto p-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Core admin framework -->
+<script src="/public/js/admin.js" defer></script>
+

@@ -1,0 +1,74 @@
+<%- include('../partials/head', { pageTitle: 'Activity Log', bodyAttrs: 'data-protected data-page="activity"' }) %>
+
+<%- include('../partials/sidebar', { activeMenu: 'activity' }) %>
+
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
+
+  <main class="flex-1 space-y-5 px-4 py-6 sm:px-6 lg:px-8">
+    <%- include('../partials/flash-messages') %>
+
+    <!-- Header -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Activity Log</h2>
+        <p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Complete audit trail of every admin action on this panel.</p>
+      </div>
+      <div class="flex gap-2">
+        <button id="act-refresh" class="btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        <button id="act-export" class="btn-secondary btn-sm"><i class="bi bi-filetype-csv"></i> Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Filters + table -->
+    <div class="card">
+      <div class="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-slate-800 sm:flex-row sm:items-center">
+        <div class="relative flex-1 sm:max-w-xs">
+          <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+          <input type="text" id="act-search" placeholder="Search details, admin…" class="input !pl-10" />
+        </div>
+        <select id="act-action" class="input sm:max-w-36">
+          <option value="">All actions</option>
+          <option value="create">Create</option>
+          <option value="update">Update</option>
+          <option value="delete">Delete</option>
+          <option value="login">Login</option>
+          <option value="security">Security</option>
+        </select>
+        <select id="act-entity" class="input sm:max-w-36">
+          <option value="">All entities</option>
+          <option value="user">Users</option>
+          <option value="booking">Bookings</option>
+          <option value="service">Services</option>
+          <option value="category">Categories</option>
+          <option value="shop">Shops</option>
+          <option value="plan">Plans</option>
+          <option value="notification">Broadcasts</option>
+          <option value="setting">Settings</option>
+          <option value="auth">Auth</option>
+        </select>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table-base">
+          <thead>
+            <tr><th>Action</th><th>Entity</th><th>Details</th><th>Admin</th><th>IP</th><th>When</th></tr>
+          </thead>
+          <tbody id="act-tbody">
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4"><%- include('../partials/pagination') %></div>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</div>
+
+<script src="/public/js/activity.js" defer></script>
+</body>
+</html>

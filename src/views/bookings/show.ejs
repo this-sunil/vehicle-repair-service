@@ -1,153 +1,72 @@
-<%- include('../partials/head', { pageTitle: 'Booking Details', activeMenu: 'bookings' }) %>
+<%- include('../partials/head', { pageTitle: 'Appointment Details', bodyAttrs: 'data-protected data-page="bookings-show" data-id="' + (typeof bookingId !== 'undefined' ? bookingId : '') + '"' }) %>
 
-<div class="corona-wrapper">
-  <%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
+<%- include('../partials/sidebar', { activeMenu: 'bookings' }) %>
 
-  <div class="corona-main">
-    <%- include('../partials/navbar') %>
+<div id="vs-main" class="flex min-h-screen flex-col transition-all duration-200">
+  <%- include('../partials/navbar') %>
 
-    <main class="corona-content">
-      <%- include('../partials/flash-messages') %>
-
-      <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <%- include('../partials/breadcrumbs', { crumbs: [ { label: 'Bookings', url: '/bookings' }, { label: 'Appointment Details' } ] }) %>
-          <h1 class="page-title">Appointment Specification</h1>
-          <p class="page-subtitle">Inspect customer vehicle inspection and service reservation</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <a href="/bookings" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back to Bookings
-          </a>
-          <a href="/bookings/<%= typeof bookingId !== 'undefined' ? bookingId : '' %>/edit" class="btn btn-primary btn-sm">
-            <i class="bi bi-pencil me-1"></i> Reschedule
-          </a>
-        </div>
+  <main class="flex-1 space-y-4 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mb-2 flex items-center gap-3">
+      <a href="/bookings" class="icon-btn"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Appointment details</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400" id="bk-subtitle">Loading…</p>
       </div>
+    </div>
 
-      <div id="showBookingLoading" class="text-center py-5">
-        <div class="spinner-border text-primary me-2"></div> Loading appointment details...
-      </div>
-
-      <div id="showBookingContent" class="d-none">
-        <div class="row g-4">
-          <!-- Main Details -->
-          <div class="col-lg-8">
-            <div class="card mb-4">
-              <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="card-title"><i class="bi bi-calendar-check text-primary me-2"></i>Appointment #<span id="showBookingId"><%= typeof bookingId !== 'undefined' ? bookingId : '' %></span></h5>
-                <span class="badge bg-success-subtle text-success px-3 py-1">Confirmed</span>
-              </div>
-              <div class="card-body p-4">
-                <div class="row g-4">
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Vehicle Model</div>
-                    <div class="fs-5 fw-bold text-dark mt-1" id="showVehName">—</div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Registration Number</div>
-                    <div class="fs-5 fw-bold font-monospace text-primary mt-1" id="showRegNo">—</div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Service Package</div>
-                    <div class="fs-6 fw-semibold text-dark mt-1" id="showService">—</div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Vehicle Category</div>
-                    <div class="mt-1"><span class="badge bg-light text-dark border" id="showType">—</span></div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Scheduled Date</div>
-                    <div class="fs-6 fw-semibold text-dark mt-1"><i class="bi bi-calendar3 me-1 text-primary"></i><span id="showDate">—</span></div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="text-muted small">Slot Time</div>
-                    <div class="fs-6 fw-semibold text-dark mt-1"><i class="bi bi-clock me-1 text-primary"></i><span id="showTime">—</span></div>
-                  </div>
-                </div>
-
-                <hr class="my-4">
-
-                <div class="mb-2">
-                  <h6 class="fw-bold mb-2">Vehicle Photo</h6>
-                  <img src="/public/images/placeholder.svg" id="showVehPhoto" alt="Vehicle Photo" class="rounded-3 shadow-sm border" style="max-width: 320px; max-height: 200px; object-fit: cover;">
-                </div>
-              </div>
-            </div>
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <!-- Vehicle photo -->
+      <div class="card overflow-hidden">
+        <div class="grid h-56 place-items-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900" id="bk-photo-wrap">
+          <i class="bi bi-image text-5xl text-slate-300 dark:text-slate-600"></i>
+        </div>
+        <div class="p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white" id="bk-vehicle">—</h3>
+            <span class="badge-blue" id="bk-type">—</span>
           </div>
-
-          <!-- Customer Card -->
-          <div class="col-lg-4">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title"><i class="bi bi-person text-primary me-2"></i>Customer Account</h5>
-              </div>
-              <div class="card-body p-4 text-center">
-                <div class="avatar-initials mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.5rem;" id="showCustInitials">U</div>
-                <h5 class="fw-bold mb-1" id="showCustName">—</h5>
-                <p class="text-muted small font-monospace mb-3" id="showCustPhone">—</p>
-                <div class="p-2 bg-light rounded text-start mb-3">
-                  <div class="d-flex justify-content-between small text-muted mb-1">
-                    <span>Account ID:</span>
-                    <strong id="showCustId" class="text-dark">—</strong>
-                  </div>
-                </div>
-                <a href="#" id="showCustProfileLink" class="btn btn-outline-primary btn-sm w-100">
-                  <i class="bi bi-person-lines-fill me-1"></i> View Full Customer Profile
-                </a>
-              </div>
-            </div>
-          </div>
+          <p class="mt-1 font-mono text-sm font-semibold tracking-wider text-slate-400" id="bk-reg">—</p>
         </div>
       </div>
-    </main>
 
-    <%- include('../partials/footer') %>
-  </div>
+      <!-- Details -->
+      <div class="card p-6 lg:col-span-2">
+        <h3 class="mb-5 flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100"><i class="bi bi-info-circle text-brand-500"></i> Appointment Information</h3>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+            <dt class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Customer</dt>
+            <dd class="mt-1.5 flex items-center gap-2.5 font-semibold text-slate-800 dark:text-slate-100" id="bk-customer">—</dd>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+            <dt class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Phone</dt>
+            <dd class="mt-1.5 font-mono text-sm font-semibold text-slate-800 dark:text-slate-100" id="bk-phone">—</dd>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+            <dt class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Service</dt>
+            <dd class="mt-1.5 font-semibold text-slate-800 dark:text-slate-100" id="bk-service">—</dd>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+            <dt class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Scheduled Slot</dt>
+            <dd class="mt-1.5 font-semibold text-slate-800 dark:text-slate-100" id="bk-slot">—</dd>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50 sm:col-span-2">
+            <dt class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Booked</dt>
+            <dd class="mt-1.5 font-semibold text-slate-800 dark:text-slate-100" id="bk-created">—</dd>
+          </div>
+        </dl>
+
+        <div class="mt-6 flex flex-wrap justify-end gap-2.5 border-t border-slate-200 pt-5 dark:border-slate-800">
+          <button class="btn-secondary btn-md" id="bk-del"><i class="bi bi-trash3"></i> Delete</button>
+          <a href="/bookings/<%= typeof bookingId !== 'undefined' ? bookingId : '' %>/invoice" target="_blank" class="btn-secondary btn-md"><i class="bi bi-receipt"></i> Invoice</a>
+          <a href="#" class="btn-primary btn-md" id="bk-edit-link"><i class="bi bi-pencil"></i> Reschedule</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
 </div>
 
-<script src="/public/js/bookings.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const bookId = Number('<%= typeof bookingId !== 'undefined' ? bookingId : '' %>');
-    if (!bookId) return;
-
-    try {
-      const res = await apiRequest('/api/bookingHistory', {
-        method: 'POST',
-        body: { uid: 'all', page: 1, limit: 100 }
-      });
-
-      if (res.ok && res.data.result) {
-        const item = res.data.result.find(b => b.book_id === bookId);
-        if (item) {
-          document.getElementById('showVehName').textContent = item.vehicle_name || '—';
-          document.getElementById('showRegNo').textContent = item.registration_no || '—';
-          document.getElementById('showService').textContent = item.service_name || '—';
-          document.getElementById('showType').textContent = item.vehicle_type || '—';
-          document.getElementById('showDate').textContent = item.slot_date || '—';
-          document.getElementById('showTime').textContent = item.slot_time || '—';
-
-          const custName = item.user_name || `User #${item.uid}`;
-          document.getElementById('showCustName').textContent = custName;
-          document.getElementById('showCustPhone').textContent = item.user_phone ? String(item.user_phone) : '—';
-          document.getElementById('showCustId').textContent = `#${item.uid}`;
-          document.getElementById('showCustInitials').textContent = custName.charAt(0).toUpperCase();
-          document.getElementById('showCustProfileLink').href = `/users/${item.uid}`;
-
-          if (item.vehicle_photo) {
-            document.getElementById('showVehPhoto').src = getMediaUrl(item.vehicle_photo);
-          }
-
-          document.getElementById('showBookingLoading').classList.add('d-none');
-          document.getElementById('showBookingContent').classList.remove('d-none');
-        } else {
-          document.getElementById('showBookingLoading').innerHTML = '<div class="text-danger">Appointment not found.</div>';
-        }
-      }
-    } catch (e) {
-      document.getElementById('showBookingLoading').innerHTML = '<div class="text-danger">Failed to load appointment details.</div>';
-    }
-  });
-</script>
+<script src="/public/js/bookings.js" defer></script>
+</body>
+</html>

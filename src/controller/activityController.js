@@ -34,16 +34,16 @@ createActivityTable();
  *     details: "Short human-readable summary",
  *   });
  * -----------------------------------------------------------------*/
-export const logActivity = (req, { action, entity, entityId = null, details = "" }) => {
-  const admin = (req && req.user) || {};
+export const logActivity = (req, { action, entity, entityId = null, details = "", admin }) => {
+  const actor = admin || (req && req.user) || {};
   const ip = (req && (req.headers["x-forwarded-for"] || req.ip || "") || "").toString().slice(0, 64);
   const query = `
     INSERT INTO activity_log(admin_id, admin_name, action, entity, entity_id, details, ip)
     VALUES($1,$2,$3,$4,$5,$6,$7)`;
   pool
     .query(query, [
-      admin.id ?? null,
-      admin.name || "system",
+      actor.id ?? null,
+      actor.name || "system",
       String(action).slice(0, 32),
       String(entity).slice(0, 32),
       entityId != null ? String(entityId).slice(0, 64) : null,

@@ -170,6 +170,8 @@ PostgreSQL Database
 - Clean REST API structure
 - Production-ready scalable architecture
 - **Tailwind CSS admin panel** — responsive, dark-mode, with AI copilot & insights
+- Security hardening (rate limiting + account lockout), full audit trail,
+  CSV exports, ⌘K global search, printable invoices and bulk actions
 
 ---
 
@@ -202,6 +204,46 @@ Requires no dev dependencies — it runs the Tailwind CLI via `npx`.
 **Optional Gemini upgrade:** add `GEMINI_API_KEY` to `.env` and restart the
 server to have the copilot powered by Google Gemini 2.0 Flash instead of the
 built-in intent engine. The badge in the copilot header shows the active engine.
+
+### Security Hardening
+
+- **Rate limiting** on all sensitive routes (in-memory):
+  - Login: 8 requests / 10 min per IP
+  - Token refresh (`POST /auth/token`): 20 requests / 10 min
+  - Write operations (POST/PUT/DELETE): 120 requests / 10 min
+- **Account lockout** — 5 wrong passwords within 15 minutes locks the phone
+  number for 15 minutes (HTTP 423 with a friendly message).
+- **Admin-only API surface** — every mutating endpoint requires a valid admin
+  JWT (`verifyToken` middleware); public registration is disabled.
+
+### Activity / Audit Log
+
+Every admin action is recorded automatically — create, update, delete, login
+and security events — with the acting admin, entity, entity id, IP and a
+human-readable summary.
+
+- **UI:** `/activity` (sidebar → System → Activity Log) with search, action and
+  entity filters, pagination and CSV export.
+- **API:** `GET /api/activity?page=&limit=&action=&entity=` (admin token).
+- The log is fire-and-forget: audit failures never block or break responses.
+
+### Data Tools
+
+- **CSV export** on every list page (users, bookings, services, categories,
+  service centers, plans, broadcasts, activity log) — UTF-8 with BOM, opens
+  cleanly in Excel.
+- **Global search (⌘K)** — the command palette queries live data across users,
+  bookings, services, categories, service centers, plans and broadcasts as you
+  type (`GET /api/search?q=&limit=`, admin token). Selecting a result jumps
+  straight to the record.
+
+### UX Polish
+
+- **Printable invoices** — every booking has an `Invoice` button
+  (`/bookings/:id/invoice`): self-contained, print-optimized layout with
+  Print / Save PDF (browser print dialog).
+- **Bulk actions** — checkbox selection with select-all and a bulk action bar
+  on the Users and Bookings lists; bulk delete with confirmation.
 
 ---
 

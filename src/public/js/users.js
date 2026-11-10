@@ -9,6 +9,7 @@
     let allUsers = [];
     let filtered = [];
     let pageNo = 1;
+    let selected = new Set();
     const PER = 10;
 
     const applyFilters = () => {
@@ -20,6 +21,13 @@
           (!q || String(u.name).toLowerCase().includes(q) || String(u.phone).includes(q) || String(u.id).includes(q))
       );
       render();
+    };
+
+    const updateBulkBar = () => {
+      const bar = document.getElementById("user-bulkbar");
+      document.getElementById("user-bulk-count").textContent = selected.size;
+      bar.classList.toggle("hidden", selected.size === 0);
+      bar.classList.toggle("flex", selected.size > 0);
     };
 
     const render = () => {
@@ -38,6 +46,7 @@
             .map(
               (u) =>
                 "<tr>" +
+                '<td><input type="checkbox" class="vs-check vs-row-check" data-id="' + u.id + '"' + (selected.has(String(u.id)) ? " checked" : "") + ' aria-label="Select ' + escapeHtml(u.name) + '"></td>' +
                 '<td><div class="flex items-center gap-3">' + avatar(u) +
                 '<div><div class="text-sm font-semibold text-slate-800 dark:text-slate-100">' + escapeHtml(u.name) + "</div>" +
                 '<div class="text-xs text-slate-400">#' + u.id + "</div></div></div></td>" +
@@ -51,9 +60,18 @@
                 "</div></td></tr>"
             )
             .join("")
-        : emptyRow(5, "bi-people", "No users match your filters");
+        : emptyRow(6, "bi-people", "No users match your filters");
 
       VS.pagination({ page: pageNo, totalPages, total, onChange: (p) => { pageNo = p; render(); window.scrollTo({ top: 0, behavior: "smooth" }); } });
+
+      // row checkbox events
+      tbody.querySelectorAll(".vs-row-check").forEach((c) =>
+        c.addEventListener("change", () => {
+          if (c.checked) selected.add(c.dataset.id);
+          else selected.delete(c.dataset.id);
+          updateBulkBar();
+        })
+      );
 
       tbody.querySelectorAll("[data-del]").forEach((b) =>
         b.addEventListener("click", async () => {
@@ -65,7 +83,47 @@
           else VS.toast((r.data && r.data.msg) || "Delete failed", "error");
         })
       );
+      updateBulkBar();
     };
+
+    // select-all (current page)
+    document.getElementById("user-select-all").addEventListener("change", (e) => {
+      const checked = e.target.checked;
+      document.getElementById("users-tbody")
+        .querySelectorAll(".vs-row-check")
+        .forEach((c) => {
+          c.checked = checked;
+          if (checked) selected.add(c.dataset.id);
+          else selected.delete(c.dataset.id);
+        });
+      updateBulkBar();
+    });
+
+    document.getElementById("user-bulk-cancel").addEventListener("click", () => {
+      selected.clear();
+      document.getElementById("user-select-all").checked = false;
+      render();
+    });
+
+    document.getElementById("user-bulk-delete").addEventListener("click", async () => {
+      const ids = [...selected];
+      const yes = await VS.confirm({
+        title: "Delete " + ids.length + " user" + (ids.length > 1 ? "s" : "") + "?",
+        message: "This will permanently remove the selected users and all their bookings. This cannot be undone.",
+        confirmText: "Delete " + ids.length,
+        danger: true,
+      });
+      if (!yes) return;
+      let ok = 0;
+      for (const id of ids) {
+        const r = await VS.api("/api/deleteUserById", { method: "DELETE", body: { id: Number(id) } });
+        if (r.ok && r.data && r.data.status) ok++;
+      }
+      selected.clear();
+      document.getElementById("user-select-all").checked = false;
+      VS.toast("Deleted " + ok + " of " + ids.length + " users", ok === ids.length ? "success" : "warning");
+      load();
+    });
 
     const load = async () => {
       const r = await VS.api("/api/getAllUser");

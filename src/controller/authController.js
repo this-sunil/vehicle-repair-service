@@ -47,7 +47,14 @@ createUserTable();
 
 export const loginController = async (req, res) => {
   const { phone, pass } = req.body;
-  
+
+  if (!phone || !pass) {
+    return res.status(400).json({
+      status: false,
+      msg: "Phone and password are required",
+    });
+  }
+
   try {
     // ---- brute-force lockout check ----
     const lockedMin = isAccountLocked(phone);
@@ -85,7 +92,7 @@ export const loginController = async (req, res) => {
       });
     }
     resetLoginFailures(phone);
-    logActivity(req, { action: "login", entity: "auth", entityId: rows[0].id, details: "Admin signed in" });
+    logActivity(req, { action: "login", entity: "auth", entityId: rows[0].id, details: "Admin signed in", admin: rows[0] });
     delete rows[0].pass;
     const token = await generateToken(rows[0]);
 

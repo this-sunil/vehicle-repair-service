@@ -24,15 +24,24 @@
         </div>
       </div>
 
+      <!-- Bulk action bar -->
+      <div id="bk-bulkbar" class="hidden items-center gap-3 border-b border-brand-200 bg-brand-50 px-4 py-2.5 dark:border-brand-500/30 dark:bg-brand-500/10">
+        <span class="text-sm font-bold text-brand-700 dark:text-brand-300"><span id="bk-bulk-count">0</span> selected</span>
+        <div class="ml-auto flex gap-2">
+          <button id="bk-bulk-cancel" class="btn-secondary btn-sm">Cancel</button>
+          <button id="bk-bulk-delete" class="btn-sm bg-rose-600 font-bold text-white hover:bg-rose-700"><i class="bi bi-trash3"></i> Delete Selected</button>
+        </div>
+      </div>
+
       <div class="overflow-x-auto">
         <table class="table-base">
           <thead>
-            <tr><th>Customer</th><th>Vehicle</th><th>Service</th><th>Slot</th><th class="text-right">Actions</th></tr>
+            <tr><th class="w-10"><input type="checkbox" id="bk-select-all" class="vs-check" aria-label="Select all" /></th><th>Customer</th><th>Vehicle</th><th>Service</th><th>Slot</th><th class="text-right">Actions</th></tr>
           </thead>
           <tbody id="bk-tbody">
-            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
-            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
-            <tr><td colspan="5" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
+            <tr><td colspan="6" class="!px-4 !py-8"><span class="skeleton inline-block h-5 w-full"></span></td></tr>
           </tbody>
         </table>
       </div>

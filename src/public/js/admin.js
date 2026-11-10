@@ -70,6 +70,13 @@
   async function api(path, opts) {
     const o = Object.assign({ method: "GET", body: null, multipart: false, auth: true, raw: false }, opts);
 
+    /* Signed out — the auth guard is already redirecting to /login;
+       fail gracefully instead of firing doomed 401 requests. */
+    if (o.auth && !session.token) {
+      if (o.raw) throw new Error("NOT_AUTHENTICATED");
+      return { ok: false, status: 401, data: null, authExpired: true };
+    }
+
     const doFetch = (token) => {
       const headers = {};
       if (o.auth && token) headers["Authorization"] = "Bearer " + token;
@@ -90,7 +97,11 @@
         else { logout("Session expired. Please sign in again."); throw new Error("AUTH_EXPIRED"); }
       }
     } catch (err) {
-      if (err && err.message === "AUTH_EXPIRED") throw err;
+      if (err && err.message === "AUTH_EXPIRED") {
+        /* logout() already redirects — fail gracefully, no console noise */
+        if (o.raw) throw err;
+        return { ok: false, status: 401, data: null, authExpired: true };
+      }
       if (o.raw) throw err;
       return { ok: false, status: 0, data: null, networkError: true };
     }
@@ -710,18 +721,20 @@
     );
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const isProtected = document.body.hasAttribute("data-protected");
-    const isAuthPage = document.body.hasAttribute("data-auth-page");
+  /* ---- Auth gate: runs synchronously (before deferred module scripts),
+     so signed-out visitors never fire doomed API calls ---- */
+  const isProtected = document.body.hasAttribute("data-protected");
+  const isAuthPage = document.body.hasAttribute("data-auth-page");
 
-    if (isProtected && !session.isLoggedIn) {
-      window.location.replace("/login");
-      return;
-    }
-    if (isAuthPage && session.isLoggedIn) {
-      window.location.replace("/dashboard");
-      return;
-    }
+  if (isProtected && !session.isLoggedIn) {
+    window.location.replace("/login");
+  } else if (isAuthPage && session.isLoggedIn) {
+    window.location.replace("/dashboard");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (isProtected && !session.isLoggedIn) return; // redirecting
+    if (isAuthPage && session.isLoggedIn) return; // redirecting
 
     if (isProtected) {
       fillUser();

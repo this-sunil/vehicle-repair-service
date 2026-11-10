@@ -58,6 +58,9 @@
   .field-error {
     @apply mt-1.5 text-xs font-medium text-rose-600 dark:text-rose-400;
   }
+  .vs-check {
+    @apply h-4 w-4 cursor-pointer rounded border-slate-300 bg-white text-brand-600 accent-brand-600 transition-colors hover:border-brand-400 checked:border-brand-600 focus:ring-2 focus:ring-brand-500/30 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-800 dark:checked:border-brand-500;
+  }
 
   /* ---------- Cards ---------- */
   .card {

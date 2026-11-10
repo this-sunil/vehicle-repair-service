@@ -23,6 +23,14 @@
   if (page === "bookings") {
     let all = [];
     let pageNo = 1;
+    let selected = new Set();
+
+    const updateBulkBar = () => {
+      const bar = document.getElementById("bk-bulkbar");
+      document.getElementById("bk-bulk-count").textContent = selected.size;
+      bar.classList.toggle("hidden", selected.size === 0);
+      bar.classList.toggle("flex", selected.size > 0);
+    };
 
     const render = () => {
       const q = (document.getElementById("bk-search").value || "").toLowerCase().trim();
@@ -53,6 +61,7 @@
                   : '<span class="badge-slate">past</span>';
                 return (
                   "<tr>" +
+                  '<td><input type="checkbox" class="vs-check vs-row-check" data-id="' + b.book_id + '"' + (selected.has(String(b.book_id)) ? " checked" : "") + ' aria-label="Select booking"></td>' +
                   '<td><div class="flex items-center gap-3">' + avatar({ name: b.user_name, photo: null }) +
                   '<div><div class="text-sm font-semibold text-slate-800 dark:text-slate-100">' + escapeHtml(b.user_name || "Unknown") + "</div>" +
                   '<div class="text-xs text-slate-400">' + (b.user_phone ? escapeHtml(String(b.user_phone)) : "—") + "</div></div></div></td>" +
@@ -69,9 +78,17 @@
               }
             )
             .join("")
-        : emptyRow(5, "bi-calendar-x", "No bookings found");
+        : emptyRow(6, "bi-calendar-x", "No bookings found");
 
       VS.pagination({ page: pageNo, totalPages, total: rows.length, onChange: (p) => { pageNo = p; render(); window.scrollTo({ top: 0, behavior: "smooth" }); } });
+
+      tbody.querySelectorAll(".vs-row-check").forEach((c) =>
+        c.addEventListener("change", () => {
+          if (c.checked) selected.add(c.dataset.id);
+          else selected.delete(c.dataset.id);
+          updateBulkBar();
+        })
+      );
 
       tbody.querySelectorAll("[data-del]").forEach((btn) =>
         btn.addEventListener("click", async () => {
@@ -82,7 +99,46 @@
           else VS.toast((r.data && r.data.msg) || "Delete failed", "error");
         })
       );
+      updateBulkBar();
     };
+
+    document.getElementById("bk-select-all").addEventListener("change", (e) => {
+      const checked = e.target.checked;
+      document.getElementById("bk-tbody")
+        .querySelectorAll(".vs-row-check")
+        .forEach((c) => {
+          c.checked = checked;
+          if (checked) selected.add(c.dataset.id);
+          else selected.delete(c.dataset.id);
+        });
+      updateBulkBar();
+    });
+
+    document.getElementById("bk-bulk-cancel").addEventListener("click", () => {
+      selected.clear();
+      document.getElementById("bk-select-all").checked = false;
+      render();
+    });
+
+    document.getElementById("bk-bulk-delete").addEventListener("click", async () => {
+      const ids = [...selected];
+      const yes = await VS.confirm({
+        title: "Delete " + ids.length + " booking" + (ids.length > 1 ? "s" : "") + "?",
+        message: "The selected appointments will be permanently removed. This cannot be undone.",
+        confirmText: "Delete " + ids.length,
+        danger: true,
+      });
+      if (!yes) return;
+      let ok = 0;
+      for (const id of ids) {
+        const r = await VS.api("/api/deleteBookHistory", { method: "DELETE", body: { book_id: Number(id) } });
+        if (r.ok && r.data && r.data.status) ok++;
+      }
+      selected.clear();
+      document.getElementById("bk-select-all").checked = false;
+      VS.toast("Deleted " + ok + " of " + ids.length + " bookings", ok === ids.length ? "success" : "warning");
+      load();
+    });
 
     const load = async () => {
       const r = await VS.api("/api/bookingHistory", { method: "POST", body: { uid: "all", page: 1, limit: 500 } });

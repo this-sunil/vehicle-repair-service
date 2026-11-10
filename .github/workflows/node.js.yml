@@ -1,18 +1,31 @@
+
 name: Node.js CI
 
 on:
   push:
     branches: ["main"]
+
   pull_request:
     branches: ["main"]
 
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: node-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    name: Node.js ${{ matrix.node-version }} CI
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [22.x, 24.x]
+        node-version: [22.x, 24.x,26.x]
 
     steps:
       - name: Checkout code
@@ -24,8 +37,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
+      - name: Check Node and npm versions
+        run: |
+          node --version
+          npm --version
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Run lint
+        run: npm run lint --if-present
 
       - name: Build project
         run: npm run build --if-present
